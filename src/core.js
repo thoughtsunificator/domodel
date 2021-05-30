@@ -1,0 +1,93 @@
+/** @module core */
+
+import Binding from "./binding.js"
+
+class Core {
+
+	static PROPERTIES = [
+		"tagName",
+		"children",
+		"identifier",
+		"model",
+		"binding",
+		"properties"
+	]
+	/**
+		* @readonly
+		* @enum {number}
+		*/
+	static METHOD = {
+		APPEND_CHILD: "APPEND_CHILD",
+		INSERT_BEFORE: "INSERT_BEFORE",
+		REPLACE_NODE: "REPLACE_NODE",
+		WRAP_NODE: "WRAP_NODE",
+		PREPEND: "PREPEND",
+	}
+
+	/**
+		* @param {Object}  model
+		* @param {Object}  properties
+		* @param {Element} properties.parentNode
+		* @param {number}  [properties.method=METHOD.APPEND_CHILD]
+		* @param {Binding} [properties.binding=Binding]
+		*/
+	static run(model, { parentNode, method = Core.METHOD.APPEND_CHILD, binding = new Binding() } = {}) {
+		const node = Core.createNode(parentNode, model, binding)
+		binding._root = node
+		binding.onCreated()
+		if (method === Core.METHOD.APPEND_CHILD) {
+			parentNode.appendChild(node)
+		} else if (method === Core.METHOD.INSERT_BEFORE) {
+			parentNode.parentNode.insertBefore(node, parentNode)
+		} else if (method === Core.METHOD.REPLACE_NODE) {
+			parentNode.replaceWith(node)
+		} else if (method === Core.METHOD.WRAP_NODE) {
+			node.appendChild(parentNode.cloneNode(true))
+			parentNode.replaceWith(node)
+		} else if (method === Core.METHOD.PREPEND) {
+			parentNode.prepend(node)
+		}
+		binding.onRendered()
+	}
+
+	/**
+		* @ignore
+		* @param   {Object} Node
+		* @param   {Object} model
+		* @param   {Object} Binding
+		* @returns {Node}
+		*/
+	static createNode(parentNode, model, binding) {
+		const { tagName, children = [] } = model
+		const node = parentNode.ownerDocument.createElement(tagName)
+		Object.keys(model).filter(property => Core.PROPERTIES.includes(property) === false).forEach(function(property) {
+			node[property] = model[property]
+		})
+		for (const child of children) {
+			if(Object.hasOwnProperty.call(child, "model") === true) {
+				let childBinding
+				if(Object.hasOwnProperty.call(child, "binding") === true) {
+					childBinding = new child.binding({...binding.properties, ...child.properties})
+				} else {
+					childBinding = new Binding()
+				}
+				childBinding._parent = binding
+				binding._children.push(childBinding)
+				Core.run(child.model, { parentNode: node, binding: childBinding })
+				if(Object.hasOwnProperty.call(child, "identifier") === true) {
+					binding.identifier[child.identifier] = childBinding
+				}
+			} else {
+				const childNode = Core.createNode(parentNode, child, binding)
+				node.appendChild(childNode)
+			}
+		}
+		if(Object.hasOwnProperty.call(model, "identifier") === true) {
+			binding.identifier[model.identifier] = node
+		}
+		return node
+	}
+
+}
+
+export default Core

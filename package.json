@@ -1,0 +1,26 @@
+{
+	"name": "domodel",
+	"version": "1.0.0",
+	"type": "module",
+	"description": "Front-end library",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/thoughtsunificator/domodel.git"
+	},
+	"bugs": {
+		"url": "https://github.com/thoughtsunificator/domodel/issues"
+	},
+	"author": "Romain Lebesle <oss@thoughtsunificator.me> (https://thoughtsunificator.me)",
+	"license": "MIT",
+	"scripts": {
+		"test": "nodeunit-esm",
+		"generate-docs": "jsdoc --configure .jsdoc.json --verbose"
+	},
+	"devDependencies": {
+		"docdash": "^1.2.0",
+		"eslint": "^7.0.0",
+		"jsdoc": "^3.6.6",
+		"jsdom": "^13.2.0",
+		"nodeunit-esm": "^1.0.1"
+	}
+}
