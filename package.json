@@ -21,6 +21,6 @@
 		"eslint": "^7.0.0",
 		"jsdoc": "^3.6.6",
 		"jsdom": "^13.2.0",
-		"nodeunit-esm": "^1.0.1"
+		"nodeunit-esm": "^1.0.2"
 	}
 }
