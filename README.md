@@ -31,6 +31,12 @@ domodel is library that organizes the user interface into models (look) and bind
 
 ### Installing
 
+#### Setup a new project
+
+``npx create-domodel-app [name]``
+
+#### Setup as a dependency to an existing project
+
 ``npm install domodel``
 
 ### Model
