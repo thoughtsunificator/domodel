@@ -64,17 +64,15 @@ class Core {
 			node[property] = model[property]
 		})
 		for (const child of children) {
-			if(Object.hasOwnProperty.call(child, "model") === true) {
+			if(Object.prototype.hasOwnProperty.call(child, "model") === true) {
 				let childBinding
-				if(Object.hasOwnProperty.call(child, "binding") === true) {
+				if(Object.prototype.hasOwnProperty.call(child, "binding") === true) {
 					childBinding = new child.binding({...binding.properties, ...child.properties})
 				} else {
 					childBinding = new Binding()
 				}
-				childBinding._parent = binding
-				binding._children.push(childBinding)
-				Core.run(child.model, { parentNode: node, binding: childBinding })
-				if(Object.hasOwnProperty.call(child, "identifier") === true) {
+				binding.run(child.model, { parentNode: node, binding: childBinding })
+				if(Object.prototype.hasOwnProperty.call(child, "identifier") === true) {
 					binding.identifier[child.identifier] = childBinding
 				}
 			} else {
@@ -82,7 +80,7 @@ class Core {
 				node.appendChild(childNode)
 			}
 		}
-		if(Object.hasOwnProperty.call(model, "identifier") === true) {
+		if(Object.prototype.hasOwnProperty.call(model, "identifier") === true) {
 			binding.identifier[model.identifier] = node
 		}
 		return node

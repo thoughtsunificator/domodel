@@ -36,10 +36,10 @@ class Observable {
 	 * @param  {string} eventName
 	 * @param  {*} 			args
 	 */
-	async emit(eventName, args) {
+	emit(eventName, args) {
 		if(Array.isArray(this._listeners[eventName])) {
 			for (const listener of this._listeners[eventName]) {
-				await listener.callback(args)
+				listener.callback(args)
 			}
 		}
 	}

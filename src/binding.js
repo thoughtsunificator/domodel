@@ -50,6 +50,10 @@ class Binding {
 	run(model, properties) {
 		properties.binding._parent = this
 		this._children.push(properties.binding)
+		properties.binding._properties = {
+			...this.properties,
+			...properties.binding.properties
+		}
 		Core.run(model, { parentNode: this.root, ...properties })
 	}
 

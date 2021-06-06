@@ -27,20 +27,27 @@ const MyBinding3 = class extends Binding {
 }
 
 export function run(test) {
-	test.expect(1)
+	test.expect(6)
+	let childBinding
 	const MyBinding = class extends Binding {
 		onCreated() {
-			this.run(MyModel, { binding: new MyBinding2() })
+			childBinding = new MyBinding2()
+			this.run(MyModel, { binding: childBinding })
 		}
 	}
 	const MyBinding2 = class extends Binding {
 		onCreated() {
+			test.strictEqual(this.properties.property, "a")
 			this.root.textContent = "test"
 		}
 	}
-	const binding = new MyBinding()
+	const binding = new MyBinding({ property: "a" })
 	Core.run(MyModel, { binding, parentNode: document.body })
-	test.strictEqual(document.body.innerHTML, '<div><div>test</div></div>')
+	test.strictEqual(binding._parent, null)
+	test.strictEqual(binding._children.length, 1)
+	test.strictEqual(binding._children[0], childBinding)
+	test.strictEqual(childBinding._parent, binding)
+	test.strictEqual(childBinding._children.length, 0)
 	test.done()
 }
 
@@ -56,9 +63,10 @@ export function listen(test) {
 }
 
 export function remove(test) {
-	test.expect(3)
+	test.expect(4)
 	const binding = new MyBinding3()
 	Core.run(MyModel, { binding, parentNode: document.body })
+	test.strictEqual(document.body.innerHTML, '<div></div>')
 	binding.remove()
 	test.strictEqual(document.body.innerHTML, '')
 	test.strictEqual(observable._listeners["test"].length, 0)
