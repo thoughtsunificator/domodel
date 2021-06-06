@@ -3,7 +3,9 @@ name: Generate docs and push to another branch
 on:
   push:
     branches:
-      - master
+      - "master"
+    tags:
+      - "v*"
 
 jobs:
   build:
