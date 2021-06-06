@@ -201,7 +201,7 @@ export default class {
 
 		const game = new Game()
 
-		this.listen(game, "message", async data => {
+		this.listen(game, "message", data => {
 			console.log(data)
 		})
 
