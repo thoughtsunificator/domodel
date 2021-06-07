@@ -1,11 +1,8 @@
 name: Generate docs and push to another branch
 
 on:
-  push:
-    branches:
-      - "master"
-    tags:
-      - "v*"
+  release:
+    types: [published]
 
 jobs:
   build:
