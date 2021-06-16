@@ -2,31 +2,6 @@
 
 domodel is library that organizes the user interface into models (look) and bindings (behavior) it follows the principle of separation of concerns, domodel also introduce elements of the observable pattern for the communication between the different parts of the user interface.
 
-## Summary
-
-- [Getting started](#getting-started)
-	- [Installing](#installing)
-	- [Model](#model)
-		- [Properties](#model-properties)
-	- [Binding](#binding)
-		- [Properties](#binding-properties)
-		- [Adding models to the DOM and managing them](#adding-models-to-the-dom-and-managing-them)
-	- [Methods](#methods)
-	- [Observable](#observable)
-		- [Listening](#listening)
-		- [Emitting](#emitting)
-- [Advanced](#advanced)
-	- [Nesting models](#nesting-models)
-		- [Method 1](#method-1)
-		- [Method 2](#method-2)
-		- [Method 3](#method-3)
-		- [Method 4](#method-4)
-		- [Referencing to nested models](#referencing-to-nested-models)
-- [API](#api)
-- [Extensions](#extensions)
-- [Demos](#demos)
-- [Testing](#running-the-tests)
-
 ## Getting started
 
 ### Installing
