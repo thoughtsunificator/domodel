@@ -1,6 +1,6 @@
 {
 	"name": "domodel",
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"main": "index.js",
 	"type": "module",
 	"description": "Front-end library",
@@ -19,7 +19,7 @@
 	},
 	"devDependencies": {
 		"docdash": "^1.2.0",
-		"eslint": "^7.0.0",
+		"eslint": "^7.28.0",
 		"jsdoc": "^3.6.6",
 		"jsdom": "^13.2.0",
 		"nodeunit-esm": "^1.0.2"

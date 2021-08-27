@@ -2,6 +2,9 @@
 
 import Binding from "./binding.js"
 
+/**
+ * @memberof module:core
+ */
 class Core {
 
 	static PROPERTIES = [
@@ -68,13 +71,11 @@ class Core {
 				let childBinding
 				if(Object.prototype.hasOwnProperty.call(child, "binding") === true) {
 					childBinding = new child.binding({...binding.properties, ...child.properties})
-				} else {
-					childBinding = new Binding()
+					if(Object.prototype.hasOwnProperty.call(child, "identifier") === true) {
+						binding.identifier[child.identifier] = childBinding
+					}
 				}
 				binding.run(child.model, { parentNode: node, binding: childBinding })
-				if(Object.prototype.hasOwnProperty.call(child, "identifier") === true) {
-					binding.identifier[child.identifier] = childBinding
-				}
 			} else {
 				const childNode = Core.createNode(parentNode, child, binding)
 				node.appendChild(childNode)
