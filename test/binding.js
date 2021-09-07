@@ -1,8 +1,6 @@
 import { JSDOM } from 'jsdom'
 
-import Core from '../src/core.js'
-import Binding from '../src/binding.js'
-import Observable from '../src/observable.js'
+import { Core, Binding, Observable } from '../index.js'
 
 const virtualDOM = new JSDOM()
 const { document } = virtualDOM.window
