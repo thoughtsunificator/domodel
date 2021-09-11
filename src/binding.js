@@ -11,6 +11,8 @@ class Binding {
 		this._identifier = {}
 		this._properties = {...properties}
 		this._parent = null
+		this._root = null
+		this._model = null
 		this._children = []
 		this._listeners = []
 	}
@@ -34,6 +36,13 @@ class Binding {
 	 */
 	get root() {
 		return this._root
+	}
+
+	/**
+	 * @type {object}
+	 */
+	get model() {
+		return this._model
 	}
 
 	/**

@@ -37,6 +37,7 @@ class Core {
 	static run(model, { parentNode, method = Core.METHOD.APPEND_CHILD, binding = new Binding() } = {}) {
 		const node = Core.createNode(parentNode, model, binding)
 		binding._root = node
+		binding._model = model
 		binding.onCreated()
 		if (method === Core.METHOD.APPEND_CHILD) {
 			parentNode.appendChild(node)
