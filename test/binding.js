@@ -7,6 +7,20 @@ const { document } = virtualDOM.window
 
 let observable
 
+export function instance(test) {
+	test.expect(7)
+	const binding = new Binding()
+	test.deepEqual(binding._parent, null)
+	test.deepEqual(binding.model, null)
+	test.deepEqual(binding.properties, {})
+	test.deepEqual(binding.identifier, {})
+	test.deepEqual(binding._children, [])
+	test.deepEqual(binding._listeners, [])
+	const binding_ = new Binding({ test: "a" })
+	test.deepEqual(binding_.properties, { test: "a" })
+	test.done()
+}
+
 export function setUp(callback) {
 	observable = new Observable()
 	document.body.innerHTML = ""
@@ -14,7 +28,8 @@ export function setUp(callback) {
 }
 
 const MyModel = {
-	tagName: "div"
+	tagName: "div",
+	id: "test"
 }
 
 const MyBinding3 = class extends Binding {
@@ -25,7 +40,7 @@ const MyBinding3 = class extends Binding {
 }
 
 export function run(test) {
-	test.expect(6)
+	test.expect(8)
 	let childBinding
 	const MyBinding = class extends Binding {
 		onCreated() {
@@ -42,6 +57,8 @@ export function run(test) {
 	const binding = new MyBinding({ property: "a" })
 	Core.run(MyModel, { binding, parentNode: document.body })
 	test.strictEqual(binding._parent, null)
+	test.strictEqual(binding._root, document.body.querySelector("#test"))
+	test.strictEqual(binding._model, MyModel)
 	test.strictEqual(binding._children.length, 1)
 	test.strictEqual(binding._children[0], childBinding)
 	test.strictEqual(childBinding._parent, binding)
@@ -64,7 +81,7 @@ export function remove(test) {
 	test.expect(4)
 	const binding = new MyBinding3()
 	Core.run(MyModel, { binding, parentNode: document.body })
-	test.strictEqual(document.body.innerHTML, '<div></div>')
+	test.strictEqual(document.body.innerHTML, '<div id="test"></div>')
 	binding.remove()
 	test.strictEqual(document.body.innerHTML, '')
 	test.strictEqual(observable._listeners["test"].length, 0)

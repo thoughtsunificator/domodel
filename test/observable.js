@@ -1,5 +1,12 @@
 import Observable from '../src/observable.js'
 
+export function instance(test) {
+	test.expect(1)
+	const observable = new Observable()
+	test.deepEqual(observable._listeners, {})
+	test.done()
+}
+
 export function emit(test) {
 	const path = []
 	test.expect(1)
