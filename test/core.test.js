@@ -132,7 +132,7 @@ describe("core", function () {
 		assert.strictEqual(document.body.innerHTML, '<button>bound</button>')
 	})
 
-	it("bindingProps", () => {
+	it("bindingProps", (done) => {
 		Core.run({
 			tagName: "button"
 		}, {
@@ -140,6 +140,7 @@ describe("core", function () {
 			binding: new class extends Binding {
 				onCreated() {
 					assert.strictEqual(this.properties.text, "bound")
+					done()
 				}
 			}({text: "bound"}),
 		})
@@ -185,7 +186,7 @@ describe("core", function () {
 		assert.strictEqual(document.body.innerHTML, '<div><button></button></div><div><button></button></div>')
 	})
 
-	it("identifiers", () => {
+	it("identifiers", (done) => {
 		Core.run({
 				tagName: "div",
 				identifier: "parent",
@@ -214,12 +215,13 @@ describe("core", function () {
 						assert.deepEqual(this.identifier.child2, this.root.children[1])
 						assert.deepEqual(this.identifier.child3, this.root.children[2])
 						assert.deepEqual(this.identifier.childchild, this.root.children[0].children[0])
+						done()
 					}
 				}
 		})
 	})
 
-	it("modelProperty", () => {
+	it("modelProperty", (done) => {
 
 		const MyModel = {
 			tagName: "div"
@@ -279,6 +281,7 @@ describe("core", function () {
 						assert.deepEqual(this.identifier.model2.root, this.root.children[2].children[0])
 						assert.deepEqual(this.identifier.model2.identifier.child, this.root.children[2].children[0].children[0])
 						assert.deepEqual("<div>bound</div>", this.root.children[3].outerHTML)
+						done()
 					}
 				}
 		})
