@@ -33,6 +33,7 @@ class Core {
 		* @param {Element} properties.parentNode
 		* @param {number}  [properties.method=METHOD.APPEND_CHILD]
 		* @param {Binding} [properties.binding=Binding]
+		* @param {EventListener} [properties.eventListener]
 		*/
 	static run(model, { parentNode, method = Core.METHOD.APPEND_CHILD, binding = new Binding(), eventListener } = {}) {
 		const node = Core.createNode(parentNode, model, binding)
