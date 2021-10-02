@@ -44,7 +44,7 @@ class Core {
 			for (const name of Object.getOwnPropertyNames(Object.getPrototypeOf(eventListener))) {
 				const method = eventListener[name];
 				if ((method instanceof Function) && method !== eventListener.constructor) {
-					binding.listen(eventListener.observable, name, method)
+					binding.listen(eventListener.observable, name, method.bind(eventListener))
 				}
 			}
 		}
