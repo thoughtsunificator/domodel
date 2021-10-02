@@ -33,18 +33,18 @@ class Core {
 		* @param {Element}       properties.parentNode
 		* @param {number}        [properties.method=METHOD.APPEND_CHILD]
 		* @param {Binding}       [properties.binding=Binding]
-		* @param {EventListener} [properties.event]
+		* @param {EventListener} [properties.eventListener]
 		*/
-	static run(model, { parentNode, method = Core.METHOD.APPEND_CHILD, binding = new Binding(), event } = {}) {
+	static run(model, { parentNode, method = Core.METHOD.APPEND_CHILD, binding = new Binding(), eventListener } = {}) {
 		const node = Core.createNode(parentNode, model, binding)
 		binding._root = node
 		binding._model = model
-		if(event) {
-			event._binding = binding
-			for (const name of Object.getOwnPropertyNames(Object.getPrototypeOf(event))) {
-				const method = event[name];
-				if ((method instanceof Function) && method !== event.constructor) {
-					binding.listen(event.observable, name, method)
+		if(eventListener) {
+			eventListener._binding = binding
+			for (const name of Object.getOwnPropertyNames(Object.getPrototypeOf(eventListener))) {
+				const method = eventListener[name];
+				if ((method instanceof Function) && method !== eventListener.constructor) {
+					binding.listen(eventListener.observable, name, method)
 				}
 			}
 		}
