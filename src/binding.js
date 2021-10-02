@@ -1,5 +1,3 @@
-/** @module binding */
-
 import Core from "./core.js"
 
 /**
