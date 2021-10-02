@@ -1,5 +1,5 @@
 import assert from 'assert'
-import Observable from '../src/observable.js'
+import { Observable } from '../index.js'
 
 describe("observable", function () {
 	it("instance", function() {
