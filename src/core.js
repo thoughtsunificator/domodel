@@ -34,10 +34,19 @@ class Core {
 		* @param {number}  [properties.method=METHOD.APPEND_CHILD]
 		* @param {Binding} [properties.binding=Binding]
 		*/
-	static run(model, { parentNode, method = Core.METHOD.APPEND_CHILD, binding = new Binding() } = {}) {
+	static run(model, { parentNode, method = Core.METHOD.APPEND_CHILD, binding = new Binding(), eventListener } = {}) {
 		const node = Core.createNode(parentNode, model, binding)
 		binding._root = node
 		binding._model = model
+		if(eventListener) {
+			eventListener._binding = binding
+			for (const name of Object.getOwnPropertyNames(Object.getPrototypeOf(eventListener))) {
+				const method = eventListener[name];
+				if ((method instanceof Function) && method !== eventListener.constructor) {
+					binding.listen(eventListener.observable, name, method)
+				}
+			}
+		}
 		binding.onCreated()
 		if (method === Core.METHOD.APPEND_CHILD) {
 			parentNode.appendChild(node)

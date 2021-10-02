@@ -2,6 +2,8 @@ import assert from 'assert'
 import { JSDOM } from 'jsdom'
 import Core from '../src/core.js'
 import Binding from '../src/binding.js'
+import Observable from '../src/observable.js'
+import EventListener from '../src/event-listener.js'
 
 const virtualDOM = new JSDOM()
 const { document } = virtualDOM.window
@@ -286,4 +288,36 @@ describe("core", function () {
 				}
 		})
 	})
+
+	it("eventListener", () => {
+
+		class MyEventListener extends EventListener {
+
+			myEvent() {}
+
+			myEvent2() {}
+
+			myEvent3() {}
+
+		}
+
+		const myObservable = new Observable()
+
+		const eventListener = new MyEventListener(myObservable)
+
+		const binding = new Binding({ myObservable })
+
+		Core.run({
+			tagName: "div",
+		}, { parentNode: document.body, binding, eventListener })
+
+		assert.strictEqual(myObservable._listeners["myEvent"].length, 1)
+		assert.strictEqual(myObservable._listeners["myEvent2"].length, 1)
+		assert.strictEqual(myObservable._listeners["myEvent3"].length, 1)
+		assert.strictEqual(binding._listeners.length, 3)
+		assert.strictEqual(Object.keys(myObservable._listeners).length, 3)
+
+
+	})
+
 })
