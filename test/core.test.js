@@ -309,6 +309,7 @@ describe("core", function () {
 		}, { parentNode: document.body, binding, eventListener })
 
 		assert.strictEqual(myObservable._listeners["myEvent"].length, 1)
+		assert.strictEqual(eventListener.binding, binding)
 		assert.strictEqual(myObservable._listeners["myEvent"][0]._callback, eventListener.myEvent)
 		assert.strictEqual(myObservable._listeners["myEvent2"].length, 1)
 		assert.strictEqual(myObservable._listeners["myEvent2"][0]._callback, eventListener.myEvent2)
