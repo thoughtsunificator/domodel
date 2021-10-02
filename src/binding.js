@@ -2,6 +2,9 @@
 
 import Core from "./core.js"
 
+/**
+ * @memberof module:binding
+ */
 class Binding {
 
 	/**
@@ -9,7 +12,7 @@ class Binding {
 	 */
 	constructor(properties) {
 		this._identifier = {}
-		this._properties = {...properties}
+		this._properties = { ...properties }
 		this._parent = null
 		this._root = null
 		this._model = null
