@@ -93,13 +93,13 @@ The first step in your project would be create or edit the ``main.js`` in ``src/
 import { Core } from "domodel" // first we're importing DOModel
 
 // It is preferred to use camel case and suffix model names with "Model" and binding names with "Binding" such as: RectangleModel and RectangleBinding.
-import MyModel from "./model/model.js" // the model we defined earlier, it is our super model
-import MyBinding from ".model/model.binding.js" // the binding we will be defining .bindinglater
+import Model from "./model/model.js" // the model we defined earlier, it is our super model
+import ModelBinding from ".model/model.binding.js" // the binding we will be defining .bindinglater
 
 window.addEventListener("load", function() { // we only add the
-	Core.run(MyModel, {
+	Core.run(Model, {
 		method: Core.METHOD.APPEND_CHILD, // This is the default method and will append the children to the given parentNode.
-		binding: new MyBinding({ myProp: "hello :)" }), // we're creating an instance of our binding (which extends the Binding class provided by DOModel) and passing it to the run method.
+		binding: new ModelBinding({ myProp: "hello :)" }), // we're creating an instance of our binding (which extends the Binding class provided by DOModel) and passing it to the run method.
 		parentNode: document.body // the node we want to target in this case it is the node where we want to append the child node using appendChild.
 	})
 })
@@ -112,7 +112,7 @@ Now that your ``main.js`` is created let's create your first [Binding](https://t
 ````javascript
 import { Core } from "domodel" // you could import the library again and run yet another model inside this model
 
-export default class extends Binding {
+class ModelBinding extends Binding {
 
 	onCreated() {
 		const { myProp } = this.properties
@@ -129,6 +129,8 @@ export default class extends Binding {
 	}
 
 }
+
+export default ModelBinding 
 ````
 
 ### Methods
@@ -153,7 +155,7 @@ An [Observable](https://thoughtsunificator.github.io/domodel/module-observable.O
 ```javascript
 import { Observable } from "domodel"
 
-export default class extends Observable {
+class ExampleObservable extends Observable {
 
 	// you can have a constructor
 
@@ -162,46 +164,83 @@ export default class extends Observable {
 	// or even better, you could have methods.
 
 }
+
+export default ExampleObservable 
 ```
 
 #### Listening to events
 
 ``src/model/model.binding.js``
 ```javascript
-import Game from "/object/game.js"
+import { Observable } from "domodel"
 
-export default class {
+class ModelBinding {
 
 	onCreated() {
 
-		const game = new Game()
+		const observable = new Observable()
 
-		this.listen(game, "message", data => {
+		this.listen(observable, "message", data => {
 			console.log(data)
 		})
 
 	}
 
 }
+
+export default ModelBinding 
+```
+
+``src/model/model.event.js``
+```javascript
+import { EventListener } from "domodel"
+
+class ModelEventListener extends EventListener {
+
+	message(data) {
+		console.log(data)
+	} 
+
+}
+
+export default ModelEventListener 
 ```
 
 #### Emitting events
 
 ``src/model/model.binding.js``
 ```javascript
-import Game from "/object/game.js"
+import { Observable } from "domodel"
 
-export default class {
+class ModelBinding {
 
 	onCreated() {
 
-		const game = new Game()
+		const observable = new Observable()
 
-		game.emit("message", { /* data go here */ })
+		observable.emit("message", { /* data go here */ })
 
 	}
 
 }
+
+export default ModelBinding 
+```
+
+Running your model
+
+```javascript
+import { Core, Observable } from "domodel"
+
+import Model from "/model/model.js"
+import ModelBinding from "/model/model.binding.js"
+import ModelEventListener from "/model/model.event.js"
+
+const observable = new Observable()
+
+Core.run(Model, { parentNode: document.body, binding: new ModelBinding({ observable }), eventListener: new ModelEventListener(observable) })
+
+
 ```
 
 ### Advanced
@@ -210,21 +249,21 @@ export default class {
 
 ##### Method 1 - Import
 
-``src/model/main-model.js``
+``src/model/application.js``
 ````javascript
-import MyModel from "./my-model.js"
+import Model from "./model.js"
 
 export default {
 	tagName: "div",
 	children: [
-		MyModel
+		Model
 	]
 }
 ````
 
 ##### Method 2 - Callback
 
-``src/model/main-model.js``
+``src/model/application.js``
 ````javascript
 export default data => ({
 	tagName: "div",
@@ -236,35 +275,37 @@ export default data => ({
 
 ##### Method 3 - Binding
 
-``src/model/main-model.binding.js``
+``src/model/application.binding.js``
 ````javascript
 import { Core } from "domodel"
 
-import MyModel from "./my-model.js"
-import MyBinding from "./my-model.binding.js"
+import Model from "./model.js"
+import ModelBinding from "./model.binding.js"
 
-export default class extends Binding {
+class extends Binding {
 
 	onCreated() {
-		Core.run(MyModel, { parentNode: this.root, binding: new MyBinding() })
+		Core.run(Model, { parentNode: this.root, binding: new ModelBinding() })
 	}
 
 }
+
+export default class 
 ````
 
 ##### Method 4 - "model" property
 
-``src/model/main-model.js``
+``src/model/application.js``
 ````javascript
-import MyModel from "./my-model.js"
-import MyBinding from "./my-model.binding.js"
+import Model from "./model.js"
+import ModelBinding from "./model.binding.js"
 
 export default {
 	tagName: "div",
 	children: [
 		{
-			model: MyModel,
-			binding: MyBinding // optionnal
+			model: Model,
+			binding: ModelBinding // optionnal
 			properties: {} // optionnal
 			identifier: "model" // optionnal
 			// Any other property is not handled.
@@ -280,20 +321,20 @@ The hierarchy of nodes stops here and continue in the model you specified.
 
 In some cases, you might want to reference to a nested model.
 
-You can use the ``identifier``, it will reference to an instance of the [Binding](https://thoughtsunificator.github.io/domodel/module-binding-Binding.html) you specified, in this case it would be an instance of ``MyBinding``.
+You can use the ``identifier``, it will reference to an instance of the [Binding](https://thoughtsunificator.github.io/domodel/module-binding-Binding.html) you specified, in this case it would be an instance of ``ModelBinding``.
 
 Accessing the reference:
 
-``src/model/my-model.binding.js``
+``src/model/model.binding.js``
 
 ````javascript
 import { Binding } from "domodel" // you could import the library again and run yet another model inside this model
 
-export default class extends Binding {
+class extends Binding {
 
 	onCreated() {
 
-		console.log(this.identifier.model) // returns an instance of MyBinding
+		console.log(this.identifier.model) // returns an instance of ModelBinding
 		// You could access the root element of the nested model through:
 		console.log(this.identifier.model.root)
 		// and much more...
@@ -301,6 +342,8 @@ export default class extends Binding {
 	}
 
 }
+
+export default class 
 ````
 
 ### API

@@ -288,9 +288,13 @@ describe("core", function () {
 
 	it("eventListener", () => {
 
+		let _this
+
 		class MyEventListener extends EventListener {
 
-			myEvent() {}
+			myEvent() {
+				_this = this
+			}
 
 			myEvent2() {}
 
@@ -310,13 +314,15 @@ describe("core", function () {
 
 		assert.strictEqual(myObservable._listeners["myEvent"].length, 1)
 		assert.strictEqual(eventListener.binding, binding)
-		assert.strictEqual(myObservable._listeners["myEvent"][0]._callback, eventListener.myEvent)
+		assert.strictEqual(myObservable._listeners["myEvent"][0]._callback.prototype, eventListener.myEvent.prototype)
 		assert.strictEqual(myObservable._listeners["myEvent2"].length, 1)
-		assert.strictEqual(myObservable._listeners["myEvent2"][0]._callback, eventListener.myEvent2)
+		assert.strictEqual(myObservable._listeners["myEvent2"][0]._callback.prototype, eventListener.myEvent2.prototype)
 		assert.strictEqual(myObservable._listeners["myEvent3"].length, 1)
-		assert.strictEqual(myObservable._listeners["myEvent3"][0]._callback, eventListener.myEvent3)
+		assert.strictEqual(myObservable._listeners["myEvent3"][0]._callback.prototype, eventListener.myEvent3.prototype)
 		assert.strictEqual(binding._listeners.length, 3)
 		assert.strictEqual(Object.keys(myObservable._listeners).length, 3)
+		myObservable.emit("myEvent")
+		assert.strictEqual(_this, eventListener)
 
 
 	})
