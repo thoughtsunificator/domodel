@@ -26,6 +26,14 @@ jobs:
           repo_token: "${{ secrets.PAT_TOKEN }}"
           prerelease: false
 
+      - name: Merge release
+      - uses: everlytic/branch-merge@1.1.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_ref: ${{ github.ref }}
+          target_branch: 'master'
+          commit_message_template: '[Automated] Merged {source_ref} into target {target_branch}'
+
       - name: Generate documentation
         run: npm run generate-docs
 
