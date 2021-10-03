@@ -8,6 +8,7 @@ class Binding {
 
 	/**
 	 * @param {object} properties
+	 * @param {EventListener} [eventListener=EventListener]
 	 */
 	constructor(properties, eventListener = new EventListener()) {
 		this._identifier = {}
