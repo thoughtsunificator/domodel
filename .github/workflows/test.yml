@@ -1,7 +1,5 @@
 name: "test"
 
-on: push
-
 jobs:
   test:
     name: "Unit tests"

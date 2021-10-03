@@ -26,25 +26,6 @@ jobs:
           repo_token: "${{ secrets.PAT_TOKEN }}"
           prerelease: false
 
-      - name: Create Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v3.10.1
-        with:
-          token: ${{ secrets.PAT_TOKEN }}
-          commit-message: Auto Pull Request
-          title: Auto merge release
-          body: Auto-created Pull Request
-          branch: develop
-          base: master
-
-      - name: Enable Pull Request Automerge
-        if: steps.cpr.outputs.pull-request-operation == 'created'
-        uses: peter-evans/enable-pull-request-automerge@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
-          merge-method: squash
-
       - name: Generate documentation
         run: npm run generate-docs
 
