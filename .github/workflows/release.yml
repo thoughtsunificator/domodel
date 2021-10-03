@@ -26,13 +26,19 @@ jobs:
           repo_token: "${{ secrets.PAT_TOKEN }}"
           prerelease: false
 
-      - name: Merge release
-        uses: everlytic/branch-merge@1.1.2
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          source_ref: ${{ github.ref }}
-          target_branch: 'master'
-          commit_message_template: '[Automated] Merged {source_ref} into target {target_branch}'
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable Pull Request Automerge
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        uses: peter-evans/enable-pull-request-automerge@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: squash
 
       - name: Generate documentation
         run: npm run generate-docs
