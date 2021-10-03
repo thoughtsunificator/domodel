@@ -20,6 +20,7 @@ class Binding {
 		this._children = []
 		this._listeners = []
 		this._eventListener = eventListener
+		this._eventListener._binding = this
 	}
 
 	/**

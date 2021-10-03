@@ -336,6 +336,7 @@ describe("Core", function () {
 		assert.strictEqual(Object.keys(observable._listeners).length, 3)
 		observable.emit("myEvent")
 		assert.strictEqual(_this, binding.eventListener)
+		assert.strictEqual(binding, binding.eventListener.binding)
 		observable.emit("myEvent2")
 		observable.emit("myEvent3")
 		assert.strictEqual(myEvent2, 1)
