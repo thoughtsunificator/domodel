@@ -9,9 +9,8 @@ describe("EventListener", () => {
 		const eventListener = new EventListener(observable)
 		assert.strictEqual(eventListener.observable, observable)
 		const binding = new Binding()
-		const eventListener_ = new EventListener(observable, binding)
+		const eventListener_ = new EventListener(observable)
 		assert.strictEqual(eventListener_.observable, observable)
-		assert.strictEqual(eventListener_.binding, binding)
 		assert.throws(() => {
 			eventListener_.observable = ""
 			eventListener_.binding = ""
