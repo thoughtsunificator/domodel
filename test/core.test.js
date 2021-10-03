@@ -291,6 +291,7 @@ describe("Core", function () {
 	it("eventListener", () => {
 
 		let _this
+		let _myEventData
 		let myEvent2 = 0
 		let myEvent3 = 0
 
@@ -304,8 +305,9 @@ describe("Core", function () {
 
 		class MyEventListener extends EventListener {
 
-			myEvent() {
+			myEvent(data) {
 				_this = this
+				_myEventData = data
 			}
 
 			myEvent2() {
@@ -334,8 +336,9 @@ describe("Core", function () {
 		assert.strictEqual(observable._listeners["myEvent3"][0]._callback.prototype, binding.eventListener.myEvent3.prototype)
 		assert.strictEqual(binding._listeners.length, 3)
 		assert.strictEqual(Object.keys(observable._listeners).length, 3)
-		observable.emit("myEvent")
+		observable.emit("myEvent", { foo: "bar" })
 		assert.strictEqual(_this, binding.eventListener)
+		assert.deepEqual(_myEventData, { foo: "bar" })
 		assert.strictEqual(binding, binding.eventListener.binding)
 		observable.emit("myEvent2")
 		observable.emit("myEvent3")
