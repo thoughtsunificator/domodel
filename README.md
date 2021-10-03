@@ -217,7 +217,7 @@ import ModelEventListener from "/model/model.event.js"
 class ModelBinding {
 
 	constructor(properties) {
-		super(properties, new ModelEventListener(properties.observable))
+		super(properties, new ModelEventListener(this, properties.observable))
 	}
 
 	onCreated() {
