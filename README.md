@@ -227,7 +227,7 @@ class ModelBinding {
 export default ModelBinding 
 ```
 
-Running your model
+Running your model:
 
 ```javascript
 import { Core, Observable } from "domodel"
@@ -237,8 +237,9 @@ import ModelBinding from "/model/model.binding.js"
 import ModelEventListener from "/model/model.event.js"
 
 const observable = new Observable()
+const binding = new ModelBinding({ observable }, new ModelEventListener(observable))
 
-Core.run(Model, { parentNode: document.body, binding: new ModelBinding({ observable }), eventListener: new ModelEventListener(observable) })
+Core.run(Model, { parentNode: document.body, binding })
 
 
 ```
@@ -261,19 +262,7 @@ export default {
 }
 ````
 
-##### Method 2 - Callback
-
-``src/model/application.js``
-````javascript
-export default data => ({
-	tagName: "div",
-	children: [
-		data
-	]
-})
-````
-
-##### Method 3 - Binding
+##### Method 2 - Binding
 
 ``src/model/application.binding.js``
 ````javascript
@@ -293,7 +282,7 @@ class extends Binding {
 export default class 
 ````
 
-##### Method 4 - "model" property
+##### Method 3 - "model" property
 
 ``src/model/application.js``
 ````javascript
@@ -313,9 +302,6 @@ export default {
 	]
 }
 ````
-What happens is that DOModel will be itself calling the ``run`` method with the argument you provided.
-
-The hierarchy of nodes stops here and continue in the model you specified.
 
 ##### Referencing to nested models
 

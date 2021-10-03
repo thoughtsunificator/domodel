@@ -1,5 +1,6 @@
 import assert from 'assert'
 import { JSDOM } from 'jsdom'
+
 import { Core, Binding, Observable, EventListener } from '../index.js'
 
 const virtualDOM = new JSDOM()
@@ -306,11 +307,13 @@ describe("core", function () {
 
 		const eventListener = new MyEventListener(myObservable)
 
-		const binding = new Binding({ myObservable })
+		const binding = new Binding({ myObservable }, eventListener)
+
+		assert.strictEqual(binding.eventListener, eventListener)
 
 		Core.run({
 			tagName: "div",
-		}, { parentNode: document.body, binding, eventListener })
+		}, { parentNode: document.body, binding })
 
 		assert.strictEqual(myObservable._listeners["myEvent"].length, 1)
 		assert.strictEqual(eventListener.binding, binding)
