@@ -18,14 +18,6 @@ class EventListener {
 		return this._observable
 	}
 
-	/**
-	 * @type {Binding}
-	 * @readonly
-	 */
-	get binding() {
-		return this._binding
-	}
-
 }
 
 export default EventListener
