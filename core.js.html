@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>core.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Binding.html">Binding</a><ul class='methods'><li data-type='method'><a href="Binding.html#listen">listen</a></li><li data-type='method'><a href="Binding.html#run">run</a></li><li data-type='method'><a href="Binding.html#onCreated">onCreated</a></li><li data-type='method'><a href="Binding.html#onRendered">onRendered</a></li></ul></li><li><a href="Core.html">Core</a><ul class='methods'><li data-type='method'><a href="Core.html#.run">run</a></li></ul></li><li><a href="EventListener.html">EventListener</a></li><li><a href="Listener.html">Listener</a><ul class='methods'><li data-type='method'><a href="Listener.html#remove">remove</a></li></ul></li><li><a href="Observable.html">Observable</a><ul class='methods'><li data-type='method'><a href="Observable.html#listen">listen</a></li><li data-type='method'><a href="Observable.html#removeListener">removeListener</a></li><li data-type='method'><a href="Observable.html#emit">emit</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">core.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Binding from "./binding.js"
+
+/**
+ * @global
+ */
+class Core {
+
+	/**
+	 * @readonly
+	 */
+	static PROPERTIES = [
+		"tagName",
+		"children",
+		"identifier",
+		"model",
+		"binding",
+		"properties"
+	]
+
+	/**
+		* @readonly
+		* @property Method {Method}
+		* @property Method.APPEND_CHILD  {string}
+		* @property Method.INSERT_BEFORE {string}
+		* @property Method.REPLACE_NODE  {string}
+		* @property Method.WRAP_NODE     {string}
+		* @property Method.PREPEND       {string}
+		* @example Core.Method.APPEND_CHILD
+		*/
+	static METHOD = {
+		APPEND_CHILD: "APPEND_CHILD",
+		INSERT_BEFORE: "INSERT_BEFORE",
+		REPLACE_NODE: "REPLACE_NODE",
+		WRAP_NODE: "WRAP_NODE",
+		PREPEND: "PREPEND",
+	}
+
+	/**
+		* @param {Object}        model
+		* @param {Object}        properties
+		* @param {Element}       properties.parentNode
+		* @param {Binding}       [properties.binding=new Binding()]
+		* @param {Method}        [properties.method=Core.METHOD.APPEND_CHILD]
+		* @example Core.run(Model, { parentNode: document.body, binding: new Binding() })
+		*/
+	static run(model, { parentNode, binding = new Binding(), method = Core.METHOD.APPEND_CHILD } = {}) {
+		const node = Core.createNode(parentNode, model, binding)
+		binding._root = node
+		binding._model = model
+		for (const name of Object.getOwnPropertyNames(Object.getPrototypeOf(binding.eventListener)).filter(name => name !== "constructor" &amp;&amp; typeof binding.eventListener[name] === "function")) {
+			binding.listen(binding.eventListener.observable, name, binding.eventListener[name].bind(binding))
+		}
+		binding.onCreated()
+		if (method === Core.METHOD.APPEND_CHILD) {
+			parentNode.appendChild(node)
+		} else if (method === Core.METHOD.INSERT_BEFORE) {
+			parentNode.parentNode.insertBefore(node, parentNode)
+		} else if (method === Core.METHOD.REPLACE_NODE) {
+			parentNode.replaceWith(node)
+		} else if (method === Core.METHOD.WRAP_NODE) {
+			node.appendChild(parentNode.cloneNode(true))
+			parentNode.replaceWith(node)
+		} else if (method === Core.METHOD.PREPEND) {
+			parentNode.prepend(node)
+		}
+		binding.onRendered()
+	}
+
+	/**
+		* @ignore
+		* @param   {Object} Node
+		* @param   {Object} model
+		* @param   {Object} Binding
+		* @returns {Node}
+		*/
+	static createNode(parentNode, model, binding) {
+		const { tagName, children = [] } = model
+		const node = parentNode.ownerDocument.createElement(tagName)
+		Object.keys(model).filter(property => Core.PROPERTIES.includes(property) === false).forEach(function(property) {
+			node[property] = model[property]
+		})
+		for (const child of children) {
+			if(Object.prototype.hasOwnProperty.call(child, "model") === true) {
+				let childBinding
+				if(Object.prototype.hasOwnProperty.call(child, "binding") === true) {
+					childBinding = new child.binding({...binding.properties, ...child.properties})
+					if(Object.prototype.hasOwnProperty.call(child, "identifier") === true) {
+						binding.identifier[child.identifier] = childBinding
+					}
+				}
+				binding.run(child.model, { parentNode: node, binding: childBinding })
+			} else {
+				const childNode = Core.createNode(parentNode, child, binding)
+				node.appendChild(childNode)
+			}
+		}
+		if(Object.prototype.hasOwnProperty.call(model, "identifier") === true) {
+			binding.identifier[model.identifier] = node
+		}
+		return node
+	}
+
+}
+
+export default Core
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sun Oct 03 2021 11:31:11 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>
