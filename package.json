@@ -1,6 +1,6 @@
 {
 	"name": "domodel",
-	"version": "1.0.33",
+	"version": "1.0.34",
 	"main": "index.js",
 	"type": "module",
 	"description": "Front-end library",
