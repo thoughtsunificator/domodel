@@ -1,4 +1,4 @@
-# domodel ![release-workflow](https://github.com/thoughtsunificator/domodel/actions/workflows/test.yml/badge.svg)
+# domodel ![test-workflow](https://github.com/thoughtsunificator/domodel/actions/workflows/test.yml/badge.svg)
 
 domodel is library that organizes the user interface into models (look) and bindings (behavior) it follows the principle of separation of concerns, domodel also introduce elements of the observable pattern for the communication between the different parts of the user interface.
 
