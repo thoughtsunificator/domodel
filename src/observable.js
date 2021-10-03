@@ -12,15 +12,20 @@ class Observable {
 	/**
 	 * @param  {string}   eventName
 	 * @param  {Function} callback
+	 * @param  {boolean}  [unshift=false]
 	 * @returns {Listener}
 	 * @example observable.listen("myEvent", message => { console.log(message) })
 	 */
-	listen(eventName, callback) {
+	listen(eventName, callback, unshift = false) {
 		if(!Array.isArray(this._listeners[eventName])) {
 			this._listeners[eventName] = []
 		}
 		const listener = new Listener(this, eventName, callback)
-		this._listeners[eventName].push(listener)
+		if(unshift) {
+			this._listeners[eventName].unshift(listener)
+		} else {
+			this._listeners[eventName].push(listener)
+		}
 		return listener
 	}
 
