@@ -1,8 +1,6 @@
-/** @module event-listener */
-
 /**
-	* @memberof: module:event-listener
-	*/
+ * @global
+ */
 class EventListener {
 
 	/**

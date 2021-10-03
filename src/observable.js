@@ -1,9 +1,7 @@
-/** @module observable */
-
 import Listener from "./listener.js"
 
 /**
- * @memberof module:observable
+ * @global
  */
 class Observable {
 

@@ -1,14 +1,15 @@
 import Core from "./core.js"
+import EventListener from "./event-listener.js"
 
 /**
- * @memberof module:binding
+ * @global
  */
 class Binding {
 
 	/**
 	 * @param {object} properties
 	 */
-	constructor(properties) {
+	constructor(properties, eventListener = new EventListener()) {
 		this._identifier = {}
 		this._properties = { ...properties }
 		this._parent = null
@@ -16,6 +17,7 @@ class Binding {
 		this._model = null
 		this._children = []
 		this._listeners = []
+		this._eventListener = eventListener
 	}
 
 	/**
@@ -44,6 +46,13 @@ class Binding {
 	 */
 	get model() {
 		return this._model
+	}
+
+	/**
+	 * @type {EventListener}
+	 */
+	get eventListener() {
+		return this._eventListener
 	}
 
 	/**

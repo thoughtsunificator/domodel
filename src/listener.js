@@ -1,7 +1,5 @@
-/** @module listener */
-
 /**
- * @memberof module:listener
+ * @global
  */
 class Listener {
 

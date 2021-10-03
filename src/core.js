@@ -1,12 +1,13 @@
-/** @module core */
-
 import Binding from "./binding.js"
 
 /**
- * @memberof module:core
+ * @global
  */
 class Core {
 
+	/**
+	 * @readonly
+	 */
 	static PROPERTIES = [
 		"tagName",
 		"children",
@@ -15,9 +16,16 @@ class Core {
 		"binding",
 		"properties"
 	]
+
 	/**
 		* @readonly
-		* @enum {number}
+		* @property RouterType {RouterType}
+		* @property Method {Method}
+		* @property Method.APPEND_CHILD  {string}
+		* @property Method.INSERT_BEFORE {string}
+		* @property Method.REPLACE_NODE  {string}
+		* @property Method.WRAP_NODE     {string}
+		* @property Method.PREPEND       {string}
 		*/
 	static METHOD = {
 		APPEND_CHILD: "APPEND_CHILD",
@@ -31,21 +39,19 @@ class Core {
 		* @param {Object}        model
 		* @param {Object}        properties
 		* @param {Element}       properties.parentNode
-		* @param {number}        [properties.method=METHOD.APPEND_CHILD]
+		* @param {Method}        [properties.method=METHOD.APPEND_CHILD]
 		* @param {Binding}       [properties.binding=Binding]
-		* @param {EventListener} [properties.eventListener]
 		*/
-	static run(model, { parentNode, method = Core.METHOD.APPEND_CHILD, binding = new Binding(), eventListener } = {}) {
+	static run(model, { parentNode, method = Core.METHOD.APPEND_CHILD, binding = new Binding() } = {}) {
 		const node = Core.createNode(parentNode, model, binding)
 		binding._root = node
 		binding._model = model
-		if(eventListener) {
-			eventListener._binding = binding
-			for (const name of Object.getOwnPropertyNames(Object.getPrototypeOf(eventListener))) {
-				const method = eventListener[name];
-				if ((method instanceof Function) && method !== eventListener.constructor) {
-					binding.listen(eventListener.observable, name, method)
-				}
+		binding.eventListener._binding = binding
+		const eventListeners = Object.getOwnPropertyNames(Object.getPrototypeOf(binding.eventListener))
+		for (const name of eventListeners) {
+			const method = binding.eventListener[name]
+			if ((method instanceof Function) && method !== binding.eventListener.constructor) {
+				binding.listen(binding.eventListener.observable, name, method.bind(binding.eventListener))
 			}
 		}
 		binding.onCreated()

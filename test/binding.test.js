@@ -1,7 +1,7 @@
 import assert from 'assert'
 import { JSDOM } from 'jsdom'
 
-import { Core, Binding, Observable } from '../index.js'
+import { Core, Binding, Observable, EventListener } from '../index.js'
 
 const virtualDOM = new JSDOM()
 const { document } = virtualDOM.window
@@ -35,8 +35,27 @@ describe("binding", function () {
 		assert.deepEqual(binding.identifier, {})
 		assert.deepEqual(binding._children, [])
 		assert.deepEqual(binding._listeners, [])
+		assert.throws(() => {
+			binding.properties = {}
+		})
+		assert.throws(() => {
+			binding.identifier = {}
+		})
+		assert.throws(() => {
+			binding.root = {}
+		})
+		assert.throws(() => {
+			binding.model = {}
+		})
+		assert.throws(() => {
+			binding.eventListener = {}
+		})
 		const binding_ = new Binding({ test: "a" })
 		assert.deepEqual(binding_.properties, { test: "a" })
+		const eventListener = new EventListener()
+		const binding__ = new Binding({ a: "b" }, eventListener)
+		assert.deepEqual(binding__.properties, { a: "b" })
+		assert.strictEqual(binding__.eventListener, eventListener)
 	})
 
 	it("run", () => {
