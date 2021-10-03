@@ -1,5 +1,6 @@
 import Core from "./core.js"
 import EventListener from "./event-listener.js"
+import Observable from "./observable.js"
 
 /**
  * @global
@@ -8,8 +9,9 @@ class Binding {
 
 	/**
 	 * @param {object} properties
+	 * @param {EventListener} [eventListener=new EventListener(new Observable())]
 	 */
-	constructor(properties, eventListener = new EventListener()) {
+	constructor(properties, eventListener = new EventListener(new Observable())) {
 		this._identifier = {}
 		this._properties = { ...properties }
 		this._parent = null
@@ -21,27 +23,31 @@ class Binding {
 	}
 
 	/**
-	 * @return {object}
+	 * @readonly
+	 * @type {object}
 	 */
 	get identifier() {
 		return this._identifier
 	}
 
 	/**
-	 * @return {object}
+	 * @readonly
+	 * @type {object}
 	 */
 	get properties() {
 		return this._properties
 	}
 
 	/**
-	 * @return {Node}
+	 * @readonly
+	 * @type {Node}
 	 */
 	get root() {
 		return this._root
 	}
 
 	/**
+	 * @readonly
 	 * @type {object}
 	 */
 	get model() {
@@ -49,6 +55,7 @@ class Binding {
 	}
 
 	/**
+	 * @readonly
 	 * @type {EventListener}
 	 */
 	get eventListener() {
@@ -56,9 +63,10 @@ class Binding {
 	}
 
 	/**
-	 * @param  {string}   eventName
-	 * @param  {Function} callback
+	 * @param   {string}   eventName
+	 * @param   {Function} callback
 	 * @returns {Listener}
+	 * @example binding.listen(observable, "myEvent", message => console.log(message))
 	 */
 	listen(observable, eventName, callback) {
 		const listener = observable.listen(eventName, callback)
@@ -66,6 +74,14 @@ class Binding {
 		return listener
 	}
 
+	/**
+	 * @param   {object}  model
+	 * @param   {object}  properties
+	 * @param   {Element} [properties.parentNode=this.root]
+	 * @param   {Binding} properties.binding
+	 * @param   {Method}  [properties.method=Core.METHOD.APPEND_CHILD]
+	 * @example binding.run(Model, { binding: new Binding() })
+	 */
 	run(model, properties) {
 		properties.binding._parent = this
 		this._children.push(properties.binding)

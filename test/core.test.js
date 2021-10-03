@@ -10,7 +10,8 @@ beforeEach(() => {
 	document.body.innerHTML = ""
 })
 
-describe("core", function () {
+describe("Core", function () {
+
 	it("model", () => {
 		Core.run({
 			tagName: "div",
@@ -223,11 +224,11 @@ describe("core", function () {
 
 	it("modelProperty", (done) => {
 
-		const MyModel = {
+		const Model = {
 			tagName: "div"
 		}
 
-		const MyModel2 = {
+		const Model2 = {
 			tagName: "div",
 			children: [
 				{
@@ -249,12 +250,12 @@ describe("core", function () {
 				tagName: "div",
 				children: [
 					{
-						model: MyModel,
+						model: Model,
 						binding: MyBinding
 					},
 					{
 						identifier: "model1",
-						model: MyModel,
+						model: Model,
 						binding: Binding
 					},
 					{
@@ -262,13 +263,13 @@ describe("core", function () {
 						children: [
 							{
 								identifier: "model2",
-								model: MyModel2,
+								model: Model2,
 								binding: Binding
 							},
 						]
 					},
 					{
-						model: MyModel,
+						model: Model,
 						binding: MyBinding
 					}
 				]
@@ -290,6 +291,16 @@ describe("core", function () {
 	it("eventListener", () => {
 
 		let _this
+		let myEvent2 = 0
+		let myEvent3 = 0
+
+		class MyBinding extends Binding {
+
+			constructor(properties) {
+				super(properties, new MyEventListener(properties. observable))
+			}
+
+		}
 
 		class MyEventListener extends EventListener {
 
@@ -297,35 +308,38 @@ describe("core", function () {
 				_this = this
 			}
 
-			myEvent2() {}
+			myEvent2() {
+				myEvent2++
+			}
 
-			myEvent3() {}
+			myEvent3() {
+				myEvent3++
+			}
 
 		}
 
-		const myObservable = new Observable()
+		const observable = new Observable()
 
-		const eventListener = new MyEventListener(myObservable)
-
-		const binding = new Binding({ myObservable }, eventListener)
-
-		assert.strictEqual(binding.eventListener, eventListener)
+		const binding = new MyBinding({ observable })
 
 		Core.run({
 			tagName: "div",
 		}, { parentNode: document.body, binding })
 
-		assert.strictEqual(myObservable._listeners["myEvent"].length, 1)
-		assert.strictEqual(eventListener.binding, binding)
-		assert.strictEqual(myObservable._listeners["myEvent"][0]._callback.prototype, eventListener.myEvent.prototype)
-		assert.strictEqual(myObservable._listeners["myEvent2"].length, 1)
-		assert.strictEqual(myObservable._listeners["myEvent2"][0]._callback.prototype, eventListener.myEvent2.prototype)
-		assert.strictEqual(myObservable._listeners["myEvent3"].length, 1)
-		assert.strictEqual(myObservable._listeners["myEvent3"][0]._callback.prototype, eventListener.myEvent3.prototype)
+		assert.strictEqual(observable._listeners["myEvent"].length, 1)
+		assert.strictEqual(observable._listeners["myEvent"][0]._callback.prototype, binding.eventListener.myEvent.prototype)
+		assert.strictEqual(observable._listeners["myEvent2"].length, 1)
+		assert.strictEqual(observable._listeners["myEvent2"][0]._callback.prototype, binding.eventListener.myEvent2.prototype)
+		assert.strictEqual(observable._listeners["myEvent3"].length, 1)
+		assert.strictEqual(observable._listeners["myEvent3"][0]._callback.prototype, binding.eventListener.myEvent3.prototype)
 		assert.strictEqual(binding._listeners.length, 3)
-		assert.strictEqual(Object.keys(myObservable._listeners).length, 3)
-		myObservable.emit("myEvent")
-		assert.strictEqual(_this, eventListener)
+		assert.strictEqual(Object.keys(observable._listeners).length, 3)
+		observable.emit("myEvent")
+		assert.strictEqual(_this, binding.eventListener)
+		observable.emit("myEvent2")
+		observable.emit("myEvent3")
+		assert.strictEqual(myEvent2, 1)
+		assert.strictEqual(myEvent3, 1)
 
 
 	})

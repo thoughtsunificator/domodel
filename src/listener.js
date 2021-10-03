@@ -4,9 +4,9 @@
 class Listener {
 
 	/**
-	 * @param   {Observable}   observable
-	 * @param   {string}       eventName
-	 * @param   {Function}     callback
+	 * @param {Observable}   observable
+	 * @param {string}       eventName
+	 * @param {Function}     callback
 	 */
 	constructor(observable, eventName, callback) {
 		this._observable = observable
@@ -15,7 +15,7 @@ class Listener {
 	}
 
 	/**
-	 * Remove listener
+	 * Remove a listener
 	 */
 	remove() {
 		this._observable.removeListener(this)

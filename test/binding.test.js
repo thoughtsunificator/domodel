@@ -20,7 +20,7 @@ const MyBinding3 = class extends Binding {
 	}
 }
 
-describe("binding", function () {
+describe("Binding", function () {
 
 	beforeEach(() => {
 		observable = new Observable()

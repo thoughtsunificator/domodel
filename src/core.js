@@ -19,13 +19,13 @@ class Core {
 
 	/**
 		* @readonly
-		* @property RouterType {RouterType}
 		* @property Method {Method}
 		* @property Method.APPEND_CHILD  {string}
 		* @property Method.INSERT_BEFORE {string}
 		* @property Method.REPLACE_NODE  {string}
 		* @property Method.WRAP_NODE     {string}
 		* @property Method.PREPEND       {string}
+		* @example Core.Method.APPEND_CHILD
 		*/
 	static METHOD = {
 		APPEND_CHILD: "APPEND_CHILD",
@@ -39,20 +39,16 @@ class Core {
 		* @param {Object}        model
 		* @param {Object}        properties
 		* @param {Element}       properties.parentNode
-		* @param {Method}        [properties.method=METHOD.APPEND_CHILD]
-		* @param {Binding}       [properties.binding=Binding]
+		* @param {Binding}       [properties.binding=new Binding()]
+		* @param {Method}        [properties.method=Core.METHOD.APPEND_CHILD]
+		* @example Core.run(Model, { parentNode: document.body, binding: new Binding() })
 		*/
-	static run(model, { parentNode, method = Core.METHOD.APPEND_CHILD, binding = new Binding() } = {}) {
+	static run(model, { parentNode, binding = new Binding(), method = Core.METHOD.APPEND_CHILD } = {}) {
 		const node = Core.createNode(parentNode, model, binding)
 		binding._root = node
 		binding._model = model
-		binding.eventListener._binding = binding
-		const eventListeners = Object.getOwnPropertyNames(Object.getPrototypeOf(binding.eventListener))
-		for (const name of eventListeners) {
-			const method = binding.eventListener[name]
-			if ((method instanceof Function) && method !== binding.eventListener.constructor) {
-				binding.listen(binding.eventListener.observable, name, method.bind(binding.eventListener))
-			}
+		for (const name of Object.getOwnPropertyNames(Object.getPrototypeOf(binding.eventListener)).filter(name => name !== "constructor" && typeof binding.eventListener[name] === "function")) {
+			binding.listen(binding.eventListener.observable, name, () => binding.eventListener[name]())
 		}
 		binding.onCreated()
 		if (method === Core.METHOD.APPEND_CHILD) {

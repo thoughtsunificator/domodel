@@ -197,6 +197,7 @@ import { EventListener } from "domodel"
 
 class ModelEventListener extends EventListener {
 
+	// This method will be registered as an event listener to "this.observable" with the name "message" 
 	message(data) {
 		console.log(data)
 	} 
@@ -211,8 +212,13 @@ export default ModelEventListener
 ``src/model/model.binding.js``
 ```javascript
 import { Observable } from "domodel"
+import ModelEventListener from "/model/model.event.js"
 
 class ModelBinding {
+
+	constructor(properties) {
+		super(properties, new ModelEventListener(properties.observable))
+	}
 
 	onCreated() {
 
@@ -234,12 +240,10 @@ import { Core, Observable } from "domodel"
 
 import Model from "/model/model.js"
 import ModelBinding from "/model/model.binding.js"
-import ModelEventListener from "/model/model.event.js"
 
 const observable = new Observable()
-const binding = new ModelBinding({ observable }, new ModelEventListener(observable))
 
-Core.run(Model, { parentNode: document.body, binding })
+Core.run(Model, { parentNode: document.body, binding: new ModelBinding({ observable }) })
 
 
 ```
