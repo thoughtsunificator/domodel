@@ -27,7 +27,7 @@ jobs:
           prerelease: false
 
       - name: Merge release
-      - uses: everlytic/branch-merge@1.1.2
+        uses: everlytic/branch-merge@1.1.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           source_ref: ${{ github.ref }}
