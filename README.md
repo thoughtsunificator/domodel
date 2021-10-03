@@ -51,7 +51,7 @@ Notice the ``textContent`` property. You can set any [Element](https://developer
 
 The ``identifier`` property is a model property.
 
-* The term model will later be used to refer to both the model and its [Binding](https://thoughtsunificator.github.io/domodel/module-binding-Binding.html) to make it simpler.
+* The term model will later be used to refer to both the model and its [Binding](https://thoughtsunificator.github.io/domodel/Binding.html) to make it simpler.
 
 #### Properties
 <a href="#model-properties"></a>
@@ -64,8 +64,8 @@ However custom properties are not set on the Element as they have unusual behavi
 - ``children`` - Array - To add children to an Element
 - ``identifier`` - String - To save and retrieve a Node
 - ``model`` - Model - Specify the model that should be ran
-- ``binding`` - [Binding](https://thoughtsunificator.github.io/domodel/module-binding-Binding.html) - Specify the [Binding](https://thoughtsunificator.github.io/domodel/module-binding-Binding.html) to use when running the model (``model`` property must be set)
-- ``properties`` - Object - Specify the arguments to pass along the [Binding](https://thoughtsunificator.github.io/domodel/module-binding-Binding.html) (``binding`` property must be set)
+- ``binding`` - [Binding](https://thoughtsunificator.github.io/domodel/Binding.html) - Specify the [Binding](https://thoughtsunificator.github.io/domodel/Binding.html) to use when running the model (``model`` property must be set)
+- ``properties`` - Object - Specify the arguments to pass along the [Binding](https://thoughtsunificator.github.io/domodel/Binding.html) (``binding`` property must be set)
 
 ### Binding
 
@@ -74,7 +74,7 @@ Now that we're able to create models, we will learn how to turn them into a real
 #### Properties
 <a href="#binding-properties"></a>
 
-These properties are available from within the the instance of a [Binding](https://thoughtsunificator.github.io/domodel/module-binding-Binding.html):
+These properties are available from within the the instance of a [Binding](https://thoughtsunificator.github.io/domodel/Binding.html):
 
 - ``properties`` Properties passed along when instancing a binding.
 - ``root`` Root [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) of your model.
@@ -84,7 +84,7 @@ These properties are available from within the the instance of a [Binding](https
 
 We might know how to define models however they wont simply be added by defining them alone.
 
-For that we have to use the [Core.run](https://thoughtsunificator.github.io/domodel/module-core.html#~run) method provided by DOModel object and tell it how to add them.
+For that we have to use the [Core.run](https://thoughtsunificator.github.io/domodel/Core.html#.run) method provided by DOModel object and tell it how to add them.
 
 The first step in your project would be create or edit the ``main.js`` in ``src/``, it is the entry point module that is defined in your ``index.html``.
 
@@ -106,7 +106,7 @@ window.addEventListener("load", function() { // we only add the
 
 ````
 
-Now that your ``main.js`` is created let's create your first [Binding](https://thoughtsunificator.github.io/domodel/module-binding-Binding.html):
+Now that your ``main.js`` is created let's create your first [Binding](https://thoughtsunificator.github.io/domodel/Binding.html):
 
 ``src/model/model.binding.js``
 ````javascript
@@ -149,7 +149,7 @@ They are available through ``Core.METHOD``.
 
 ### Observable
 
-An [Observable](https://thoughtsunificator.github.io/domodel/module-observable.Observable.html) is a way for your models to communicate with each other.
+An [Observable](https://thoughtsunificator.github.io/domodel/observable.Observable.html) is a way for your models to communicate with each other.
 
 ``src/object/observable-example.js``
 ```javascript
@@ -170,26 +170,28 @@ export default ExampleObservable
 
 #### Listening to events
 
+##### EventListener
+
+Here we associate the EventListener with our current binding and give it ``properties.observable`` as the observable to register the events to.
+
 ``src/model/model.binding.js``
 ```javascript
-import { Observable } from "domodel"
+import { Observable, Binding } from "domodel"
 
-class ModelBinding {
+import ModelEventListener from "/model/model.event.js"
 
-	onCreated() {
+class ModelBinding extends Binding {
 
-		const observable = new Observable()
-
-		this.listen(observable, "message", data => {
-			console.log(data)
-		})
-
+	constructor(properties) {
+		super(properties, new ModelEventListener(properties.observable))
 	}
 
 }
 
 export default ModelBinding 
 ```
+
+Any method inside an ``EventListener`` is automatically registered as a listener to the given observable.
 
 ``src/model/model.event.js``
 ```javascript
@@ -207,18 +209,38 @@ class ModelEventListener extends EventListener {
 export default ModelEventListener 
 ```
 
+##### observable.listen
+
+This is useful is you want to listen to other parts your UI.
+
+``src/model/model.binding.js``
+```javascript
+import { Observable, Binding } from "domodel"
+
+class ModelBinding extends Binding {
+
+	onCreated() {
+
+		const observable = new Observable()
+
+		observable.listen("message", data => {
+			console.log(data)
+		})
+
+	}
+
+}
+
+export default ModelBinding 
+```
+
 #### Emitting events
 
 ``src/model/model.binding.js``
 ```javascript
 import { Observable } from "domodel"
-import ModelEventListener from "/model/model.event.js"
 
-class ModelBinding {
-
-	constructor(properties) {
-		super(properties, new ModelEventListener(properties.observable))
-	}
+class ModelBinding extends Binding {
 
 	onCreated() {
 
@@ -311,7 +333,7 @@ export default {
 
 In some cases, you might want to reference to a nested model.
 
-You can use the ``identifier``, it will reference to an instance of the [Binding](https://thoughtsunificator.github.io/domodel/module-binding-Binding.html) you specified, in this case it would be an instance of ``ModelBinding``.
+You can use the ``identifier``, it will reference to an instance of the [Binding](https://thoughtsunificator.github.io/domodel/Binding.html) you specified, in this case it would be an instance of ``ModelBinding``.
 
 Accessing the reference:
 
