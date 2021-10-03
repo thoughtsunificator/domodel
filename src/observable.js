@@ -13,6 +13,7 @@ class Observable {
 	 * @param  {string}   eventName
 	 * @param  {Function} callback
 	 * @returns {Listener}
+	 * @example observable.listen("myEvent", message => { console.log(message) })
 	 */
 	listen(eventName, callback) {
 		if(!Array.isArray(this._listeners[eventName])) {
@@ -33,6 +34,7 @@ class Observable {
 	/**
 	 * @param  {string} eventName
 	 * @param  {*} 			args
+	 * @example observable.emit("myEvent", "Hello World")
 	 */
 	emit(eventName, args) {
 		if(Array.isArray(this._listeners[eventName])) {
