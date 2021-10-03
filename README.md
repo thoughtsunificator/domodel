@@ -212,6 +212,7 @@ export default ModelEventListener
 ``src/model/model.binding.js``
 ```javascript
 import { Observable } from "domodel"
+import ModelEventListener from "/model/model.event.js"
 
 class ModelBinding {
 
@@ -239,7 +240,6 @@ import { Core, Observable } from "domodel"
 
 import Model from "/model/model.js"
 import ModelBinding from "/model/model.binding.js"
-import ModelEventListener from "/model/model.event.js"
 
 const observable = new Observable()
 
