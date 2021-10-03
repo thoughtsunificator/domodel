@@ -34,7 +34,7 @@ jobs:
           commit-message: Auto Pull Request
           title: Auto merge release
           body: Auto-created Pull Request
-          branch: develop
+          branch: master
           base: develop
 
       - name: Enable Pull Request Automerge
