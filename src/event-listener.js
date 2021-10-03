@@ -5,11 +5,9 @@ class EventListener {
 
 	/**
 	 * @param {Observable} observable
-	 * @param {Binding} binding
 	 */
-	constructor(observable, binding) {
+	constructor(observable) {
 		this._observable = observable
-		this._binding = binding
 	}
 
 	/**

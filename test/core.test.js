@@ -297,7 +297,7 @@ describe("Core", function () {
 		class MyBinding extends Binding {
 
 			constructor(properties) {
-				super(properties, new MyEventListener(properties. observable))
+				super(properties, new MyEventListener(properties.observable))
 			}
 
 		}
