@@ -92,7 +92,7 @@
 <p>Notice the <code>textContent</code> property. You can set any <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a> properties in this fashion.</p>
 <p>The <code>identifier</code> property is a model property.</p>
 <ul>
-<li>The term model will later be used to refer to both the model and its <a href="https://thoughtsunificator.github.io/domodel/module-binding-Binding.html">Binding</a> to make it simpler.</li>
+<li>The term model will later be used to refer to both the model and its <a href="https://thoughtsunificator.github.io/domodel/Binding.html">Binding</a> to make it simpler.</li>
 </ul>
 <h4 id="properties">Properties</h4>
 <p><a href="#model-properties"></a></p>
@@ -103,14 +103,14 @@
 <li><code>children</code> - Array - To add children to an Element</li>
 <li><code>identifier</code> - String - To save and retrieve a Node</li>
 <li><code>model</code> - Model - Specify the model that should be ran</li>
-<li><code>binding</code> - <a href="https://thoughtsunificator.github.io/domodel/module-binding-Binding.html">Binding</a> - Specify the <a href="https://thoughtsunificator.github.io/domodel/module-binding-Binding.html">Binding</a> to use when running the model (<code>model</code> property must be set)</li>
-<li><code>properties</code> - Object - Specify the arguments to pass along the <a href="https://thoughtsunificator.github.io/domodel/module-binding-Binding.html">Binding</a> (<code>binding</code> property must be set)</li>
+<li><code>binding</code> - <a href="https://thoughtsunificator.github.io/domodel/Binding.html">Binding</a> - Specify the <a href="https://thoughtsunificator.github.io/domodel/Binding.html">Binding</a> to use when running the model (<code>model</code> property must be set)</li>
+<li><code>properties</code> - Object - Specify the arguments to pass along the <a href="https://thoughtsunificator.github.io/domodel/Binding.html">Binding</a> (<code>binding</code> property must be set)</li>
 </ul>
 <h3 id="binding">Binding</h3>
 <p>Now that we're able to create models, we will learn how to turn them into a real <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a> ?</p>
 <h4 id="properties-2">Properties</h4>
 <p><a href="#binding-properties"></a></p>
-<p>These properties are available from within the the instance of a <a href="https://thoughtsunificator.github.io/domodel/module-binding-Binding.html">Binding</a>:</p>
+<p>These properties are available from within the the instance of a <a href="https://thoughtsunificator.github.io/domodel/Binding.html">Binding</a>:</p>
 <ul>
 <li><code>properties</code> Properties passed along when instancing a binding.</li>
 <li><code>root</code> Root <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a> of your model.</li>
@@ -118,7 +118,7 @@
 </ul>
 <h4 id="adding-models-to-the-dom-and-managing-them">Adding models to the DOM and managing them</h4>
 <p>We might know how to define models however they wont simply be added by defining them alone.</p>
-<p>For that we have to use the <a href="https://thoughtsunificator.github.io/domodel/module-core.html#~run">Core.run</a> method provided by DOModel object and tell it how to add them.</p>
+<p>For that we have to use the <a href="https://thoughtsunificator.github.io/domodel/Core.html#.run">Core.run</a> method provided by DOModel object and tell it how to add them.</p>
 <p>The first step in your project would be create or edit the <code>main.js</code> in <code>src/</code>, it is the entry point module that is defined in your <code>index.html</code>.</p>
 <p><code>src/main.js</code></p>
 <pre class="prettyprint source lang-javascript"><code>import { Core } from &quot;domodel&quot; // first we're importing DOModel
@@ -136,7 +136,7 @@ window.addEventListener(&quot;load&quot;, function() { // we only add the
 })
 
 </code></pre>
-<p>Now that your <code>main.js</code> is created let's create your first <a href="https://thoughtsunificator.github.io/domodel/module-binding-Binding.html">Binding</a>:</p>
+<p>Now that your <code>main.js</code> is created let's create your first <a href="https://thoughtsunificator.github.io/domodel/Binding.html">Binding</a>:</p>
 <p><code>src/model/model.binding.js</code></p>
 <pre class="prettyprint source lang-javascript"><code>import { Core } from &quot;domodel&quot; // you could import the library again and run yet another model inside this model
 
@@ -180,7 +180,7 @@ export default ModelBinding
 </ul>
 <p>They are available through <code>Core.METHOD</code>.</p>
 <h3 id="observable">Observable</h3>
-<p>An <a href="https://thoughtsunificator.github.io/domodel/module-observable.Observable.html">Observable</a> is a way for your models to communicate with each other.</p>
+<p>An <a href="https://thoughtsunificator.github.io/domodel/observable.Observable.html">Observable</a> is a way for your models to communicate with each other.</p>
 <p><code>src/object/observable-example.js</code></p>
 <pre class="prettyprint source lang-javascript"><code>import { Observable } from &quot;domodel&quot;
 
@@ -197,25 +197,24 @@ class ExampleObservable extends Observable {
 export default ExampleObservable 
 </code></pre>
 <h4 id="listening-to-events">Listening to events</h4>
+<h5 id="eventlistener">EventListener</h5>
+<p>Here we associate the EventListener with our current binding and give it <code>properties.observable</code> as the observable to register the events to.</p>
 <p><code>src/model/model.binding.js</code></p>
-<pre class="prettyprint source lang-javascript"><code>import { Observable } from &quot;domodel&quot;
+<pre class="prettyprint source lang-javascript"><code>import { Observable, Binding } from &quot;domodel&quot;
 
-class ModelBinding {
+import ModelEventListener from &quot;/model/model.event.js&quot;
 
-	onCreated() {
+class ModelBinding extends Binding {
 
-		const observable = new Observable()
-
-		this.listen(observable, &quot;message&quot;, data => {
-			console.log(data)
-		})
-
+	constructor(properties) {
+		super(properties, new ModelEventListener(properties.observable))
 	}
 
 }
 
 export default ModelBinding 
 </code></pre>
+<p>Any method inside an <code>EventListener</code> is automatically registered as a listener to the given observable.</p>
 <p><code>src/model/model.event.js</code></p>
 <pre class="prettyprint source lang-javascript"><code>import { EventListener } from &quot;domodel&quot;
 
@@ -230,16 +229,32 @@ class ModelEventListener extends EventListener {
 
 export default ModelEventListener 
 </code></pre>
+<h5 id="observable.listen">observable.listen</h5>
+<p>This is useful is you want to listen to other parts your UI.</p>
+<p><code>src/model/model.binding.js</code></p>
+<pre class="prettyprint source lang-javascript"><code>import { Observable, Binding } from &quot;domodel&quot;
+
+class ModelBinding extends Binding {
+
+	onCreated() {
+
+		const observable = new Observable()
+
+		observable.listen(&quot;message&quot;, data => {
+			console.log(data)
+		})
+
+	}
+
+}
+
+export default ModelBinding 
+</code></pre>
 <h4 id="emitting-events">Emitting events</h4>
 <p><code>src/model/model.binding.js</code></p>
 <pre class="prettyprint source lang-javascript"><code>import { Observable } from &quot;domodel&quot;
-import ModelEventListener from &quot;/model/model.event.js&quot;
 
-class ModelBinding {
-
-	constructor(properties) {
-		super(properties, new ModelEventListener(properties.observable))
-	}
+class ModelBinding extends Binding {
 
 	onCreated() {
 
@@ -315,7 +330,7 @@ export default {
 </code></pre>
 <h5 id="referencing-to-nested-models">Referencing to nested models</h5>
 <p>In some cases, you might want to reference to a nested model.</p>
-<p>You can use the <code>identifier</code>, it will reference to an instance of the <a href="https://thoughtsunificator.github.io/domodel/module-binding-Binding.html">Binding</a> you specified, in this case it would be an instance of <code>ModelBinding</code>.</p>
+<p>You can use the <code>identifier</code>, it will reference to an instance of the <a href="https://thoughtsunificator.github.io/domodel/Binding.html">Binding</a> you specified, in this case it would be an instance of <code>ModelBinding</code>.</p>
 <p>Accessing the reference:</p>
 <p><code>src/model/model.binding.js</code></p>
 <pre class="prettyprint source lang-javascript"><code>import { Binding } from &quot;domodel&quot; // you could import the library again and run yet another model inside this model
@@ -360,7 +375,7 @@ export default class
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sun Oct 03 2021 12:05:29 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sun Oct 03 2021 18:15:59 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
