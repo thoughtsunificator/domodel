@@ -86,9 +86,13 @@ describe("Binding", function () {
 	it("listen", () => {
 		const binding = new MyBinding3()
 		Core.run(MyModel, { binding, parentNode: document.body })
+		function myCallback() {}
 		assert.strictEqual(observable._listeners["test"].length, 1)
+		binding.listen(observable, "test", myCallback, true)
+		assert.strictEqual(observable._listeners["test"].length, 2)
 		assert.strictEqual(observable._listeners["test2"].length, 1)
-		assert.strictEqual(binding._listeners.length, 2)
+		assert.strictEqual(observable._listeners["test"][0].callback, myCallback)
+		assert.strictEqual(binding._listeners.length, 3)
 		assert.strictEqual(Object.keys(observable._listeners).length, 2)
 	})
 

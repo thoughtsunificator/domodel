@@ -16,11 +16,12 @@ describe("Observable", function () {
 		observable.listen("test1", () => path.push("second"))
 		observable.listen("test2", () => path.push("third"))
 		observable_.listen("test1", () => path.push("fourth"))
+		observable.listen("test1", () => path.push("zero"), true)
 		observable.emit("test1")
 		observable.emit("test2")
 		observable_.emit("test1")
 		assert.deepEqual(path, [
-			"first", "second", "third", "fourth"
+			"zero", "first", "second", "third", "fourth"
 		])
 	})
 

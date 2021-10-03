@@ -63,14 +63,19 @@ class Binding {
 	}
 
 	/**
-	 * @param   {string}   eventName
-	 * @param   {Function} callback
+	 * @param {string}   eventName
+	 * @param {Function} callback
+	 * @param {boolean}  [unshift=false]
 	 * @returns {Listener}
 	 * @example binding.listen(observable, "myEvent", message => console.log(message))
 	 */
-	listen(observable, eventName, callback) {
-		const listener = observable.listen(eventName, callback)
-		this._listeners.push(listener)
+	listen(observable, eventName, callback, unshift = false) {
+		const listener = observable.listen(eventName, callback, unshift)
+		if(unshift) {
+			this._listeners.unshift(listener)
+		} else {
+			this._listeners.push(listener)
+		}
 		return listener
 	}
 

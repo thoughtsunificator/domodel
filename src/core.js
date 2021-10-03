@@ -48,7 +48,7 @@ class Core {
 		binding._root = node
 		binding._model = model
 		for (const name of Object.getOwnPropertyNames(Object.getPrototypeOf(binding.eventListener)).filter(name => name !== "constructor" && typeof binding.eventListener[name] === "function")) {
-			binding.listen(binding.eventListener.observable, name, binding.eventListener[name].bind(binding))
+			binding.listen(binding.eventListener.observable, name, binding.eventListener[name].bind(binding), true)
 		}
 		binding.onCreated()
 		if (method === Core.METHOD.APPEND_CHILD) {
