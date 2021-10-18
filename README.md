@@ -22,7 +22,7 @@ Let's take this model for example:
 
 ```javascript
 export default {
-	tagName: "button"
+  tagName: "button"
 }
 ```
 
@@ -36,14 +36,14 @@ A model with children:
 
 ```javascript
 export default {
-	tagName: "div",
-	children: [
-		{
-			tagName: "h2",
-			identifier: "headline",
-			textContent: "Unveil a new world"
-		}
-	]
+  tagName: "div",
+  children: [
+    {
+      tagName: "h2",
+      identifier: "headline",
+      textContent: "Unveil a new world"
+    }
+  ]
 }
 ```
 
@@ -97,11 +97,11 @@ import Model from "./model/model.js" // the model we defined earlier, it is our 
 import ModelBinding from ".model/model.binding.js" // the binding we will be defining .bindinglater
 
 window.addEventListener("load", function() { // we only add the
-	Core.run(Model, {
-		method: Core.METHOD.APPEND_CHILD, // This is the default method and will append the children to the given parentNode.
-		binding: new ModelBinding({ myProp: "hello :)" }), // we're creating an instance of our binding (which extends the Binding class provided by DOModel) and passing it to the run method.
-		parentNode: document.body // the node we want to target in this case it is the node where we want to append the child node using appendChild.
-	})
+  Core.run(Model, {
+    method: Core.METHOD.APPEND_CHILD, // This is the default method and will append the children to the given parentNode.
+    binding: new ModelBinding({ myProp: "hello :)" }), // we're creating an instance of our binding (which extends the Binding class provided by DOModel) and passing it to the run method.
+    parentNode: document.body // the node we want to target in this case it is the node where we want to append the child node using appendChild.
+  })
 })
 
 ```
@@ -114,19 +114,19 @@ import { Core } from "domodel" // you could import the library again and run yet
 
 class ModelBinding extends Binding {
 
-	onCreated() {
-		const { myProp } = this.properties
+  onCreated() {
+    const { myProp } = this.properties
 
-		console.log(myProp) // prints hello
+    console.log(myProp) // prints hello
 
-		// access your model root element through the root property: this.root
+    // access your model root element through the root property: this.root
 
-		// access identifier with the identifier property:
+    // access identifier with the identifier property:
 
-		this.identifier.headline.textContent = "The new world was effectively unveiled before my very eyes"
+    this.identifier.headline.textContent = "The new world was effectively unveiled before my very eyes"
 
-		// you might even run another model inside this model
-	}
+    // you might even run another model inside this model
+  }
 
 }
 
@@ -157,11 +157,11 @@ import { Observable } from "domodel"
 
 class ExampleObservable extends Observable {
 
-	// you can have a constructor
+  // you can have a constructor
 
-	// getter setter...
+  // getter setter...
 
-	// or even better, you could have methods.
+  // or even better, you could have methods.
 
 }
 
@@ -182,9 +182,9 @@ import ModelEventListener from "/model/model.event.js"
 
 class ModelBinding extends Binding {
 
-	constructor(properties) {
-		super(properties, new ModelEventListener(properties.observable))
-	}
+  constructor(properties) {
+    super(properties, new ModelEventListener(properties.observable))
+  }
 
 }
 
@@ -199,9 +199,9 @@ import { EventListener } from "domodel"
 
 class ModelEventListener extends EventListener {
 
-	message(data) {
-		console.log(data)
-	} 
+  message(data) {
+    console.log(data)
+  } 
 
 }
 
@@ -218,15 +218,15 @@ import { Observable, Binding } from "domodel"
 
 class ModelBinding extends Binding {
 
-	onCreated() {
+  onCreated() {
 
-		const observable = new Observable()
+    const observable = new Observable()
 
-		observable.listen("message", data => {
-			console.log(data)
-		})
+    observable.listen("message", data => {
+      console.log(data)
+    })
 
-	}
+  }
 
 }
 
@@ -241,13 +241,13 @@ import { Observable } from "domodel"
 
 class ModelBinding extends Binding {
 
-	onCreated() {
+  onCreated() {
 
-		const observable = new Observable()
+    const observable = new Observable()
 
-		observable.emit("message", { /* data go here */ })
+    observable.emit("message", { /* data go here */ })
 
-	}
+  }
 
 }
 
@@ -280,10 +280,10 @@ Core.run(Model, { parentNode: document.body, binding: new ModelBinding({ observa
 import Model from "./model.js"
 
 export default {
-	tagName: "div",
-	children: [
-		Model
-	]
+  tagName: "div",
+  children: [
+    Model
+  ]
 }
 ```
 
@@ -298,9 +298,9 @@ import ModelBinding from "./model.binding.js"
 
 class extends Binding {
 
-	onCreated() {
-		Core.run(Model, { parentNode: this.root, binding: new ModelBinding() })
-	}
+  onCreated() {
+    Core.run(Model, { parentNode: this.root, binding: new ModelBinding() })
+  }
 
 }
 
@@ -315,16 +315,16 @@ import Model from "./model.js"
 import ModelBinding from "./model.binding.js"
 
 export default {
-	tagName: "div",
-	children: [
-		{
-			model: Model,
-			binding: ModelBinding // optionnal
-			properties: {} // optionnal
-			identifier: "model" // optionnal
-			// Any other property is not handled.
-		}
-	]
+  tagName: "div",
+  children: [
+    {
+      model: Model,
+      binding: ModelBinding // optionnal
+      properties: {} // optionnal
+      identifier: "model" // optionnal
+      // Any other property is not handled.
+    }
+  ]
 }
 ```
 
@@ -343,14 +343,14 @@ import { Binding } from "domodel" // you could import the library again and run 
 
 class extends Binding {
 
-	onCreated() {
+  onCreated() {
 
-		console.log(this.identifier.model) // returns an instance of ModelBinding
-		// You could access the root element of the nested model through:
-		console.log(this.identifier.model.root)
-		// and much more...
+    console.log(this.identifier.model) // returns an instance of ModelBinding
+    // You could access the root element of the nested model through:
+    console.log(this.identifier.model.root)
+    // and much more...
 
-	}
+  }
 
 }
 
