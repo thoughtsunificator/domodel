@@ -1,6 +1,6 @@
 # domodel
 
-domodel is library that organizes the user interface into models (look) and bindings (behavior) it follows the principle of separation of concerns, domodel also introduce elements of the observable pattern for the communication between the different parts of the user interface.
+domodel is front-end library that organizes the user interface into models (look) and bindings (behavior) it follows the principle of separation of concerns, it also introduce elements of the observable pattern for the communication between the different parts of the user interface.
 
 ## Getting started
 
@@ -199,7 +199,6 @@ import { EventListener } from "domodel"
 
 class ModelEventListener extends EventListener {
 
-	// This method will be registered as an event listener to "this.observable" with the name "message" 
 	message(data) {
 		console.log(data)
 	} 
@@ -211,7 +210,7 @@ export default ModelEventListener
 
 ##### observable.listen
 
-This is useful is you want to listen to other parts your UI.
+Useful when you want to listen to other parts your UI.
 
 ``src/model/model.binding.js``
 ```javascript
