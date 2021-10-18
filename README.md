@@ -20,21 +20,21 @@ A model is a JSON representation of a DOM [Element](https://developer.mozilla.or
 
 Let's take this model for example:
 
-````javascript
+```javascript
 export default {
 	tagName: "button"
 }
-````
+```
 
 That would the equivalent of:
 
-````javascript
+```javascript
 const button = document.createElement("button")
-````
+```
 
 A model with children:
 
-````javascript
+```javascript
 export default {
 	tagName: "div",
 	children: [
@@ -45,7 +45,7 @@ export default {
 		}
 	]
 }
-````
+```
 
 Notice the ``textContent`` property. You can set any [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) properties in this fashion.
 
@@ -89,7 +89,7 @@ For that we have to use the [Core.run](https://thoughtsunificator.github.io/domo
 The first step in your project would be create or edit the ``main.js`` in ``src/``, it is the entry point module that is defined in your ``index.html``.
 
 ``src/main.js``
-````javascript
+```javascript
 import { Core } from "domodel" // first we're importing DOModel
 
 // It is preferred to use camel case and suffix model names with "Model" and binding names with "Binding" such as: RectangleModel and RectangleBinding.
@@ -104,12 +104,12 @@ window.addEventListener("load", function() { // we only add the
 	})
 })
 
-````
+```
 
 Now that your ``main.js`` is created let's create your first [Binding](https://thoughtsunificator.github.io/domodel/Binding.html):
 
 ``src/model/model.binding.js``
-````javascript
+```javascript
 import { Core } from "domodel" // you could import the library again and run yet another model inside this model
 
 class ModelBinding extends Binding {
@@ -131,19 +131,19 @@ class ModelBinding extends Binding {
 }
 
 export default ModelBinding 
-````
+```
 
 ### Methods
 
-- ```APPEND_CHILD``` Append your model to ``parentNode``
+- ``APPEND_CHILD`` Append your model to ``parentNode``
 
-- ```INSERT_BEFORE``` Insert your model before ``parentNode``
+- ``INSERT_BEFORE`` Insert your model before ``parentNode``
 
-- ```REPLACE_NODE``` Replace ``parentNode`` with your model
+- ``REPLACE_NODE`` Replace ``parentNode`` with your model
 
-- ```WRAP_NODE``` Wrap ``parentNode`` inside your model
+- ``WRAP_NODE`` Wrap ``parentNode`` inside your model
 
-- ```PREPEND``` Insert your model before the first child of ``parentNode``
+- ``PREPEND`` Insert your model before the first child of ``parentNode``
 
 They are available through ``Core.METHOD``.
 
@@ -276,7 +276,7 @@ Core.run(Model, { parentNode: document.body, binding: new ModelBinding({ observa
 ##### Method 1 - Import
 
 ``src/model/application.js``
-````javascript
+```javascript
 import Model from "./model.js"
 
 export default {
@@ -285,12 +285,12 @@ export default {
 		Model
 	]
 }
-````
+```
 
 ##### Method 2 - Binding
 
 ``src/model/application.binding.js``
-````javascript
+```javascript
 import { Core } from "domodel"
 
 import Model from "./model.js"
@@ -305,12 +305,12 @@ class extends Binding {
 }
 
 export default class 
-````
+```
 
 ##### Method 3 - "model" property
 
 ``src/model/application.js``
-````javascript
+```javascript
 import Model from "./model.js"
 import ModelBinding from "./model.binding.js"
 
@@ -326,7 +326,7 @@ export default {
 		}
 	]
 }
-````
+```
 
 ##### Referencing to nested models
 
@@ -338,7 +338,7 @@ Accessing the reference:
 
 ``src/model/model.binding.js``
 
-````javascript
+```javascript
 import { Binding } from "domodel" // you could import the library again and run yet another model inside this model
 
 class extends Binding {
@@ -355,7 +355,7 @@ class extends Binding {
 }
 
 export default class 
-````
+```
 
 ### API
 
