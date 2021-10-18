@@ -71,7 +71,7 @@
 <p>A model is a JSON representation of a DOM <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a>.</p>
 <p>Let's take this model for example:</p>
 <pre class="prettyprint source lang-javascript"><code>export default {
-	tagName: &quot;button&quot;
+  tagName: &quot;button&quot;
 }
 </code></pre>
 <p>That would the equivalent of:</p>
@@ -79,14 +79,14 @@
 </code></pre>
 <p>A model with children:</p>
 <pre class="prettyprint source lang-javascript"><code>export default {
-	tagName: &quot;div&quot;,
-	children: [
-		{
-			tagName: &quot;h2&quot;,
-			identifier: &quot;headline&quot;,
-			textContent: &quot;Unveil a new world&quot;
-		}
-	]
+  tagName: &quot;div&quot;,
+  children: [
+    {
+      tagName: &quot;h2&quot;,
+      identifier: &quot;headline&quot;,
+      textContent: &quot;Unveil a new world&quot;
+    }
+  ]
 }
 </code></pre>
 <p>Notice the <code>textContent</code> property. You can set any <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a> properties in this fashion.</p>
@@ -128,11 +128,11 @@ import Model from &quot;./model/model.js&quot; // the model we defined earlier, 
 import ModelBinding from &quot;.model/model.binding.js&quot; // the binding we will be defining .bindinglater
 
 window.addEventListener(&quot;load&quot;, function() { // we only add the
-	Core.run(Model, {
-		method: Core.METHOD.APPEND_CHILD, // This is the default method and will append the children to the given parentNode.
-		binding: new ModelBinding({ myProp: &quot;hello :)&quot; }), // we're creating an instance of our binding (which extends the Binding class provided by DOModel) and passing it to the run method.
-		parentNode: document.body // the node we want to target in this case it is the node where we want to append the child node using appendChild.
-	})
+  Core.run(Model, {
+    method: Core.METHOD.APPEND_CHILD, // This is the default method and will append the children to the given parentNode.
+    binding: new ModelBinding({ myProp: &quot;hello :)&quot; }), // we're creating an instance of our binding (which extends the Binding class provided by DOModel) and passing it to the run method.
+    parentNode: document.body // the node we want to target in this case it is the node where we want to append the child node using appendChild.
+  })
 })
 
 </code></pre>
@@ -142,19 +142,19 @@ window.addEventListener(&quot;load&quot;, function() { // we only add the
 
 class ModelBinding extends Binding {
 
-	onCreated() {
-		const { myProp } = this.properties
+  onCreated() {
+    const { myProp } = this.properties
 
-		console.log(myProp) // prints hello
+    console.log(myProp) // prints hello
 
-		// access your model root element through the root property: this.root
+    // access your model root element through the root property: this.root
 
-		// access identifier with the identifier property:
+    // access identifier with the identifier property:
 
-		this.identifier.headline.textContent = &quot;The new world was effectively unveiled before my very eyes&quot;
+    this.identifier.headline.textContent = &quot;The new world was effectively unveiled before my very eyes&quot;
 
-		// you might even run another model inside this model
-	}
+    // you might even run another model inside this model
+  }
 
 }
 
@@ -186,11 +186,11 @@ export default ModelBinding
 
 class ExampleObservable extends Observable {
 
-	// you can have a constructor
+  // you can have a constructor
 
-	// getter setter...
+  // getter setter...
 
-	// or even better, you could have methods.
+  // or even better, you could have methods.
 
 }
 
@@ -206,9 +206,9 @@ import ModelEventListener from &quot;/model/model.event.js&quot;
 
 class ModelBinding extends Binding {
 
-	constructor(properties) {
-		super(properties, new ModelEventListener(properties.observable))
-	}
+  constructor(properties) {
+    super(properties, new ModelEventListener(properties.observable))
+  }
 
 }
 
@@ -220,9 +220,9 @@ export default ModelBinding
 
 class ModelEventListener extends EventListener {
 
-	message(data) {
-		console.log(data)
-	} 
+  message(data) {
+    console.log(data)
+  } 
 
 }
 
@@ -235,15 +235,15 @@ export default ModelEventListener
 
 class ModelBinding extends Binding {
 
-	onCreated() {
+  onCreated() {
 
-		const observable = new Observable()
+    const observable = new Observable()
 
-		observable.listen(&quot;message&quot;, data => {
-			console.log(data)
-		})
+    observable.listen(&quot;message&quot;, data => {
+      console.log(data)
+    })
 
-	}
+  }
 
 }
 
@@ -255,13 +255,13 @@ export default ModelBinding
 
 class ModelBinding extends Binding {
 
-	onCreated() {
+  onCreated() {
 
-		const observable = new Observable()
+    const observable = new Observable()
 
-		observable.emit(&quot;message&quot;, { /* data go here */ })
+    observable.emit(&quot;message&quot;, { /* data go here */ })
 
-	}
+  }
 
 }
 
@@ -286,10 +286,10 @@ Core.run(Model, { parentNode: document.body, binding: new ModelBinding({ observa
 <pre class="prettyprint source lang-javascript"><code>import Model from &quot;./model.js&quot;
 
 export default {
-	tagName: &quot;div&quot;,
-	children: [
-		Model
-	]
+  tagName: &quot;div&quot;,
+  children: [
+    Model
+  ]
 }
 </code></pre>
 <h5 id="method-2---binding">Method 2 - Binding</h5>
@@ -301,9 +301,9 @@ import ModelBinding from &quot;./model.binding.js&quot;
 
 class extends Binding {
 
-	onCreated() {
-		Core.run(Model, { parentNode: this.root, binding: new ModelBinding() })
-	}
+  onCreated() {
+    Core.run(Model, { parentNode: this.root, binding: new ModelBinding() })
+  }
 
 }
 
@@ -315,16 +315,16 @@ export default class
 import ModelBinding from &quot;./model.binding.js&quot;
 
 export default {
-	tagName: &quot;div&quot;,
-	children: [
-		{
-			model: Model,
-			binding: ModelBinding // optionnal
-			properties: {} // optionnal
-			identifier: &quot;model&quot; // optionnal
-			// Any other property is not handled.
-		}
-	]
+  tagName: &quot;div&quot;,
+  children: [
+    {
+      model: Model,
+      binding: ModelBinding // optionnal
+      properties: {} // optionnal
+      identifier: &quot;model&quot; // optionnal
+      // Any other property is not handled.
+    }
+  ]
 }
 </code></pre>
 <h5 id="referencing-to-nested-models">Referencing to nested models</h5>
@@ -336,14 +336,14 @@ export default {
 
 class extends Binding {
 
-	onCreated() {
+  onCreated() {
 
-		console.log(this.identifier.model) // returns an instance of ModelBinding
-		// You could access the root element of the nested model through:
-		console.log(this.identifier.model.root)
-		// and much more...
+    console.log(this.identifier.model) // returns an instance of ModelBinding
+    // You could access the root element of the nested model through:
+    console.log(this.identifier.model.root)
+    // and much more...
 
-	}
+  }
 
 }
 
@@ -374,7 +374,7 @@ export default class
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Mon Oct 18 2021 19:53:16 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Mon Oct 18 2021 20:04:29 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
