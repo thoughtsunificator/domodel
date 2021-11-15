@@ -43,7 +43,7 @@ class Observable {
 	 */
 	emit(eventName, args) {
 		if(Array.isArray(this._listeners[eventName])) {
-			for (const listener of this._listeners[eventName]) {
+			for (const listener of this._listeners[eventName].slice()) {
 				listener.callback(args)
 			}
 		}
