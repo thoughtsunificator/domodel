@@ -8,11 +8,11 @@ describe("Model", () => {
 		const customModel = {}
 		const properties = { foo: "bar" }
 		const model = new Model(customModel, Binding, properties)
-		assert.strictEqual(model.model, customModel)
+		assert.strictEqual(model.definition, customModel)
 		assert.strictEqual(model.binding, Binding)
 		assert.strictEqual(model.properties, properties)
 		assert.throws(() => {
-			model.model = ""
+			model.definition = ""
 			model.binding = ""
 		})
 	})
