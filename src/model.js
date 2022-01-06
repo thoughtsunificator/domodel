@@ -6,10 +6,12 @@ class Model {
 	/**
 	 * @param {object} model
 	 * @param {Binding} binding
+	 * @param {object}  properties
 	 */
-	constructor(model, binding) {
+	constructor(model, binding, properties) {
 		this._model = model
 		this._binding = binding
+		this._properties = properties
 	}
 
 	/**
@@ -26,6 +28,14 @@ class Model {
 	 */
 	get binding() {
 		return this._binding
+	}
+
+	/**
+	 * @readonly
+	 * @type {object}
+	 */
+	get properties() {
+		return this._properties
 	}
 
 }

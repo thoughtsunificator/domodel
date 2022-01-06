@@ -6,9 +6,11 @@ describe("Model", () => {
 
 	it("instance", () => {
 		const customModel = {}
-		const model = new Model(customModel, Binding)
+		const properties = { foo: "bar" }
+		const model = new Model(customModel, Binding, properties)
 		assert.strictEqual(model.model, customModel)
 		assert.strictEqual(model.binding, Binding)
+		assert.strictEqual(model.properties, properties)
 		assert.throws(() => {
 			model.model = ""
 			model.binding = ""
