@@ -1,15 +1,15 @@
 /**
  * @global
  */
-class Model {
+class definition {
 
 	/**
-	 * @param {object} model
+	 * @param {object} definition
 	 * @param {Binding} binding
 	 * @param {object}  properties
 	 */
-	constructor(model, binding, properties) {
-		this._model = model
+	constructor(definition, binding, properties) {
+		this._definition = definition
 		this._binding = binding
 		this._properties = properties
 	}
@@ -18,8 +18,8 @@ class Model {
 	 * @readonly
 	 * @type {object}
 	 */
-	get model() {
-		return this._model
+	get definition() {
+		return this._definition
 	}
 
 	/**
@@ -40,4 +40,4 @@ class Model {
 
 }
 
-export default Model
+export default definition
