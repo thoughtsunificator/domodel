@@ -1,14 +1,16 @@
+import { Binding } from "../index.js"
+
 /**
  * @global
  */
-class definition {
+class Model {
 
 	/**
 	 * @param {object} definition
-	 * @param {Binding} binding
-	 * @param {object}  properties
+	 * @param {Binding} [binding=Binding]
+	 * @param {object}  [properties={}]
 	 */
-	constructor(definition, binding, properties) {
+	constructor(definition, binding = Binding, properties = {}) {
 		this._definition = definition
 		this._binding = binding
 		this._properties = properties
@@ -40,4 +42,4 @@ class definition {
 
 }
 
-export default definition
+export default Model
