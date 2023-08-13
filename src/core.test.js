@@ -34,6 +34,21 @@ test("modelWithMultipleTargets", (t) => {
 	t.is(t.context.document.body.innerHTML, '<div class="content0"><div class="simplemodel">My first simple model</div></div><div class="content1"><div class="simplemodel">My first simple model</div></div><div class="content2"><div class="simplemodel">My first simple model</div></div>')
 })
 
+test("model fragment", (t) => {
+	Core.run({
+		children: [{
+			tagName: "div",
+			className: "test1",
+			textContent: "TestText1"
+		},{
+			tagName: "div",
+			className: "test2",
+			textContent: "TestText2"
+		}]
+	}, { binding: new Binding(), parentNode: t.context.document.body })
+	t.is(t.context.document.body.innerHTML, '<div class="test1">TestText1</div><div class="test2">TestText2</div>')
+})
+
 test("childNodes", (t) => {
 	Core.run({
 		tagName: "div",
