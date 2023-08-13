@@ -14,7 +14,7 @@
 	"author": "Romain Lebesle <oss@thoughtsunificator.me> (https://thoughtsunificator.me)",
 	"license": "MIT",
 	"scripts": {
-		"test": "mocha",
+		"test": "ava",
 		"generate-docs": "jsdoc --configure .jsdoc.json --verbose"
 	},
 	"devDependencies": {
@@ -22,6 +22,6 @@
 		"eslint": "^7.28.0",
 		"jsdoc": "^3.6.6",
 		"jsdom": "^13.2.0",
-		"mocha": "^9.1.1"
+		"ava": "^5.3.1"
 	}
 }
