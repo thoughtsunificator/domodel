@@ -47,6 +47,21 @@ export default {
 }
 ```
 
+You can ommit the ``tagName`` and you will get a fragment document model:
+
+
+```javascript
+export default {
+  children: [
+    {
+      tagName: "h2",
+      identifier: "headline",
+      textContent: "Unveil a new world"
+    }
+  ]
+}
+```
+
 Notice the ``textContent`` property. You can set any [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) properties in this fashion.
 
 The ``identifier`` property is a model property.

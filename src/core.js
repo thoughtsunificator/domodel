@@ -75,7 +75,12 @@ class Core {
 		*/
 	static createNode(parentNode, model, binding) {
 		const { tagName, children = [] } = model
-		const node = parentNode.ownerDocument.createElement(tagName)
+		let node
+		if(tagName) {
+			node = parentNode.ownerDocument.createElement(tagName)
+		} else {
+			node = parentNode.ownerDocument.createDocumentFragment()
+		}
 		Object.keys(model).filter(property => Core.PROPERTIES.includes(property) === false).forEach(function(property) {
 			node[property] = model[property]
 		})
