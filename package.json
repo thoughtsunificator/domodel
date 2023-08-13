@@ -15,12 +15,13 @@
 	"license": "MIT",
 	"scripts": {
 		"test": "ava",
+		"eslint": "eslint src/**",
 		"prepare": "husky install",
 		"generate-docs": "jsdoc --configure .jsdoc.json --verbose"
 	},
 	"devDependencies": {
 		"docdash": "^1.2.0",
-		"eslint": "^7.28.0",
+		"eslint": "^8.47.0",
 		"jsdoc": "^3.6.6",
 		"jsdom": "^13.2.0",
 		"husky": "^8.0.3",
