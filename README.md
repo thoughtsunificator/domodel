@@ -47,8 +47,15 @@ export default {
 }
 ```
 
-You can ommit the ``tagName`` and you will get a fragment document model:
+Notice the ``textContent`` property. You can set any [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) properties in this fashion.
 
+The ``identifier`` property is a model property.
+
+Note: The term model will later be used to refer to both the model and its [Binding](https://thoughtsunificator.github.io/domodel/Binding.html) to make it simpler.
+
+
+
+You can also ommit the ``tagName`` and you will get a fragment document model:
 
 ```javascript
 export default {
@@ -62,11 +69,14 @@ export default {
 }
 ```
 
-Notice the ``textContent`` property. You can set any [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) properties in this fashion.
+That would the equivalent of:
 
-The ``identifier`` property is a model property.
-
-* The term model will later be used to refer to both the model and its [Binding](https://thoughtsunificator.github.io/domodel/Binding.html) to make it simpler.
+```javascript
+const documentFragment = document.createDocumentFragment()
+const h2 = document.createElement("h2")
+// ...
+documentFragment.appendChild(h2)
+```
 
 #### Properties
 <a href="#model-properties"></a>
