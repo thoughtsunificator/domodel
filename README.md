@@ -54,7 +54,6 @@ The ``identifier`` property is a model property.
 Note: The term model will later be used to refer to both the model and its [Binding](https://thoughtsunificator.github.io/domodel/Binding.html) to make it simpler.
 
 
-
 You can also ommit the ``tagName`` and you will get a fragment document model:
 
 ```javascript
@@ -89,8 +88,8 @@ However custom properties are not set on the Element as they have unusual behavi
 - ``children`` - Array - To add children to an Element
 - ``identifier`` - String - To save and retrieve a Node
 - ``model`` - Model - Specify the model that should be ran
-- ``binding`` - [Binding](https://thoughtsunificator.github.io/domodel/Binding.html) - Specify the [Binding](https://thoughtsunificator.github.io/domodel/Binding.html) to use when running the model (``model`` property must be set)
-- ``properties`` - Object - Specify the arguments to pass along the [Binding](https://thoughtsunificator.github.io/domodel/Binding.html) (``binding`` property must be set)
+- ``binding`` - [Binding](http://domodel.unificator.me/Binding.html) - Specify the [Binding](http://domodel.unificator.me/Binding.html) to use when running the model (``model`` property must be set)
+- ``properties`` - Object - Specify the arguments to pass along the [Binding](http://domodel.unificator.me/Binding.html) (``binding`` property must be set)
 
 ### Binding
 
@@ -99,7 +98,7 @@ Now that we're able to create models, we will learn how to turn them into a real
 #### Properties
 <a href="#binding-properties"></a>
 
-These properties are available from within the the instance of a [Binding](https://thoughtsunificator.github.io/domodel/Binding.html):
+These properties are available from within the the instance of a [Binding](http://domodel.unificator.me/Binding.html):
 
 - ``properties`` Properties passed along when instancing a binding.
 - ``root`` Root [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) of your model.
@@ -109,7 +108,7 @@ These properties are available from within the the instance of a [Binding](https
 
 We might know how to define models however they wont simply be added by defining them alone.
 
-For that we have to use the [Core.run](https://thoughtsunificator.github.io/domodel/Core.html#.run) method provided by DOModel object and tell it how to add them.
+For that we have to use the [Core.run](http://domodel.unificator.me/Core.html#.run) method provided by DOModel object and tell it how to add them.
 
 The first step in your project would be create or edit the ``main.js`` in ``src/``, it is the entry point module that is defined in your ``index.html``.
 
@@ -131,7 +130,7 @@ window.addEventListener("load", function() { // we only add the
 
 ```
 
-Now that your ``main.js`` is created let's create your first [Binding](https://thoughtsunificator.github.io/domodel/Binding.html):
+Now that your ``main.js`` is created let's create your first [Binding](http://domodel.unificator.me/Binding.html):
 
 ``src/model/model.binding.js``
 ```javascript
@@ -174,7 +173,7 @@ They are available through ``Core.METHOD``.
 
 ### Observable
 
-An [Observable](https://thoughtsunificator.github.io/domodel/observable.Observable.html) is a way for your models to communicate with each other.
+An [Observable](http://domodel.unificator.me/observable.Observable.html) is a way for your models to communicate with each other.
 
 ``src/object/observable-example.js``
 ```javascript
@@ -357,7 +356,7 @@ export default {
 
 In some cases, you might want to reference to a nested model.
 
-You can use the ``identifier``, it will reference to an instance of the [Binding](https://thoughtsunificator.github.io/domodel/Binding.html) you specified, in this case it would be an instance of ``ModelBinding``.
+You can use the ``identifier``, it will reference to an instance of the [Binding](http://domodel.unificator.me/Binding.html) you specified, in this case it would be an instance of ``ModelBinding``.
 
 Accessing the reference:
 
@@ -384,7 +383,7 @@ export default class
 
 ### API
 
-See [https://thoughtsunificator.github.io/domodel](https://thoughtsunificator.github.io/domodel).
+See [http://domodel.unificator.me](http://domodel.unificator.me).
 
 ## Extensions
 
