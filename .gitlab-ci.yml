@@ -1,0 +1,21 @@
+image: node:lts
+
+stages:
+  - test
+  - pages
+
+test:
+  stage: test
+  script:
+    - npm ci
+    - npm test
+
+pages:
+  stage: pages
+  script:
+    - npm install
+    - npm run generate-docs -- -d public
+
+  artifacts:
+    paths:
+      - public
