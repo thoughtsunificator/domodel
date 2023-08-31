@@ -32,6 +32,15 @@ jobs:
       - name: Generate documentation
         run: npm run generate-docs
 
+      - name: nojekyll
+        run: touch docs/.nojekyll
+
+      - name: CNAME
+        run: echo "$CNAME" > docs/CNAME
+        if: env.CNAME != ''
+        env:
+          CNAME: ${{ vars.CNAME }}
+
       - name: Push documentation
         uses: s0/git-publish-subdir-action@develop
         env:
