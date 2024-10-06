@@ -91,26 +91,13 @@ However custom properties are not set on the Element as they have unusual behavi
 - ``binding`` - [Binding](http://domodel.unificator.me/Binding.html) - Specify the [Binding](http://domodel.unificator.me/Binding.html) to use when running the model (``model`` property must be set)
 - ``properties`` - Object - Specify the arguments to pass along the [Binding](http://domodel.unificator.me/Binding.html) (``binding`` property must be set)
 
-### Binding
-
-Now that we're able to create models, we will learn how to turn them into a real [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) ?
-
-#### Properties
-<a href="#binding-properties"></a>
-
-These properties are available from within the the instance of a [Binding](http://domodel.unificator.me/Binding.html):
-
-- ``properties`` Properties passed along when instancing a binding.
-- ``root`` Root [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) of your model.
-- ``identifier`` Hosts individual [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) previously tagged in the definition of the model (see [Model properties](#model-properties)).
+### Core
 
 #### Adding models to the DOM and managing them
 
-We might know how to define models however they wont simply be added by defining them alone.
+To add a model to the DOM we use the [Core.run](http://domodel.unificator.me/Core.html#.run) method provided by the DOModel module and tell it how to add them.
 
-For that we have to use the [Core.run](http://domodel.unificator.me/Core.html#.run) method provided by DOModel object and tell it how to add them.
-
-The first step in your project would be create or edit the ``main.js`` in ``src/``, it is the entry point module that is defined in your ``index.html``.
+Create a ``main.js`` in ``src/``, it is the entry point module that is defined in your ``index.html`` :
 
 ``src/main.js``
 ```javascript
@@ -130,7 +117,9 @@ window.addEventListener("load", function() { // we only add the
 
 ```
 
-Now that your ``main.js`` is created let's create your first [Binding](http://domodel.unificator.me/Binding.html):
+The documentation for Core.run is available [here](https://domodel.unificator.me/Core.html#.run).
+
+The associated [Binding](http://domodel.unificator.me/Binding.html):
 
 ``src/model/model.binding.js``
 ```javascript
@@ -157,7 +146,7 @@ class ModelBinding extends Binding {
 export default ModelBinding 
 ```
 
-### Methods
+#### Methods
 
 - ``APPEND_CHILD`` Append your model to ``parentNode``
 
@@ -170,6 +159,51 @@ export default ModelBinding
 - ``PREPEND`` Insert your model before the first child of ``parentNode``
 
 They are available through ``Core.METHOD``.
+
+### Binding
+
+Binding are the behavior part of our model it is required for any model to have a [Binding](http://domodel.unificator.me/Binding.html) with it.
+
+#### Hooks
+
+The following are hooks that your binding can implement to add specific behaviors to your models.
+
+#### onCreated
+
+This method will be called before your model is added to the DOM.
+
+#### onRendered
+
+This method will be called immediately after your model is added to the DOM.
+
+#### Properties
+<a href="#binding-properties"></a>
+
+The following properties are made available from within the the instance of a [Binding](http://domodel.unificator.me/Binding.html):
+
+- ``properties`` Properties passed along when instancing a binding.
+- ``root`` Root [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) of your model.
+- ``identifier`` Hosts individual [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) previously tagged in the definition of the model (see [Model properties](#model-properties)).
+
+### Methods
+
+#### listen
+
+Listen to a given observable event. See [Binding.listen](https://domodel.unificator.me/Binding.html#listen).
+
+> This is the preferred method for listening to events as any listener will be cleaned up when your binding is removed using [Binding.remove](https://domodel.unificator.me/Binding.html#remove).
+
+#### run
+
+Synonym of [Core.run](https://domodel.unificator.me/Core.html#.run), with the differences being :
+
+- ```parentNode``` property is set to the current binding root element.
+- All ```properties``` within Binding.properties are inherited by the child model.
+- A hierarchy of models is created using Binding._children. Making it easier to remove them using [Binding.remove](https://domodel.unificator.me/Binding.html#remove).
+
+#### remove
+
+Remove the model from the DOM. See [Binding.remove](https://domodel.unificator.me/Binding.html#remove).
 
 ### Observable
 
