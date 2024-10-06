@@ -41,6 +41,7 @@ class Core {
 		* @param {Element}       properties.parentNode
 		* @param {Binding}       [properties.binding=new Binding()]
 		* @param {Method}        [properties.method=Core.METHOD.APPEND_CHILD]
+		* @returns {Node}
 		* @example Core.run(Model, { parentNode: document.body, binding: new Binding() })
 		*/
 	static run(model, { parentNode, binding = new Binding(), method = Core.METHOD.APPEND_CHILD } = {}) {
@@ -64,6 +65,7 @@ class Core {
 			parentNode.prepend(node)
 		}
 		binding.onRendered()
+		return node
 	}
 
 	/**

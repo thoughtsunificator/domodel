@@ -85,6 +85,7 @@ class Binding {
 	 * @param   {Element} [properties.parentNode=this.root]
 	 * @param   {Binding} properties.binding
 	 * @param   {Method}  [properties.method=Core.METHOD.APPEND_CHILD]
+	 * @param   {str}     [identifier]
 	 * @example binding.run(Model, { binding: new Binding() })
 	 */
 	run(model, properties) {
@@ -94,9 +95,15 @@ class Binding {
 			...this.properties,
 			...properties.binding.properties
 		}
-		Core.run(model, { parentNode: this.root, ...properties })
+		const node = Core.run(model, { parentNode: this.root, ...properties })
+		if(properties.identifier) {
+			this.identifier[properties.identifier] = node
+		}
 	}
 
+	/**
+	 * Remove the model and all its children from the DOM and clean up any listener associated with them.
+	 */
 	remove() {
 		const listeners = this._listeners.slice()
 		for(const listener of listeners) {

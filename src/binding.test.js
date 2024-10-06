@@ -80,6 +80,18 @@ test("Binding run", (t) => {
 	t.is(childBinding._children.length, 0)
 })
 
+test("Binding run identifier", (t) => {
+	const MyBinding = class extends Binding {
+		onCreated() {
+			this.run(MyModel, { identifier: "test", binding: new MyBinding2() })
+		}
+	}
+	const MyBinding2 = class extends Binding {}
+	const binding = new MyBinding({ property: "a" })
+	Core.run(MyModel, { binding, parentNode: t.context.document.body })
+	t.is(binding.identifier["test"], binding.root.childNodes[0])
+})
+
 test("Binding listen", (t) => {
 	const binding = new MyBinding3({ observable: t.context.observable })
 	Core.run(MyModel, { binding, parentNode: t.context.document.body })
