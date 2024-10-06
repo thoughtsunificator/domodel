@@ -29,7 +29,7 @@
     
     <input type="text" id="nav-search" placeholder="Search" />
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Binding.html">Binding</a><ul class='methods'><li data-type='method'><a href="Binding.html#listen">listen</a></li><li data-type='method'><a href="Binding.html#run">run</a></li><li data-type='method'><a href="Binding.html#onCreated">onCreated</a></li><li data-type='method'><a href="Binding.html#onRendered">onRendered</a></li></ul></li><li><a href="Core.html">Core</a><ul class='methods'><li data-type='method'><a href="Core.html#.run">run</a></li></ul></li><li><a href="EventListener.html">EventListener</a></li><li><a href="Listener.html">Listener</a><ul class='methods'><li data-type='method'><a href="Listener.html#remove">remove</a></li></ul></li><li><a href="Model.html">Model</a></li><li><a href="Observable.html">Observable</a><ul class='methods'><li data-type='method'><a href="Observable.html#listen">listen</a></li><li data-type='method'><a href="Observable.html#removeListener">removeListener</a></li><li data-type='method'><a href="Observable.html#emit">emit</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Binding.html">Binding</a><ul class='methods'><li data-type='method'><a href="Binding.html#listen">listen</a></li><li data-type='method'><a href="Binding.html#run">run</a></li><li data-type='method'><a href="Binding.html#remove">remove</a></li><li data-type='method'><a href="Binding.html#onCreated">onCreated</a></li><li data-type='method'><a href="Binding.html#onRendered">onRendered</a></li></ul></li><li><a href="Core.html">Core</a><ul class='methods'><li data-type='method'><a href="Core.html#.run">run</a></li></ul></li><li><a href="EventListener.html">EventListener</a></li><li><a href="Listener.html">Listener</a><ul class='methods'><li data-type='method'><a href="Listener.html#remove">remove</a></li></ul></li><li><a href="Model.html">Model</a></li><li><a href="Observable.html">Observable</a><ul class='methods'><li data-type='method'><a href="Observable.html#listen">listen</a></li><li data-type='method'><a href="Observable.html#removeListener">removeListener</a></li><li data-type='method'><a href="Observable.html#emit">emit</a></li></ul></li></ul>
 </nav>
 
 <div id="main">
@@ -89,7 +89,10 @@
   ]
 }
 </code></pre>
-<p>You can ommit the <code>tagName</code> and you will get a fragment document model:</p>
+<p>Notice the <code>textContent</code> property. You can set any <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a> properties in this fashion.</p>
+<p>The <code>identifier</code> property is a model property.</p>
+<p>Note: The term model will later be used to refer to both the model and its <a href="https://thoughtsunificator.github.io/domodel/Binding.html">Binding</a> to make it simpler.</p>
+<p>You can also ommit the <code>tagName</code> and you will get a fragment document model:</p>
 <pre class="prettyprint source lang-javascript"><code>export default {
   children: [
     {
@@ -100,11 +103,12 @@
   ]
 }
 </code></pre>
-<p>Notice the <code>textContent</code> property. You can set any <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a> properties in this fashion.</p>
-<p>The <code>identifier</code> property is a model property.</p>
-<ul>
-<li>The term model will later be used to refer to both the model and its <a href="https://thoughtsunificator.github.io/domodel/Binding.html">Binding</a> to make it simpler.</li>
-</ul>
+<p>That would the equivalent of:</p>
+<pre class="prettyprint source lang-javascript"><code>const documentFragment = document.createDocumentFragment()
+const h2 = document.createElement(&quot;h2&quot;)
+// ...
+documentFragment.appendChild(h2)
+</code></pre>
 <h4 id="properties">Properties</h4>
 <p><a href="#model-properties"></a></p>
 <p>Most properties listed in your model are defined at the Element level.</p>
@@ -114,23 +118,13 @@
 <li><code>children</code> - Array - To add children to an Element</li>
 <li><code>identifier</code> - String - To save and retrieve a Node</li>
 <li><code>model</code> - Model - Specify the model that should be ran</li>
-<li><code>binding</code> - <a href="https://thoughtsunificator.github.io/domodel/Binding.html">Binding</a> - Specify the <a href="https://thoughtsunificator.github.io/domodel/Binding.html">Binding</a> to use when running the model (<code>model</code> property must be set)</li>
-<li><code>properties</code> - Object - Specify the arguments to pass along the <a href="https://thoughtsunificator.github.io/domodel/Binding.html">Binding</a> (<code>binding</code> property must be set)</li>
+<li><code>binding</code> - <a href="http://domodel.unificator.me/Binding.html">Binding</a> - Specify the <a href="http://domodel.unificator.me/Binding.html">Binding</a> to use when running the model (<code>model</code> property must be set)</li>
+<li><code>properties</code> - Object - Specify the arguments to pass along the <a href="http://domodel.unificator.me/Binding.html">Binding</a> (<code>binding</code> property must be set)</li>
 </ul>
-<h3 id="binding">Binding</h3>
-<p>Now that we're able to create models, we will learn how to turn them into a real <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a> ?</p>
-<h4 id="properties-2">Properties</h4>
-<p><a href="#binding-properties"></a></p>
-<p>These properties are available from within the the instance of a <a href="https://thoughtsunificator.github.io/domodel/Binding.html">Binding</a>:</p>
-<ul>
-<li><code>properties</code> Properties passed along when instancing a binding.</li>
-<li><code>root</code> Root <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a> of your model.</li>
-<li><code>identifier</code> Hosts individual <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a> previously tagged in the definition of the model (see <a href="#model-properties">Model properties</a>).</li>
-</ul>
+<h3 id="core">Core</h3>
 <h4 id="adding-models-to-the-dom-and-managing-them">Adding models to the DOM and managing them</h4>
-<p>We might know how to define models however they wont simply be added by defining them alone.</p>
-<p>For that we have to use the <a href="https://thoughtsunificator.github.io/domodel/Core.html#.run">Core.run</a> method provided by DOModel object and tell it how to add them.</p>
-<p>The first step in your project would be create or edit the <code>main.js</code> in <code>src/</code>, it is the entry point module that is defined in your <code>index.html</code>.</p>
+<p>To add a model to the DOM we use the <a href="http://domodel.unificator.me/Core.html#.run">Core.run</a> method provided by the DOModel module and tell it how to add them.</p>
+<p>Create a <code>main.js</code> in <code>src/</code>, it is the entry point module that is defined in your <code>index.html</code> :</p>
 <p><code>src/main.js</code></p>
 <pre class="prettyprint source lang-javascript"><code>import { Core } from &quot;domodel&quot; // first we're importing DOModel
 
@@ -147,7 +141,8 @@ window.addEventListener(&quot;load&quot;, function() { // we only add the
 })
 
 </code></pre>
-<p>Now that your <code>main.js</code> is created let's create your first <a href="https://thoughtsunificator.github.io/domodel/Binding.html">Binding</a>:</p>
+<p>The documentation for Core.run is available <a href="https://domodel.unificator.me/Core.html#.run">here</a>.</p>
+<p>The associated <a href="http://domodel.unificator.me/Binding.html">Binding</a>:</p>
 <p><code>src/model/model.binding.js</code></p>
 <pre class="prettyprint source lang-javascript"><code>import { Core } from &quot;domodel&quot; // you could import the library again and run yet another model inside this model
 
@@ -171,7 +166,7 @@ class ModelBinding extends Binding {
 
 export default ModelBinding 
 </code></pre>
-<h3 id="methods">Methods</h3>
+<h4 id="methods">Methods</h4>
 <ul>
 <li>
 <p><code>APPEND_CHILD</code> Append your model to <code>parentNode</code></p>
@@ -190,8 +185,39 @@ export default ModelBinding
 </li>
 </ul>
 <p>They are available through <code>Core.METHOD</code>.</p>
+<h3 id="binding">Binding</h3>
+<p>Binding are the behavior part of our model it is required for any model to have a <a href="http://domodel.unificator.me/Binding.html">Binding</a> with it.</p>
+<h4 id="hooks">Hooks</h4>
+<p>The following are hooks that your binding can implement to add specific behaviors to your models.</p>
+<h4 id="oncreated">onCreated</h4>
+<p>This method will be called before your model is added to the DOM.</p>
+<h4 id="onrendered">onRendered</h4>
+<p>This method will be called immediately after your model is added to the DOM.</p>
+<h4 id="properties-2">Properties</h4>
+<p><a href="#binding-properties"></a></p>
+<p>The following properties are made available from within the the instance of a <a href="http://domodel.unificator.me/Binding.html">Binding</a>:</p>
+<ul>
+<li><code>properties</code> Properties passed along when instancing a binding.</li>
+<li><code>root</code> Root <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a> of your model.</li>
+<li><code>identifier</code> Hosts individual <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a> previously tagged in the definition of the model (see <a href="#model-properties">Model properties</a>).</li>
+</ul>
+<h3 id="methods-2">Methods</h3>
+<h4 id="listen">listen</h4>
+<p>Listen to a given observable event. See <a href="https://domodel.unificator.me/Binding.html#listen">Binding.listen</a>.</p>
+<blockquote>
+<p>This is the preferred method for listening to events as any listener will be cleaned up when your binding is removed using <a href="https://domodel.unificator.me/Binding.html#remove">Binding.remove</a>.</p>
+</blockquote>
+<h4 id="run">run</h4>
+<p>Synonym of <a href="https://domodel.unificator.me/Core.html#.run">Core.run</a>, with the differences being :</p>
+<ul>
+<li><code>parentNode</code> property is set to the current binding root element.</li>
+<li>All <code>properties</code> within Binding.properties are inherited by the child model.</li>
+<li>A hierarchy of models is created using Binding._children. Making it easier to remove them using <a href="https://domodel.unificator.me/Binding.html#remove">Binding.remove</a>.</li>
+</ul>
+<h4 id="remove">remove</h4>
+<p>Remove the model from the DOM. See <a href="https://domodel.unificator.me/Binding.html#remove">Binding.remove</a>.</p>
 <h3 id="observable">Observable</h3>
-<p>An <a href="https://thoughtsunificator.github.io/domodel/observable.Observable.html">Observable</a> is a way for your models to communicate with each other.</p>
+<p>An <a href="http://domodel.unificator.me/observable.Observable.html">Observable</a> is a way for your models to communicate with each other.</p>
 <p><code>src/object/observable-example.js</code></p>
 <pre class="prettyprint source lang-javascript"><code>import { Observable } from &quot;domodel&quot;
 
@@ -340,7 +366,7 @@ export default {
 </code></pre>
 <h5 id="referencing-to-nested-models">Referencing to nested models</h5>
 <p>In some cases, you might want to reference to a nested model.</p>
-<p>You can use the <code>identifier</code>, it will reference to an instance of the <a href="https://thoughtsunificator.github.io/domodel/Binding.html">Binding</a> you specified, in this case it would be an instance of <code>ModelBinding</code>.</p>
+<p>You can use the <code>identifier</code>, it will reference to an instance of the <a href="http://domodel.unificator.me/Binding.html">Binding</a> you specified, in this case it would be an instance of <code>ModelBinding</code>.</p>
 <p>Accessing the reference:</p>
 <p><code>src/model/model.binding.js</code></p>
 <pre class="prettyprint source lang-javascript"><code>import { Binding } from &quot;domodel&quot; // you could import the library again and run yet another model inside this model
@@ -361,7 +387,7 @@ class extends Binding {
 export default class 
 </code></pre>
 <h3 id="api">API</h3>
-<p>See <a href="https://thoughtsunificator.github.io/domodel">https://thoughtsunificator.github.io/domodel</a>.</p>
+<p>See <a href="http://domodel.unificator.me">http://domodel.unificator.me</a>.</p>
 <h2 id="extensions">Extensions</h2>
 <p>See <a href="https://github.com/topics/domodel-extension">https://github.com/topics/domodel-extension</a>.</p>
 <h2 id="demos">Demos</h2>
@@ -385,7 +411,7 @@ export default class
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sun Aug 13 2023 23:26:35 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sun Oct 06 2024 15:43:57 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
