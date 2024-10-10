@@ -1,4 +1,5 @@
 /**
+ * An EventListener listen on any event of given Observable and will be the first called.
  * @global
  */
 class EventListener {
