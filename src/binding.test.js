@@ -114,3 +114,51 @@ test("Binding remove", (t) => {
 	t.is(t.context.observable._listeners["test"].length, 0)
 	t.is(t.context.observable._listeners["test2"].length, 0)
 })
+
+test("Binding onRendered", (t) => {
+	const MyModel2 = {
+		tagName: "button"
+	}
+	const MyBinding = class extends Binding {
+		onCreated() {
+			this.run(MyModel2, { binding: new MyBinding2() })
+		}
+	}
+	const MyBinding2 = class extends Binding {
+		onRendered() {
+			t.true(this.root.isConnected)
+			this.root.textContent = "rendered"
+		}
+	}
+	const binding = new MyBinding()
+	Core.run(MyModel, { binding, parentNode: t.context.document.body })
+	t.is(t.context.document.body.innerHTML, "<div id=\"test\"><button>rendered</button></div>")
+})
+
+test("Binding onRendered multiples", (t) => {
+	t.plan(3)
+	const MyModel2 = {
+		tagName: "button"
+	}
+	const TestBinding = class extends Binding {
+		onCreated() {
+			this.run(MyModel2, { binding: new TestBinding2() })
+			this.run(MyModel2, { binding: new TestBinding3() })
+		}
+	}
+	const TestBinding2 = class extends Binding {
+		onRendered() {
+			t.true(this.root.isConnected)
+			this.root.textContent = "rendered"
+		}
+	}
+	const TestBinding3 = class extends Binding {
+		onRendered() {
+			t.true(this.root.isConnected)
+			this.root.textContent = "rendered"
+		}
+	}
+	const binding = new TestBinding()
+	Core.run(MyModel, { binding, parentNode: t.context.document.body })
+	t.is(t.context.document.body.innerHTML, "<div id=\"test\"><button>rendered</button><button>rendered</button></div>")
+})

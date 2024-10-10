@@ -23,6 +23,7 @@ class Binding {
 	}
 
 	/**
+	 * Access any child nodes identified with the "identifier" property.
 	 * @readonly
 	 * @type {object}
 	 */
@@ -31,6 +32,7 @@ class Binding {
 	}
 
 	/**
+	 * @deprecated Use constructor arguments instead
 	 * @readonly
 	 * @type {object}
 	 */
@@ -39,6 +41,7 @@ class Binding {
 	}
 
 	/**
+	 * Root Element of this model
 	 * @readonly
 	 * @type {Node}
 	 */
@@ -60,6 +63,16 @@ class Binding {
 	 */
 	get eventListener() {
 		return this._eventListener
+	}
+
+	/**
+	 * Call onRendered on this Binding and all its children
+	 */
+	_onRendered() {
+		this.onRendered()
+		for(const childBinding of this._children) {
+			childBinding._onRendered()
+		}
 	}
 
 	/**
@@ -91,6 +104,7 @@ class Binding {
 	run(model, properties) {
 		properties.binding._parent = this
 		this._children.push(properties.binding)
+		// TODO deprecate and remove Binding.properties
 		properties.binding._properties = {
 			...this.properties,
 			...properties.binding.properties
@@ -120,15 +134,17 @@ class Binding {
 	}
 
 	/**
-		* @abstract
-		*/
+	 * Called after the node is created but before the node is connected to the DOM
+	 * @abstract
+	 */
 	onCreated() {
 
 	}
 
 	/**
-		* @abstract
-		*/
+	 * Called after the node is created and is connected to the DOM
+	 * @abstract
+	 */
 	async onRendered() {
 
 	}

@@ -6,6 +6,8 @@ import Binding from "./binding.js"
 class Core {
 
 	/**
+	 * Reserved properties
+	 * These properties will not be processed at the DOM level
 	 * @readonly
 	 */
 	static PROPERTIES = [
@@ -64,7 +66,9 @@ class Core {
 		} else if (method === Core.METHOD.PREPEND) {
 			parentNode.prepend(node)
 		}
-		binding.onRendered()
+		if(node.isConnected) {
+			binding._onRendered()
+		}
 		return node
 	}
 
@@ -90,7 +94,7 @@ class Core {
 			if(Object.prototype.hasOwnProperty.call(child, "model") === true) {
 				let childBinding
 				if(Object.prototype.hasOwnProperty.call(child, "binding") === true) {
-					childBinding = new child.binding({...binding.properties, ...child.properties})
+					childBinding = new child.binding({ ...binding.properties, ...child.properties })
 					if(Object.prototype.hasOwnProperty.call(child, "identifier") === true) {
 						binding.identifier[child.identifier] = childBinding
 					}

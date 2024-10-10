@@ -168,6 +168,21 @@ test("bindings", (t) => {
 	t.is(t.context.document.body.innerHTML, "<button>bound</button>")
 })
 
+
+test("onRendered", (t) => {
+	Core.run({
+		tagName: "button"
+	}, {
+		parentNode: t.context.document.body,
+		binding: new class extends Binding {
+			onRendered() {
+				this.root.textContent = "rendered"
+			}
+		}
+	})
+	t.is(t.context.document.body.innerHTML, "<button>rendered</button>")
+})
+
 test("bindingProps", (t) => {
 	return new Promise(resolve => {
 		Core.run({
