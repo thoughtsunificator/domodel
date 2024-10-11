@@ -50,7 +50,7 @@ class Core {
 		const node = Core.createNode(parentNode, model, binding)
 		binding._root = node
 		binding._model = model
-		for (const name of Object.getOwnPropertyNames(Object.getPrototypeOf(binding.eventListener)).filter(name => name !== "constructor" && typeof binding.eventListener[name] === "function")) {
+		for (const name of getFunctionNames(binding.eventListener)) {
 			binding.listen(binding.eventListener.observable, name, binding.eventListener[name].bind(binding), true)
 		}
 		binding.onCreated()
@@ -111,6 +111,26 @@ class Core {
 		return node
 	}
 
+}
+
+function getFunctionNames(obj) {
+	const prototype = Object.getPrototypeOf(obj)
+	return getPrototypeFunctionNames(prototype)
+}
+
+function getPrototypeFunctionNames(prototype) {
+	const functionNames = []
+	const ownPropertyDescriptors = Object.getOwnPropertyDescriptors(prototype)
+	for(const name in ownPropertyDescriptors) {
+		if(name !== "constructor" && typeof ownPropertyDescriptors[name].value === "function")  {
+			functionNames.push(name)
+		}
+	}
+	const parentPrototype = Object.getPrototypeOf(prototype)
+	if(Object.getPrototypeOf(parentPrototype)) {
+		functionNames.push(...getPrototypeFunctionNames(parentPrototype))
+	}
+	return functionNames
 }
 
 export default Core
