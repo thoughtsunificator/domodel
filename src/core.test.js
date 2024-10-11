@@ -401,3 +401,49 @@ test("eventListener", (t) => {
 
 })
 
+test("eventListener inheritance", (t) => {
+
+	let mySuperEvent = false
+
+	class MyBinding extends Binding {
+
+		constructor(properties) {
+			super(properties, new MyEventListener(properties.observable))
+		}
+
+	}
+
+	class MySuperEventListener extends EventListener {
+		mySuperEvent() {
+			mySuperEvent = true
+		}
+	}
+
+	class MyEventListener extends MySuperEventListener {
+
+		myEvent() {
+		}
+
+		myEvent2() {
+		}
+
+		myEvent3() {
+		}
+
+	}
+
+	const observable = new Observable()
+
+	const binding = new MyBinding({ observable })
+
+	Core.run({
+		tagName: "div",
+	}, { parentNode: t.context.document.body, binding })
+
+	t.is(binding._listeners.length, 4)
+	observable.emit("mySuperEvent")
+	t.true(mySuperEvent)
+
+
+})
+
