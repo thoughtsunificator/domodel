@@ -119,16 +119,18 @@ function getFunctionNames(obj) {
 }
 
 function getPrototypeFunctionNames(prototype) {
-	const functionNames = []
+	const functionNames = new Set()
 	const ownPropertyDescriptors = Object.getOwnPropertyDescriptors(prototype)
 	for(const name in ownPropertyDescriptors) {
 		if(name !== "constructor" && typeof ownPropertyDescriptors[name].value === "function")  {
-			functionNames.push(name)
+			functionNames.add(name)
 		}
 	}
 	const parentPrototype = Object.getPrototypeOf(prototype)
 	if(Object.getPrototypeOf(parentPrototype)) {
-		functionNames.push(...getPrototypeFunctionNames(parentPrototype))
+		for(const functionName of getPrototypeFunctionNames(parentPrototype)) {
+			functionNames.add(functionName)
+		}
 	}
 	return functionNames
 }
