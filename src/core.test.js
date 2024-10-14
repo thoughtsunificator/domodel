@@ -403,7 +403,8 @@ test("eventListener", (t) => {
 
 test("eventListener inheritance", (t) => {
 
-	let mySuperEvent = false
+	let mySuperEvent = 0
+	let myEvent = 0
 
 	class MyBinding extends Binding {
 
@@ -415,13 +416,16 @@ test("eventListener inheritance", (t) => {
 
 	class MySuperEventListener extends EventListener {
 		mySuperEvent() {
-			mySuperEvent = true
+			mySuperEvent++
+		}
+		myEvent() {
 		}
 	}
 
 	class MyEventListener extends MySuperEventListener {
 
 		myEvent() {
+			myEvent++
 		}
 
 		myEvent2() {
@@ -442,7 +446,9 @@ test("eventListener inheritance", (t) => {
 
 	t.is(binding._listeners.length, 4)
 	observable.emit("mySuperEvent")
-	t.true(mySuperEvent)
+	observable.emit("myEvent")
+	t.is(mySuperEvent, 1)
+	t.is(myEvent, 1)
 
 
 })
