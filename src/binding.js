@@ -23,6 +23,20 @@ class Binding {
 	}
 
 	/**
+	 * @returns {Document}
+	 */
+	get document() {
+		return this.root.ownerDocument
+	}
+
+	/**
+	 * @returns {Window}
+	 */
+	get window() {
+		return this.document.defaultView
+	}
+
+	/**
 	 * Access any child nodes identified with the "identifier" property.
 	 * @readonly
 	 * @type {object}

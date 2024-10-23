@@ -76,6 +76,8 @@ test("Binding run", (t) => {
 	t.is(binding._model, MyModel)
 	t.is(binding._children.length, 1)
 	t.is(binding._children[0], childBinding)
+	t.is(binding.document, t.context.document)
+	t.is(binding.window, t.context.document.defaultView)
 	t.is(childBinding._parent, binding)
 	t.is(childBinding._children.length, 0)
 })
