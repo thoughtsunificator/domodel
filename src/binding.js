@@ -38,6 +38,7 @@ class Binding {
 	}
 
 	/**
+	 * @deprecated Use getIdentifier
 	 * Access any child nodes identified with the "identifier" property.
 	 * @readonly
 	 * @type {object}
@@ -165,11 +166,12 @@ class Binding {
 	}
 
 	/**
+	 * Access any child nodes identified with the "identifier" property.
 	 * @param {*} key
 	 * @returns {Element}
 	 */
 	getIdentifier(key) {
-		return this.identifier[key]
+		return this._identifier[key]
 	}
 
 	/**
