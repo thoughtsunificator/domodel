@@ -43,11 +43,11 @@ class Core {
 		* @param {Element}       properties.parentNode
 		* @param {Binding}       [properties.binding=new Binding()]
 		* @param {Method}        [properties.method=Core.METHOD.APPEND_CHILD]
-		* @returns {Node}
+		* @returns {Element}
 		* @example Core.run(Model, { parentNode: document.body, binding: new Binding() })
 		*/
 	static run(model, { parentNode, binding = new Binding(), method = Core.METHOD.APPEND_CHILD } = {}) {
-		const node = Core.createNode(parentNode, model, binding)
+		const node = Core.createElement(parentNode, model, binding)
 		binding._root = node
 		binding._model = model
 		for (const name of getFunctionNames(binding.eventListener)) {
@@ -77,9 +77,9 @@ class Core {
 		* @param   {Object} Node
 		* @param   {Object} model
 		* @param   {Object} Binding
-		* @returns {Node}
+		* @returns {Element}
 		*/
-	static createNode(parentNode, model, binding) {
+	static createElement(parentNode, model, binding) {
 		const { tagName, children = [] } = model
 		let node
 		if(tagName) {
@@ -88,7 +88,11 @@ class Core {
 			node = parentNode.ownerDocument.createDocumentFragment()
 		}
 		Object.keys(model).filter(property => Core.PROPERTIES.includes(property) === false).forEach(function(property) {
-			node[property] = model[property]
+			if(typeof node[property] !== "undefined") {
+				node[property] = model[property]
+			} else {
+				node.setAttribute(property, model[property])
+			}
 		})
 		for (const child of children) {
 			if(Object.prototype.hasOwnProperty.call(child, "model") === true) {
@@ -101,7 +105,7 @@ class Core {
 				}
 				binding.run(child.model, { parentNode: node, binding: childBinding })
 			} else {
-				const childNode = Core.createNode(parentNode, child, binding)
+				const childNode = Core.createElement(parentNode, child, binding)
 				node.appendChild(childNode)
 			}
 		}
