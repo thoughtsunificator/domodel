@@ -1,5 +1,6 @@
 import { JSDOM } from "jsdom"
 import test from "ava"
+import { mock } from "node:test"
 
 import { Core, Binding, Observable, EventListener } from "../index.js"
 
@@ -10,8 +11,25 @@ const MyModel = {
 	id: "test"
 }
 
-const MyBinding3 = class extends Binding {
+class MyBinding3 extends Binding {
+
 	onCreated() {
+		this.listen(this.properties.observable, "test", () => {})
+		this.listen(this.properties.observable, "test2", () => {})
+	}
+}
+
+class MyBinding4 extends Binding {
+
+	constructor(properties) {
+		super(properties)
+		this.clickA = 0
+		this.clickB = 0
+	}
+
+	onCreated() {
+		this.addEventListener(this.root.ownerDocument, "click", () => { this.clickA++ })
+		this.addEventListener(this.root.ownerDocument.defaultView, "click", () => { this.clickB++ })
 		this.listen(this.properties.observable, "test", () => {})
 		this.listen(this.properties.observable, "test2", () => {})
 	}
@@ -32,6 +50,7 @@ test("Binding instance", (t) => {
 	t.deepEqual(binding.identifier, {})
 	t.deepEqual(binding._children, [])
 	t.deepEqual(binding._listeners, [])
+	t.deepEqual(binding._remoteEventListeners, [])
 	t.throws(() => {
 		binding.properties = {}
 	})
@@ -53,6 +72,27 @@ test("Binding instance", (t) => {
 	const binding__ = new Binding({ a: "b" }, eventListener)
 	t.deepEqual(binding__.properties, { a: "b" })
 	t.is(binding__.eventListener, eventListener)
+})
+
+
+test("Binding addEventListener", (t) => {
+	const binding = new MyBinding3({ property: "a" })
+	const f = () => {}
+	const f2 = () => {}
+	mock.method(t.context.document.body, "addEventListener", () => {})
+	mock.method(t.context.document.defaultView, "addEventListener", () => {})
+	binding.addEventListener(t.context.document.body, "click", f, { foo: "bar" })
+	binding.addEventListener(t.context.document.defaultView, "keydown", f2)
+	t.is(binding._remoteEventListeners[0].target, t.context.document.body)
+	t.is(binding._remoteEventListeners[0].type, "click")
+	t.is(binding._remoteEventListeners[0].listener, f)
+	t.is(binding._remoteEventListeners[1].target, t.context.document.defaultView)
+	t.is(binding._remoteEventListeners[1].type, "keydown")
+	t.is(binding._remoteEventListeners[1].listener, f2)
+	t.is(t.context.document.body.addEventListener.mock.callCount(), 1)
+	t.deepEqual(t.context.document.body.addEventListener.mock.calls[0].arguments, ["click", f, { foo: "bar" }])
+	t.is(t.context.document.defaultView.addEventListener.mock.callCount(), 1)
+	t.deepEqual(t.context.document.defaultView.addEventListener.mock.calls[0].arguments, ["keydown", f2, undefined])
 })
 
 test("Binding run", (t) => {
@@ -112,6 +152,28 @@ test("Binding remove", (t) => {
 	Core.run(MyModel, { binding, parentNode: t.context.document.body })
 	t.is(t.context.document.body.innerHTML, '<div id="test"></div>')
 	binding.remove()
+	t.is(t.context.document.body.innerHTML, "")
+	t.is(t.context.observable._listeners["test"].length, 0)
+	t.is(t.context.observable._listeners["test2"].length, 0)
+})
+
+test("Binding remove eventListeners", (t) => {
+	const binding = new MyBinding4({ observable: t.context.observable })
+	Core.run(MyModel, { binding, parentNode: t.context.document.body })
+	t.is(t.context.document.body.innerHTML, '<div id="test"></div>')
+	t.is(binding.clickA, 0)
+	t.is(binding.clickB, 0)
+	binding.root.ownerDocument.dispatchEvent(new binding.root.ownerDocument.defaultView.Event("click"))
+	t.is(binding.clickA, 1)
+	t.is(binding.clickB, 0)
+	binding.root.ownerDocument.defaultView.dispatchEvent(new binding.root.ownerDocument.defaultView.Event("click"))
+	t.is(binding.clickA, 1)
+	t.is(binding.clickB, 1)
+	binding.remove()
+	binding.root.ownerDocument.defaultView.dispatchEvent(new binding.root.ownerDocument.defaultView.Event("click"))
+	binding.root.ownerDocument.defaultView.dispatchEvent(new binding.root.ownerDocument.defaultView.Event("click"))
+	t.is(binding.clickA, 1)
+	t.is(binding.clickB, 1)
 	t.is(t.context.document.body.innerHTML, "")
 	t.is(t.context.observable._listeners["test"].length, 0)
 	t.is(t.context.observable._listeners["test2"].length, 0)

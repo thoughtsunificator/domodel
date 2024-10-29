@@ -20,6 +20,7 @@ class Binding {
 		this._children = []
 		this._listeners = []
 		this._eventListener = eventListener
+		this._remoteEventListeners = []
 	}
 
 	/**
@@ -141,10 +142,26 @@ class Binding {
 		for(const child of children) {
 			child.remove()
 		}
+		for(const { target, type, listener } of this._remoteEventListeners)  {
+			target.removeEventListener(type, listener)
+		}
 		if(this._parent !== null) {
 			this._parent._children = this._parent._children.filter(child => child !== this)
 		}
 		this.root.remove()
+	}
+
+	/**
+	 * Call addEventListener on a given Element while storing the listener for later removal
+	 * Useful when setting up event listeners on a parent Element.
+	 * @param {Element} target
+	 * @param {string}  type
+	 * @param {method}  listener
+	 * @param {object}  options
+	 */
+	addEventListener(target, type, listener, options) {
+		this._remoteEventListeners.push({ target, type, listener })
+		target.addEventListener(type, listener, options)
 	}
 
 	/**
