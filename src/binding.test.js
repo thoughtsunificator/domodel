@@ -132,6 +132,7 @@ test("Binding run identifier", (t) => {
 	const binding = new MyBinding({ property: "a" })
 	Core.run(MyModel, { binding, parentNode: t.context.document.body })
 	t.is(binding.identifier["test"], binding.root.childNodes[0])
+	t.is(binding.getIdentifier("test"), binding.identifier["test"])
 })
 
 test("Binding listen", (t) => {
