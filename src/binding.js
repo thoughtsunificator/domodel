@@ -57,7 +57,7 @@ class Binding {
 	/**
 	 * Root Element of this model
 	 * @readonly
-	 * @type {Node}
+	 * @type {Element}
 	 */
 	get root() {
 		return this._root
