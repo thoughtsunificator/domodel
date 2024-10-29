@@ -165,6 +165,14 @@ class Binding {
 	}
 
 	/**
+	 * @param {*} key
+	 * @returns {Element}
+	 */
+	getIdentifier(key) {
+		return this.identifier[key]
+	}
+
+	/**
 	 * Called after the node is created but before the node is connected to the DOM
 	 * @abstract
 	 */
