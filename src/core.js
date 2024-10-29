@@ -88,7 +88,11 @@ class Core {
 			node = parentNode.ownerDocument.createDocumentFragment()
 		}
 		Object.keys(model).filter(property => Core.PROPERTIES.includes(property) === false).forEach(function(property) {
-			node[property] = model[property]
+			if(typeof node[property] !== "undefined") {
+				node[property] = model[property]
+			} else {
+				node.setAttribute(property, model[property])
+			}
 		})
 		for (const child of children) {
 			if(Object.prototype.hasOwnProperty.call(child, "model") === true) {

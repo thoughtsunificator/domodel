@@ -31,7 +31,7 @@ test("modelWithMultipleTargets", (t) => {
 			textContent: "My first simple model"
 		}, { binding: new Binding(), parentNode: target })
 	}
-	t.is(t.context.document.body.innerHTML, '<div class="content0"><div class="simplemodel">My first simple model</div></div><div class="content1"><div class="simplemodel">My first simple model</div></div><div class="content2"><div class="simplemodel">My first simple model</div></div>')
+	t.is(t.context.document.body.innerHTML, '<div class="content0"><div class="simplemodel" property="1">My first simple model</div></div><div class="content1"><div class="simplemodel" property="1">My first simple model</div></div><div class="content2"><div class="simplemodel" property="1">My first simple model</div></div>')
 })
 
 test("model fragment", (t) => {
