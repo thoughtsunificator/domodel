@@ -46,6 +46,8 @@ class Observable {
 			for (const listener of this._listeners[eventName].slice()) {
 				listener.callback(args)
 			}
+		} else {
+			throw new Error(`Cannot emit the event ${eventName} as there is no listener on this event.`)
 		}
 	}
 
