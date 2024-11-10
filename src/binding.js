@@ -38,7 +38,6 @@ class Binding {
 	}
 
 	/**
-	 * @deprecated Use getIdentifier
 	 * Access any child nodes identified with the "identifier" property.
 	 * @readonly
 	 * @type {object}
