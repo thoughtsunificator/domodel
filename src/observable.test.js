@@ -55,7 +55,7 @@ test("Observable listenerRemove", function(t) {
 	observable.emit("test", "test4")
 	t.throws(() => {
 		observable.emit("testfoo", "test4")
-	}, { instanceOf: Error, message: "Cannot emit the event testfoo as there is no listener on this event." }, "emitting to an event with no listener should throw an error")
+	}, { instanceOf: Error, message: "Cannot emit the event 'testfoo' as there is no listener for this event." }, "emitting to an event with no listener should throw an error")
 	t.deepEqual(path, [
 		"1_test1", "test1", "1_test2", "test2", "test3", "test4"
 	])

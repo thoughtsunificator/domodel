@@ -47,7 +47,7 @@ class Observable {
 				listener.callback(args)
 			}
 		} else {
-			throw new Error(`Cannot emit the event ${eventName} as there is no listener on this event.`)
+			throw new Error(`Cannot emit the event '${eventName}' as there is no listener for this event.`)
 		}
 	}
 

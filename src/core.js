@@ -54,6 +54,9 @@ class Core {
 			binding.listen(binding.eventListener.observable, name, binding.eventListener[name].bind(binding), true)
 		}
 		binding.onCreated()
+		if(node instanceof node.ownerDocument.defaultView.DocumentFragment) {
+			binding._fragmentChildren.push(...node.children)
+		}
 		if (method === Core.METHOD.APPEND_CHILD) {
 			parentNode.appendChild(node)
 		} else if (method === Core.METHOD.INSERT_BEFORE) {

@@ -158,6 +158,22 @@ test("Binding remove", (t) => {
 	t.is(t.context.observable._listeners["test2"].length, 0)
 })
 
+test("Binding remove documentFragment", (t) => {
+	const MyModel5 = {
+		children: [
+			{
+				tagName: "div",
+				id: "test"
+			}
+		]
+	}
+	const binding = new MyBinding3({ observable: t.context.observable })
+	Core.run(MyModel5, { binding, parentNode: t.context.document.body })
+	t.is(t.context.document.body.innerHTML, '<div id="test"></div>')
+	binding.remove()
+	t.is(t.context.document.body.innerHTML, "")
+})
+
 test("Binding remove eventListeners", (t) => {
 	const binding = new MyBinding4({ observable: t.context.observable })
 	Core.run(MyModel, { binding, parentNode: t.context.document.body })
