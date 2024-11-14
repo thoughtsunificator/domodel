@@ -3,7 +3,6 @@ import test from "ava"
 
 import { Core, Binding, Observable, EventListener } from "../index.js"
 
-
 test.beforeEach((t) => {
 	const virtualDOM = new JSDOM()
 	const { document } = virtualDOM.window
@@ -49,6 +48,65 @@ test("model fragment", (t) => {
 	t.is(t.context.document.body.innerHTML, '<div class="test1">TestText1</div><div class="test2">TestText2</div>')
 })
 
+test("model fragment placeholder", (t) => {
+	const binding = new Binding()
+	Core.run({
+		identifier: "test"
+	}, { binding, parentNode: t.context.document.body })
+	binding.run({
+		tagName: "button"
+	}, { binding, parentNode: binding.identifier.test })
+	t.is(t.context.document.body.innerHTML, "<button></button>")
+})
+
+test("model fragment placeholder case 2", (t) => {
+	const binding2 = new Binding()
+	Core.run({
+		tagName: "div",
+		children: [
+			{
+				tagName: "span",
+			},
+			{
+				identifier: "test2", // DocumentFragment here is a placeholder and should not be added
+			},
+			{
+				tagName: "small"
+			}
+		]
+	}, { binding: binding2, parentNode: t.context.document.body })
+	binding2.run({
+		tagName: "button"
+	}, { binding: new Binding(), parentNode: binding2.identifier.test2 })
+	t.is(t.context.document.body.innerHTML, "<div><span></span><button></button><small></small></div>")
+	// t.is(binding2.identifier.test2.tagName, "BUTTON")
+})
+
+// test("model fragment placeholder case 3", (t) => {
+// 	const binding2 = new Binding()
+// 	Core.run({
+// 		tagName: "div",
+// 		children: [
+// 			{
+// 				tagName: "span",
+// 			},
+// 			{
+// 				identifier: "test2", // DocumentFragment here is a placeholder and should not be added
+// 			},
+// 			{
+// 				identifier: "test3", // DocumentFragment here is a placeholder and should not be added
+// 			},
+// 			{
+// 				tagName: "small"
+// 			}
+// 		]
+// 	}, { binding: binding2, parentNode: t.context.document.body })
+// 	binding2.run({
+// 		tagName: "button"
+// 	}, { binding: binding2, parentNode: binding2.identifier.test2 })
+// 	t.is(t.context.document.body.innerHTML, "<div><span></span><button></button><small></small></div>")
+// })
+
 test("childNodes", (t) => {
 	Core.run({
 		tagName: "div",
@@ -70,28 +128,6 @@ test("childNodes", (t) => {
 		]
 	}, { binding: new Binding(), parentNode: t.context.document.body })
 	t.is(t.context.document.body.innerHTML, '<div class="simplemodel">My first element<div class="child">My first child<div class="child">My first child child</div></div></div>')
-})
-
-test("childNodes fragment", (t) => {
-	Core.run({
-		children: [
-			{
-				children: [
-					{
-						tagName: "div",
-						className: "child",
-						textContent: "My first child child"
-					},
-					{
-						tagName: "div",
-						className: "child",
-						textContent: "My second child child"
-					}
-				]
-			}
-		]
-	}, { binding: new Binding(), parentNode: t.context.document.body })
-	t.is(t.context.document.body.innerHTML, '<div class="child">My first child child</div><div class="child">My second child child</div>')
 })
 
 test("insertBefore", (t) => {

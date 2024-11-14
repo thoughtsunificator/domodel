@@ -21,7 +21,6 @@ class Binding {
 		this._listeners = []
 		this._eventListener = eventListener
 		this._remoteEventListeners = []
-		this._fragmentChildren = [] /** DocumentFragment.children is emptied once it is connected to a DOM its nodes are moved. This is used to keep track of children in order to remove them */
 	}
 
 	/**
@@ -150,7 +149,7 @@ class Binding {
 			this._parent._children = this._parent._children.filter(child => child !== this)
 		}
 		if(this.root instanceof this.window.DocumentFragment) {
-			for(const child of this._fragmentChildren) {
+			for(const child of this.root.fragmentChildren) {
 				child.remove()
 			}
 		} else {

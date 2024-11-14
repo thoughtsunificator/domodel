@@ -174,6 +174,24 @@ test("Binding remove documentFragment", (t) => {
 	t.is(t.context.document.body.innerHTML, "")
 })
 
+test("Binding remove placeholder documentFragment", (t) => {
+	const MyModel5 = {
+		tagName: "div",
+		id: "test",
+		children: [
+			{
+				identifier: "test"
+			}
+		]
+	}
+	const binding = new MyBinding3({ observable: t.context.observable })
+	Core.run(MyModel5, { binding, parentNode: t.context.document.body })
+	binding.run({ tagName: "button" }, { binding: new MyBinding3({ observable: t.context.observable }), parentNode: binding.identifier.test })
+	t.is(t.context.document.body.innerHTML, '<div id="test"><button></button></div>')
+	binding.remove()
+	t.is(t.context.document.body.innerHTML, "")
+})
+
 test("Binding remove eventListeners", (t) => {
 	const binding = new MyBinding4({ observable: t.context.observable })
 	Core.run(MyModel, { binding, parentNode: t.context.document.body })
