@@ -58,6 +58,7 @@ You can also ommit the ``tagName`` and you will get a fragment document model:
 
 ```javascript
 export default {
+  // Only the 'children' property is allowed when working with a DocumentFragment.
   children: [
     {
       tagName: "h2",

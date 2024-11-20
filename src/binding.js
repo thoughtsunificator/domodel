@@ -148,7 +148,14 @@ class Binding {
 		if(this._parent !== null) {
 			this._parent._children = this._parent._children.filter(child => child !== this)
 		}
-		this.root.remove()
+		if(this.root instanceof this.window.DocumentFragment) {
+			for(const child of this.root.domodel.fragmentChildren) {
+				child.remove()
+			}
+			this.root.domodel.fragmentChildren = []
+		} else {
+			this.root.remove()
+		}
 	}
 
 	/**
@@ -165,11 +172,12 @@ class Binding {
 	}
 
 	/**
+	 * Access any child nodes identified with the "identifier" property.
 	 * @param {*} key
 	 * @returns {Element}
 	 */
 	getIdentifier(key) {
-		return this.identifier[key]
+		return this._identifier[key]
 	}
 
 	/**
