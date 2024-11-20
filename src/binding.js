@@ -149,9 +149,10 @@ class Binding {
 			this._parent._children = this._parent._children.filter(child => child !== this)
 		}
 		if(this.root instanceof this.window.DocumentFragment) {
-			for(const child of this.root.fragmentChildren) {
+			for(const child of this.root.domodel.fragmentChildren) {
 				child.remove()
 			}
+			this.root.domodel.fragmentChildren = []
 		} else {
 			this.root.remove()
 		}

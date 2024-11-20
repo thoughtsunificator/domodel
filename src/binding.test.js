@@ -188,7 +188,6 @@ test("Binding remove placeholder documentFragment", (t) => {
 	Core.run(MyModel5, { binding, parentNode: t.context.document.body })
 	binding.run({ tagName: "button" }, { binding: new MyBinding3({ observable: t.context.observable }), parentNode: binding.identifier.test })
 	t.is(t.context.document.body.innerHTML, '<div id="test"><button></button></div>')
-	console.log(binding.identifier.test)
 	const b2 = new MyBinding3({ observable: t.context.observable })
 	binding.run({ tagName: "button" }, { identifier: "test3", binding: b2, parentNode: binding.identifier.test })
 	t.is(t.context.document.body.innerHTML, '<div id="test"><button></button><button></button></div>')

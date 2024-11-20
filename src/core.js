@@ -1,4 +1,6 @@
 import Binding from "./binding.js"
+// eslint-disable-next-line no-unused-vars
+import ModelChain from "./model-chain.js"
 
 /**
  * @global
@@ -38,37 +40,46 @@ class Core {
 	}
 
 	/**
-		* @param {Object}        model
-		* @param {Object}        properties
-		* @param {Element}       properties.parentNode
-		* @param {Binding}       [properties.binding=new Binding()]
-		* @param {Method}        [properties.method=Core.METHOD.APPEND_CHILD]
+		* @param {Object|ModelChain} model
+		* @param {Object}            properties
+		* @param {Element}           properties.parentNode
+		* @param {Binding}           [properties.binding=new Binding()]
+		* @param {Method}            [properties.method=Core.METHOD.APPEND_CHILD]
 		* @returns {Element}
-		* @example Core.run(Model, { parentNode: document.body, binding: new Binding() })
+		* @example Core.run(Model, { parentNode: document.body })
 		*/
 	static run(model, { parentNode, binding = new Binding(), method = Core.METHOD.APPEND_CHILD } = {}) {
-		const node = Core.createElement(parentNode, model, binding)
+		let modelDefinition
+		if(model instanceof ModelChain) {
+			modelDefinition = model.definition
+		} else {
+			modelDefinition = model
+		}
+		const node = Core.createElement(parentNode, modelDefinition, binding)
 		binding._root = node
 		binding._model = model
 		for (const name of getFunctionNames(binding.eventListener)) {
 			binding.listen(binding.eventListener.observable, name, binding.eventListener[name].bind(binding), true)
 		}
-		binding.onCreated()
 		if(node instanceof node.ownerDocument.defaultView.DocumentFragment) {
 			/**
 			 * When binding root's element is a DocumentFragment its children need to be referenced
 			 * so that they are removed when Binding.remove is called.
-			 */
-			node.fragmentChildren = [...node.children]
+			*/
+			node.domodel.fragmentChildren = [...node.children]
 		}
+		if(node instanceof node.ownerDocument.defaultView.DocumentFragment && node.domodel.identifier) {
+			binding.identifier[node.domodel.identifier] = parentNode
+		}
+		binding.onCreated()
 		const isPlaceholderDocumentFragment = parentNode.nodeType === node.ownerDocument.defaultView.Node.COMMENT_NODE
 		if(isPlaceholderDocumentFragment) {
-			if(parentNode.placeholderNode) {
-				parentNode.placeholderNode.after(node)
+			if(parentNode.domodel?.placeholderNode) {
+				parentNode.domodel.placeholderNode.after(node)
 			} else {
 				parentNode.replaceWith(node)
 			}
-			parentNode.placeholderNode = node
+			parentNode.domodel.placeholderNode = node
 		} else if (method === Core.METHOD.APPEND_CHILD) {
 			parentNode.appendChild(node)
 		} else if (method === Core.METHOD.INSERT_BEFORE) {
@@ -91,12 +102,12 @@ class Core {
 	  * Create an element from a model definition
 		* @ignore
 		* @param   {Object} Node
-		* @param   {Object} model
+		* @param   {Object} modelDefinition
 		* @param   {Object} Binding
 		* @returns {Element}
 		*/
-	static createElement(parentNode, model, binding) {
-		const { tagName, children = [] } = model
+	static createElement(parentNode, modelDefinition, binding) {
+		const { tagName, children = [] } = modelDefinition
 		let node
 		if(tagName) {
 			node = parentNode.ownerDocument.createElement(tagName)
@@ -107,11 +118,12 @@ class Core {
 				node = parentNode.ownerDocument.createComment("")
 			}
 		}
-		Object.keys(model).filter(property => Core.PROPERTIES.includes(property) === false).forEach(function(property) {
+		node.domodel = {}
+		Object.keys(modelDefinition).filter(property => Core.PROPERTIES.includes(property) === false).forEach(function(property) {
 			if(typeof node[property] !== "undefined") {
-				node[property] = model[property]
+				node[property] = modelDefinition[property]
 			} else {
-				node.setAttribute(property, model[property])
+				node.setAttribute(property, modelDefinition[property])
 			}
 		})
 		for(const child of children) {
@@ -129,19 +141,30 @@ class Core {
 				node.appendChild(childNode)
 			}
 		}
-		if(Object.prototype.hasOwnProperty.call(model, "identifier") === true) {
-			binding.identifier[model.identifier] = node
+		if(Object.prototype.hasOwnProperty.call(modelDefinition, "identifier") === true) {
+			binding.identifier[modelDefinition.identifier] = node
+			node.domodel.identifier = modelDefinition.identifier
 		}
 		return node
 	}
 
 }
 
+/**
+ * @ignore
+ * @param {object} obj
+ * @returns {Array<string>}
+ */
 function getFunctionNames(obj) {
 	const prototype = Object.getPrototypeOf(obj)
 	return getPrototypeFunctionNames(prototype)
 }
 
+/**
+ * @ignore
+ * @param {object} obj
+ * @returns {Array<string>}
+ */
 function getPrototypeFunctionNames(prototype) {
 	const functionNames = new Set()
 	const ownPropertyDescriptors = Object.getOwnPropertyDescriptors(prototype)

@@ -48,19 +48,31 @@ test("model fragment", (t) => {
 	t.is(t.context.document.body.innerHTML, '<div class="test1">TestText1</div><div class="test2">TestText2</div>')
 })
 
+test("model fragment case 2", (t) => {
+	const binding = new Binding()
+	Core.run({
+		identifier: "test2",
+		children: [
+			{
+				tagName: "button"
+			}
+		]
+	}, { binding: binding, parentNode: t.context.document.body })
+	binding.run({ tagName: "button" }, { binding: new Binding(), parentNode: binding.identifier.test2 })
+	t.is(t.context.document.body.innerHTML, "<button></button><button></button>")
+})
+
 test("model fragment placeholder", (t) => {
 	const binding = new Binding()
 	Core.run({
 		identifier: "test"
 	}, { binding, parentNode: t.context.document.body })
-	binding.run({
-		tagName: "button"
-	}, { binding, parentNode: binding.identifier.test })
+	binding.run({ tagName: "button" }, { binding, parentNode: binding.identifier.test })
 	t.is(t.context.document.body.innerHTML, "<button></button>")
 })
 
 test("model fragment placeholder case 2", (t) => {
-	const binding2 = new Binding()
+	const binding = new Binding()
 	Core.run({
 		tagName: "div",
 		children: [
@@ -74,38 +86,10 @@ test("model fragment placeholder case 2", (t) => {
 				tagName: "small"
 			}
 		]
-	}, { binding: binding2, parentNode: t.context.document.body })
-	binding2.run({
-		tagName: "button"
-	}, { binding: new Binding(), parentNode: binding2.identifier.test2 })
+	}, { binding: binding, parentNode: t.context.document.body })
+	binding.run({ tagName: "button"	}, { binding: new Binding(), parentNode: binding.identifier.test2 })
 	t.is(t.context.document.body.innerHTML, "<div><span></span><button></button><small></small></div>")
-	// t.is(binding2.identifier.test2.tagName, "BUTTON")
 })
-
-// test("model fragment placeholder case 3", (t) => {
-// 	const binding2 = new Binding()
-// 	Core.run({
-// 		tagName: "div",
-// 		children: [
-// 			{
-// 				tagName: "span",
-// 			},
-// 			{
-// 				identifier: "test2", // DocumentFragment here is a placeholder and should not be added
-// 			},
-// 			{
-// 				identifier: "test3", // DocumentFragment here is a placeholder and should not be added
-// 			},
-// 			{
-// 				tagName: "small"
-// 			}
-// 		]
-// 	}, { binding: binding2, parentNode: t.context.document.body })
-// 	binding2.run({
-// 		tagName: "button"
-// 	}, { binding: binding2, parentNode: binding2.identifier.test2 })
-// 	t.is(t.context.document.body.innerHTML, "<div><span></span><button></button><small></small></div>")
-// })
 
 test("childNodes", (t) => {
 	Core.run({
