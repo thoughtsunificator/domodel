@@ -29,7 +29,7 @@
     
     <input type="text" id="nav-search" placeholder="Search" />
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Binding.html">Binding</a><ul class='methods'><li data-type='method'><a href="Binding.html#_onRendered">_onRendered</a></li><li data-type='method'><a href="Binding.html#listen">listen</a></li><li data-type='method'><a href="Binding.html#run">run</a></li><li data-type='method'><a href="Binding.html#remove">remove</a></li><li data-type='method'><a href="Binding.html#addEventListener">addEventListener</a></li><li data-type='method'><a href="Binding.html#getIdentifier">getIdentifier</a></li><li data-type='method'><a href="Binding.html#onCreated">onCreated</a></li><li data-type='method'><a href="Binding.html#onRendered">onRendered</a></li></ul></li><li><a href="Core.html">Core</a><ul class='methods'><li data-type='method'><a href="Core.html#.run">run</a></li></ul></li><li><a href="EventListener.html">EventListener</a></li><li><a href="Listener.html">Listener</a><ul class='methods'><li data-type='method'><a href="Listener.html#remove">remove</a></li></ul></li><li><a href="Model.html">Model</a></li><li><a href="Observable.html">Observable</a><ul class='methods'><li data-type='method'><a href="Observable.html#listen">listen</a></li><li data-type='method'><a href="Observable.html#removeListener">removeListener</a></li><li data-type='method'><a href="Observable.html#emit">emit</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Binding.html">Binding</a><ul class='methods'><li data-type='method'><a href="Binding.html#_onRendered">_onRendered</a></li><li data-type='method'><a href="Binding.html#listen">listen</a></li><li data-type='method'><a href="Binding.html#run">run</a></li><li data-type='method'><a href="Binding.html#remove">remove</a></li><li data-type='method'><a href="Binding.html#addEventListener">addEventListener</a></li><li data-type='method'><a href="Binding.html#getIdentifier">getIdentifier</a></li><li data-type='method'><a href="Binding.html#onCreated">onCreated</a></li><li data-type='method'><a href="Binding.html#onRendered">onRendered</a></li></ul></li><li><a href="Core.html">Core</a><ul class='methods'><li data-type='method'><a href="Core.html#.run">run</a></li></ul></li><li><a href="EventListener.html">EventListener</a></li><li><a href="Listener.html">Listener</a><ul class='methods'><li data-type='method'><a href="Listener.html#remove">remove</a></li></ul></li><li><a href="Model.html">Model</a></li><li><a href="Observable.html">Observable</a><ul class='methods'><li data-type='method'><a href="Observable.html#listen">listen</a></li><li data-type='method'><a href="Observable.html#removeListener">removeListener</a></li><li data-type='method'><a href="Observable.html#emit">emit</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#ModelChain">ModelChain</a></li><li><a href="global.html#getObjectByIdentifier">getObjectByIdentifier</a></li></ul>
 </nav>
 
 <div id="main">
@@ -73,7 +73,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.js.html">core.js</a>, <a href="core.js.html#line6">line 6</a>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line8">line 8</a>
     </li></ul></dd>
     
 
@@ -171,7 +171,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.js.html">core.js</a>, <a href="core.js.html#line13">line 13</a>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line15">line 15</a>
     </li></ul></dd>
     
 
@@ -235,7 +235,7 @@ These properties will not be processed at the DOM level</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.js.html">core.js</a>, <a href="core.js.html#line32">line 32</a>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line34">line 34</a>
     </li></ul></dd>
     
 
@@ -501,7 +501,7 @@ These properties will not be processed at the DOM level</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.js.html">core.js</a>, <a href="core.js.html#line49">line 49</a>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line51">line 51</a>
     </li></ul></dd>
     
 
@@ -550,7 +550,7 @@ These properties will not be processed at the DOM level</p>
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>Core.run(Model, { parentNode: document.body, binding: new Binding() })</code></pre>
+    <pre class="prettyprint"><code>Core.run(Model, { parentNode: document.body })</code></pre>
 
 
 
@@ -587,6 +587,9 @@ These properties will not be processed at the DOM level</p>
             
                 
 <span class="param-type">Object</span>
+|
+
+<span class="param-type"><a href="global.html#ModelChain">ModelChain</a></span>
 
 
             
@@ -825,7 +828,7 @@ These properties will not be processed at the DOM level</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Thu Nov 14 2024 23:11:26 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Wed Nov 20 2024 23:29:18 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>listener.js - Documentation</title>
+    <title>model-chain.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -34,7 +34,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">listener.js</h1>
+    <h1 class="page-title">model-chain.js</h1>
     
 
     
@@ -47,46 +47,116 @@
             <pre class="prettyprint source linenums"><code>/**
  * @global
  */
-class Listener {
 
-	/**
-	 * @param {Observable}   observable
-	 * @param {string}       eventName
-	 * @param {Function}     callback
-	 */
-	constructor(observable, eventName, callback) {
-		this._observable = observable
-		this._eventName = eventName
-		this._callback = callback
-	}
-
-	/**
-	 * Remove a listener
-	 */
-	remove() {
-		this._observable.removeListener(this)
-	}
-
-	/**
-	 * @readonly
-	 * @type {string}
-	 */
-	get eventName() {
-		return this._eventName
-	}
-
-	/**
-	 * @readonly
-	 * @type {Function}
-	 */
-	get callback() {
-		return this._callback
-	}
-
-
+/**
+ * @param   {Object} definition
+ * @returns {ModelChain}
+ */
+function ModelChain(definition) {
+	this.definition = structuredClone(definition)
 }
 
-export default Listener
+/**
+ * @param {string} [parentIdentifier]
+ * @param {object} definition
+ * @returns {ModelChain}
+ */
+ModelChain.prototype.prepend = function(parentIdentifier, definition) {
+	if(parentIdentifier === null) {
+		this.definition.children.unshift(definition)
+	} else {
+		const { object } = getObjectByIdentifier(parentIdentifier, this.definition)
+		if(!object.children) {
+			object.children = []
+		}
+		object.children.unshift(definition)
+	}
+	return this
+}
+
+/**
+ * @param {string} [parentIdentifier]
+ * @param {object} definition
+ * @returns {ModelChain}
+ */
+ModelChain.prototype.append = function(parentIdentifier, definition) {
+	if(parentIdentifier === null) {
+		this.definition.children.push(definition)
+	} else {
+		const { object } = getObjectByIdentifier(parentIdentifier, this.definition)
+		if(!object.children) {
+			object.children = []
+		}
+		object.children.push(definition)
+	}
+	return this
+}
+
+/**
+ * @param {string} identifier
+ * @param {object} definition
+ * @returns {ModelChain}
+ */
+ModelChain.prototype.replace = function(identifier, definition) {
+	const { object } = getObjectByIdentifier(identifier, this.definition)
+	for(const property in object) {
+		delete object[property]
+	}
+	Object.assign(object, definition)
+	return this
+}
+
+/**
+ * @param {string} identifier
+ * @param {object} definition
+ * @returns {ModelChain}
+ */
+ModelChain.prototype.before = function(identifier, definition) {
+	const { parent, object } = getObjectByIdentifier(identifier, this.definition)
+	parent.children.splice(parent.children.indexOf(object), 0, definition)
+	return this
+}
+
+/**
+ * @param {string} identifier
+ * @param {object} definition
+ * @returns {ModelChain}
+ */
+ModelChain.prototype.after = function(identifier, definition) {
+	const { parent, object } = getObjectByIdentifier(identifier, this.definition)
+	parent.children.splice(parent.children.indexOf(object) + 1, 0, definition)
+	return this
+}
+
+/**
+ * @param {string} identifier
+ * @param {object} definition
+ * @returns {{object: object, parent: object}}
+ */
+function getObjectByIdentifier(identifier, definition) {
+	/**
+	 *
+	 * @param {object} object
+	 * @param {object} parent
+	 * @returns {{object: object, parent: object}}
+	 */
+	function walk(object, parent) {
+		for(const property in object) {
+			if(property === "identifier" &amp;&amp; object[property] === identifier) {
+				return { object, parent }
+			} else if(property === "children") {
+				for(const child of object[property]) {
+					if(walk(child)) {
+						return { object: child, parent: object }
+					}
+				}
+			}
+		}
+	}
+	return walk(definition, definition)
+}
+
+export default ModelChain
 </code></pre>
         </article>
     </section>
