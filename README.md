@@ -153,6 +153,8 @@ export default ModelBinding
 
 - ``INSERT_BEFORE`` Insert your model before ``parentNode``
 
+- ``INSERT_AFTER`` Insert your model after ``parentNode``
+
 - ``REPLACE_NODE`` Replace ``parentNode`` with your model
 
 - ``WRAP_NODE`` Wrap ``parentNode`` inside your model
@@ -415,6 +417,36 @@ class extends Binding {
 
 export default class 
 ```
+
+#### Model chain
+
+You can alter an existing model using the `ModelChain` API:
+
+```javascript
+const MyModel = {
+  tagName: "div",
+  children: [
+    {
+      tagName: "div",
+      identifier: "title"
+    }
+  ]
+}
+
+const MyAlternative = new ModelChain(MyModel).after("title", {
+  tagName: "div",
+  textContent: "A description"
+})
+```
+
+Available methods: 
+
+* `ModelChain.prepend`
+* `ModelChain.append`
+* `ModelChain.replace`
+* `ModelChain.before`
+* `ModelChain.after`
+
 
 ### API
 

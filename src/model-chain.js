@@ -20,6 +20,7 @@ ModelChain.prototype.prepend = function(parentIdentifier, definition) {
 		this.definition.children.unshift(definition)
 	} else {
 		const { object } = getObjectByIdentifier(parentIdentifier, this.definition)
+		console.log(object, parentIdentifier)
 		if(!object.children) {
 			object.children = []
 		}
@@ -87,7 +88,7 @@ ModelChain.prototype.after = function(identifier, definition) {
  * @param {object} definition
  * @returns {{object: object, parent: object}}
  */
-function getObjectByIdentifier(identifier, definition) {
+export function getObjectByIdentifier(identifier, definition) {
 	/**
 	 *
 	 * @param {object} object
@@ -95,19 +96,19 @@ function getObjectByIdentifier(identifier, definition) {
 	 * @returns {{object: object, parent: object}}
 	 */
 	function walk(object, parent) {
-		for(const property in object) {
-			if(property === "identifier" && object[property] === identifier) {
-				return { object, parent }
-			} else if(property === "children") {
-				for(const child of object[property]) {
-					if(walk(child)) {
-						return { object: child, parent: object }
-					}
+		if(object.identifier === identifier) {
+			return { object, parent }
+		}
+		if(object.children) {
+			for(const child of object.children) {
+				const obj = walk(child, object)
+				if(obj) {
+					return obj
 				}
 			}
 		}
 	}
-	return walk(definition, definition)
+	return walk(definition, null)
 }
 
 export default ModelChain

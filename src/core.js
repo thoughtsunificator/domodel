@@ -26,6 +26,7 @@ class Core {
 		* @property Method {Method}
 		* @property Method.APPEND_CHILD  {string}
 		* @property Method.INSERT_BEFORE {string}
+		* @property Method.INSERT_AFTER  {string}
 		* @property Method.REPLACE_NODE  {string}
 		* @property Method.WRAP_NODE     {string}
 		* @property Method.PREPEND       {string}
@@ -34,6 +35,7 @@ class Core {
 	static METHOD = {
 		APPEND_CHILD: "APPEND_CHILD",
 		INSERT_BEFORE: "INSERT_BEFORE",
+		INSERT_AFTER: "INSERT_AFTER",
 		REPLACE_NODE: "REPLACE_NODE",
 		WRAP_NODE: "WRAP_NODE",
 		PREPEND: "PREPEND",
@@ -83,7 +85,9 @@ class Core {
 		} else if (method === Core.METHOD.APPEND_CHILD) {
 			parentNode.appendChild(node)
 		} else if (method === Core.METHOD.INSERT_BEFORE) {
-			parentNode.parentNode.insertBefore(node, parentNode)
+			parentNode.before(node)
+		} else if (method === Core.METHOD.INSERT_AFTER) {
+			parentNode.after(node)
 		} else if(method === Core.METHOD.REPLACE_NODE) {
 			parentNode.replaceWith(node)
 		} else if (method === Core.METHOD.WRAP_NODE) {
