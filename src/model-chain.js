@@ -11,6 +11,7 @@ function ModelChain(definition) {
 }
 
 /**
+ * @function
  * @param {string} [parentIdentifier]
  * @param {object} definition
  * @returns {ModelChain}
@@ -30,6 +31,7 @@ ModelChain.prototype.prepend = function(parentIdentifier, definition) {
 }
 
 /**
+ * @function
  * @param {string} [parentIdentifier]
  * @param {object} definition
  * @returns {ModelChain}
@@ -48,6 +50,7 @@ ModelChain.prototype.append = function(parentIdentifier, definition) {
 }
 
 /**
+ * @function
  * @param {string} identifier
  * @param {object} definition
  * @returns {ModelChain}
@@ -62,6 +65,7 @@ ModelChain.prototype.replace = function(identifier, definition) {
 }
 
 /**
+ * @function
  * @param {string} identifier
  * @param {object} definition
  * @returns {ModelChain}
@@ -73,6 +77,7 @@ ModelChain.prototype.before = function(identifier, definition) {
 }
 
 /**
+ * @function
  * @param {string} identifier
  * @param {object} definition
  * @returns {ModelChain}
@@ -84,6 +89,7 @@ ModelChain.prototype.after = function(identifier, definition) {
 }
 
 /**
+ * @ignore
  * @param {string} identifier
  * @param {object} definition
  * @returns {{object: object, parent: object}}
