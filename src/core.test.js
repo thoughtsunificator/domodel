@@ -127,6 +127,19 @@ test("insertBefore", (t) => {
 	t.is(t.context.document.body.innerHTML, "<ul><li>First element</li><li>Second element</li><li>Third element</li></ul>")
 })
 
+test("insertAfter", (t) => {
+	t.context.document.body.innerHTML = "<ul><li>First element</li><li>Third element</li></ul>"
+	Core.run({
+		tagName: "li",
+		textContent: "Second element"
+	}, {
+		binding: new Binding(),
+		method: Core.METHOD.INSERT_AFTER,
+		parentNode: t.context.document.querySelector("ul li + li")
+	})
+	t.is(t.context.document.body.innerHTML, "<ul><li>First element</li><li>Third element</li><li>Second element</li></ul>")
+})
+
 test("replaceElement", (t) => {
 	t.context.document.body.innerHTML = '<div class="oldelement"></div>'
 	Core.run({
