@@ -41,10 +41,10 @@ class Observable {
 	 * @param  {*} 			args
 	 * @example observable.emit("myEvent", "Hello World")
 	 */
-	emit(eventName, args) {
+	emit(eventName) {
 		if(Array.isArray(this._listeners[eventName])) {
 			for (const listener of this._listeners[eventName].slice()) {
-				listener.callback(args)
+				listener.callback(...Array.from(arguments).slice(1))
 			}
 		} else {
 			throw new Error(`Cannot emit the event '${eventName}' as there is no listener for this event.`)

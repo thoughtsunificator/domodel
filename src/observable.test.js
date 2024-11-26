@@ -1,7 +1,6 @@
 import { Observable } from "../index.js"
 import test from "ava"
 
-
 test("Observable instance", function(t) {
 	const observable = new Observable()
 	t.deepEqual(observable._listeners, {})
@@ -11,7 +10,7 @@ test("Observable emit", function(t) {
 	const path = []
 	const observable = new Observable()
 	const observable_ = new Observable()
-	observable.listen("test1", () => path.push("first"))
+	observable.listen("test1", (data) => path.push(data))
 	observable.listen("test1", () => path.push("second"))
 	observable.listen("test2", () => path.push("third"))
 	observable.listen("test3", () => {
@@ -19,12 +18,22 @@ test("Observable emit", function(t) {
 	})
 	observable_.listen("test1", () => path.push("fourth"))
 	observable.listen("test1", () => path.push("zero"), true)
-	observable.emit("test1")
+	observable.emit("test1", "first")
 	observable.emit("test2")
 	observable.emit("test3")
 	observable_.emit("test1")
 	t.deepEqual(path, [
 		"zero", "first", "second", "third", "fourth"
+	])
+})
+
+test("Observable emit arguments", function(t) {
+	const observable = new Observable()
+	const listenArguments = []
+	observable.listen("event", (a,b,c) => listenArguments.push(a,b,c))
+	observable.emit("event", 	"zero", "first", "second")
+	t.deepEqual(listenArguments, [
+		"zero", "first", "second"
 	])
 })
 
