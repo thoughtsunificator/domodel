@@ -74,12 +74,24 @@ class Core {
 			binding.identifier[node.domodel.identifier] = parentNode
 		}
 		binding.onCreated()
+		/**
+		 * Temporary comment node that acts as an insertion point
+		 * for any future child nodes. It is used for cases where
+		 * a DocumentFragment will not work as there are no children
+		 * defined at the time the node is created.
+		 */
 		const isPlaceholderDocumentFragment = parentNode.nodeType === node.ownerDocument.defaultView.Node.COMMENT_NODE
 		if(isPlaceholderDocumentFragment) {
 			if(parentNode.domodel?.placeholderNode) {
 				parentNode.domodel.placeholderNode.after(node)
+			} else if(parentNode.isConnected) {
+				parentNode.replaceWith(node) // Won't work if there parentNode has not been added to the DOM
 			} else {
-				parentNode.replaceWith(node)
+				delete parentNode.domodel.placeholderNode
+				if(!parentNode.domodel.fragment) {
+					parentNode.domodel.fragment = parentNode.ownerDocument.createDocumentFragment()
+				}
+				parentNode.domodel.fragment.append(node)
 			}
 			parentNode.domodel.placeholderNode = node
 		} else if (method === Core.METHOD.APPEND_CHILD) {
@@ -95,6 +107,10 @@ class Core {
 			parentNode.replaceWith(node)
 		} else if (method === Core.METHOD.PREPEND) {
 			parentNode.prepend(node)
+		}
+		if(node.domodel?.fragment) {
+			node.replaceWith(...node.domodel.fragment.children)
+			delete node.domodel.fragment
 		}
 		if(!isPlaceholderDocumentFragment && node.isConnected) {
 			binding._onRendered()
