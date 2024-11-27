@@ -145,6 +145,7 @@ class Binding {
 		for(const { target, type, listener } of this._remoteEventListeners)  {
 			target.removeEventListener(type, listener)
 		}
+		this._remoteEventListeners = []
 		if(this._parent !== null) {
 			this._parent._children = this._parent._children.filter(child => child !== this)
 		}
