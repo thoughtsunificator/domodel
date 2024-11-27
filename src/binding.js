@@ -134,6 +134,10 @@ class Binding {
 	 * Remove the model and all its children from the DOM and clean up any listener associated with them.
 	 */
 	remove() {
+		for(const { target, type, listener, options } of this._remoteEventListeners)  {
+			target.removeEventListener(type, listener, options)
+		}
+		this._remoteEventListeners = []
 		const listeners = this._listeners.slice()
 		for(const listener of listeners) {
 			listener.remove()
@@ -142,10 +146,6 @@ class Binding {
 		for(const child of children) {
 			child.remove()
 		}
-		for(const { target, type, listener } of this._remoteEventListeners)  {
-			target.removeEventListener(type, listener)
-		}
-		this._remoteEventListeners = []
 		if(this._parent !== null) {
 			this._parent._children = this._parent._children.filter(child => child !== this)
 		}
@@ -168,7 +168,7 @@ class Binding {
 	 * @param {object}  options
 	 */
 	addEventListener(target, type, listener, options) {
-		this._remoteEventListeners.push({ target, type, listener })
+		this._remoteEventListeners.push({ target, type, listener, options })
 		target.addEventListener(type, listener, options)
 	}
 
