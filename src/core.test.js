@@ -33,6 +33,12 @@ test("modelWithMultipleTargets", (t) => {
 	t.is(t.context.document.body.innerHTML, '<div class="content0"><div class="simplemodel" property="1">My first simple model</div></div><div class="content1"><div class="simplemodel" property="1">My first simple model</div></div><div class="content2"><div class="simplemodel" property="1">My first simple model</div></div>')
 })
 
+/**
+ * Model fragments are "placeholders" model node,
+ * It allows among other thing to avoid having an extra wrapper node
+ * It also allows a model to emulate having multiple root nodes
+ */
+
 test("model fragment", (t) => {
 	Core.run({
 		children: [{
@@ -60,6 +66,19 @@ test("model fragment case 2", (t) => {
 	}, { binding: binding, parentNode: t.context.document.body })
 	binding.run({ tagName: "button" }, { binding: new Binding(), parentNode: binding.identifier.test2 })
 	t.is(t.context.document.body.innerHTML, "<button></button><button></button>")
+})
+
+test("model fragment case 3", (t) => {
+	class Binding2 extends Binding {
+		onCreated() {
+			this.run({ tagName: "button" }, { binding: new Binding() })
+			this.run({ tagName: "button" }, { binding: new Binding() })
+		}
+	}
+	const binding = new Binding2()
+	Core.run({ identifier: "test" }, { binding, parentNode: t.context.document.body })
+	binding.run({ tagName: "button" }, { binding: new Binding(), parentNode: binding.identifier.test })
+	t.is(t.context.document.body.innerHTML, "<button></button><button></button><button></button>")
 })
 
 test("model fragment placeholder", (t) => {
