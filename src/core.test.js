@@ -1,116 +1,41 @@
 import { JSDOM } from "jsdom"
-import test from "ava"
+import ava from "ava"
 
 import { Core, Binding, Observable, EventListener } from "../index.js"
 
-test.beforeEach((t) => {
+ava.beforeEach((test) => {
 	const virtualDOM = new JSDOM()
 	const { document } = virtualDOM.window
-	t.context.document = document
+	test.context.document = document
 })
 
-test("model", (t) => {
+ava("model", (test) => {
 	Core.run({
 		tagName: "div",
 		className: "simplemodel",
 		id: "simplemodel",
 		textContent: "My first simple model"
-	}, { binding: new Binding(), parentNode: t.context.document.body })
-	t.is(t.context.document.body.innerHTML, '<div class="simplemodel" id="simplemodel">My first simple model</div>')
+	}, { binding: new Binding(), target: test.context.document.body })
+	test.is(test.context.document.body.innerHTML, '<div class="simplemodel" id="simplemodel">My first simple model</div>')
 })
 
-test("modelWithMultipleTargets", (t) => {
-	t.context.document.body.innerHTML = '<div class="content0"></div><div class="content1"></div><div class="content2"></div>'
-	const targets = t.context.document.querySelectorAll(".content0, .content1, .content2")
+ava("multiple targets", (test) => {
+	test.context.document.body.innerHTML = '<div class="content0"></div><div class="content1"></div><div class="content2"></div>'
+	const targets = test.context.document.querySelectorAll(".content0, .content1, .content2")
 	for(const target of targets) {
 		Core.run({
 			tagName: "div",
 			className: "simplemodel",
-			property: 1,
+			attributes: {
+				property: 1
+			},
 			textContent: "My first simple model"
-		}, { binding: new Binding(), parentNode: target })
+		}, { binding: new Binding(), target: target })
 	}
-	t.is(t.context.document.body.innerHTML, '<div class="content0"><div class="simplemodel" property="1">My first simple model</div></div><div class="content1"><div class="simplemodel" property="1">My first simple model</div></div><div class="content2"><div class="simplemodel" property="1">My first simple model</div></div>')
+	test.is(test.context.document.body.innerHTML, '<div class="content0"><div class="simplemodel" property="1">My first simple model</div></div><div class="content1"><div class="simplemodel" property="1">My first simple model</div></div><div class="content2"><div class="simplemodel" property="1">My first simple model</div></div>')
 })
 
-/**
- * Model fragments are "placeholders" model node,
- * It allows among other thing to avoid having an extra wrapper node
- * It also allows a model to emulate having multiple root nodes
- */
-
-test("model fragment", (t) => {
-	Core.run({
-		children: [{
-			tagName: "div",
-			className: "test1",
-			textContent: "TestText1"
-		},{
-			tagName: "div",
-			className: "test2",
-			textContent: "TestText2"
-		}]
-	}, { binding: new Binding(), parentNode: t.context.document.body })
-	t.is(t.context.document.body.innerHTML, '<div class="test1">TestText1</div><div class="test2">TestText2</div>')
-})
-
-test("model fragment case 2", (t) => {
-	const binding = new Binding()
-	Core.run({
-		identifier: "test2",
-		children: [
-			{
-				tagName: "button"
-			}
-		]
-	}, { binding: binding, parentNode: t.context.document.body })
-	binding.run({ tagName: "button" }, { binding: new Binding(), parentNode: binding.identifier.test2 })
-	t.is(t.context.document.body.innerHTML, "<button></button><button></button>")
-})
-
-test("model fragment case 3", (t) => {
-	class Binding2 extends Binding {
-		onCreated() {
-			this.run({ tagName: "button" }, { binding: new Binding() })
-			this.run({ tagName: "button" }, { binding: new Binding() })
-		}
-	}
-	const binding = new Binding2()
-	Core.run({ identifier: "test" }, { binding, parentNode: t.context.document.body })
-	binding.run({ tagName: "button" }, { binding: new Binding(), parentNode: binding.identifier.test })
-	t.is(t.context.document.body.innerHTML, "<button></button><button></button><button></button>")
-})
-
-test("model fragment placeholder", (t) => {
-	const binding = new Binding()
-	Core.run({
-		identifier: "test"
-	}, { binding, parentNode: t.context.document.body })
-	binding.run({ tagName: "button" }, { binding, parentNode: binding.identifier.test })
-	t.is(t.context.document.body.innerHTML, "<button></button>")
-})
-
-test("model fragment placeholder case 2", (t) => {
-	const binding = new Binding()
-	Core.run({
-		tagName: "div",
-		children: [
-			{
-				tagName: "span",
-			},
-			{
-				identifier: "test2", // DocumentFragment here is a placeholder and should not be added
-			},
-			{
-				tagName: "small"
-			}
-		]
-	}, { binding: binding, parentNode: t.context.document.body })
-	binding.run({ tagName: "button"	}, { binding: new Binding(), parentNode: binding.identifier.test2 })
-	t.is(t.context.document.body.innerHTML, "<div><span></span><button></button><small></small></div>")
-})
-
-test("childNodes", (t) => {
+ava("childNodes", (test) => {
 	Core.run({
 		tagName: "div",
 		className: "simplemodel",
@@ -129,52 +54,52 @@ test("childNodes", (t) => {
 				]
 			}
 		]
-	}, { binding: new Binding(), parentNode: t.context.document.body })
-	t.is(t.context.document.body.innerHTML, '<div class="simplemodel">My first element<div class="child">My first child<div class="child">My first child child</div></div></div>')
+	}, { binding: new Binding(), target: test.context.document.body })
+	test.is(test.context.document.body.innerHTML, '<div class="simplemodel">My first element<div class="child">My first child<div class="child">My first child child</div></div></div>')
 })
 
-test("insertBefore", (t) => {
-	t.context.document.body.innerHTML = "<ul><li>First element</li><li>Third element</li></ul>"
+ava("insertBefore", (test) => {
+	test.context.document.body.innerHTML = "<ul><li>First element</li><li>Third element</li></ul>"
 	Core.run({
 		tagName: "li",
 		textContent: "Second element"
 	}, {
 		binding: new Binding(),
 		method: Core.METHOD.INSERT_BEFORE,
-		parentNode: t.context.document.querySelector("ul li + li")
+		target: test.context.document.querySelector("ul li + li")
 	})
-	t.is(t.context.document.body.innerHTML, "<ul><li>First element</li><li>Second element</li><li>Third element</li></ul>")
+	test.is(test.context.document.body.innerHTML, "<ul><li>First element</li><li>Second element</li><li>Third element</li></ul>")
 })
 
-test("insertAfter", (t) => {
-	t.context.document.body.innerHTML = "<ul><li>First element</li><li>Third element</li></ul>"
+ava("insertAfter", (test) => {
+	test.context.document.body.innerHTML = "<ul><li>First element</li><li>Third element</li></ul>"
 	Core.run({
 		tagName: "li",
 		textContent: "Second element"
 	}, {
 		binding: new Binding(),
 		method: Core.METHOD.INSERT_AFTER,
-		parentNode: t.context.document.querySelector("ul li + li")
+		target: test.context.document.querySelector("ul li + li")
 	})
-	t.is(t.context.document.body.innerHTML, "<ul><li>First element</li><li>Third element</li><li>Second element</li></ul>")
+	test.is(test.context.document.body.innerHTML, "<ul><li>First element</li><li>Third element</li><li>Second element</li></ul>")
 })
 
-test("replaceElement", (t) => {
-	t.context.document.body.innerHTML = '<div class="oldelement"></div>'
+ava("replaceElement", (test) => {
+	test.context.document.body.innerHTML = '<div class="oldelement"></div>'
 	Core.run({
 		tagName: "span",
 		className: "newelement"
 	}, {
 		binding: new Binding(),
 		method: Core.METHOD.REPLACE_NODE,
-		parentNode: t.context.document.querySelector(".oldelement")
+		target: test.context.document.querySelector(".oldelement")
 	})
-	t.is(t.context.document.body.innerHTML, '<span class="newelement"></span>')
+	test.is(test.context.document.body.innerHTML, '<span class="newelement"></span>')
 })
 
-test("wrapElement", (t) => {
-	t.context.document.body.innerHTML = "<textarea></textarea><textarea></textarea><textarea></textarea>"
-	const textareas = t.context.document.querySelectorAll("textarea")
+ava("wrapElement", (test) => {
+	test.context.document.body.innerHTML = "<textarea></textarea><textarea></textarea><textarea></textarea>"
+	const textareas = test.context.document.querySelectorAll("textarea")
 	for(const textarea of textareas) {
 		Core.run({
 			tagName: "div",
@@ -187,81 +112,65 @@ test("wrapElement", (t) => {
 		}, {
 			binding: new Binding(),
 			method: Core.METHOD.WRAP_NODE,
-			parentNode: textarea
+			target: textarea
 		})
 	}
-	t.is(t.context.document.body.innerHTML, '<div class="wrapper"><p></p><textarea></textarea></div><div class="wrapper"><p></p><textarea></textarea></div><div class="wrapper"><p></p><textarea></textarea></div>')
+	test.is(test.context.document.body.innerHTML, '<div class="wrapper"><p></p><textarea></textarea></div><div class="wrapper"><p></p><textarea></textarea></div><div class="wrapper"><p></p><textarea></textarea></div>')
 })
 
-test("preprend", (t) => {
-	t.context.document.body.innerHTML = "<ul><li>Second element</li><li>Third element</li></ul>"
+ava("preprend", (test) => {
+	test.context.document.body.innerHTML = "<ul><li>Second element</li><li>Third element</li></ul>"
 	Core.run({
 		tagName: "li",
 		textContent: "First element"
 	}, {
 		binding: new Binding(),
 		method: Core.METHOD.PREPEND,
-		parentNode: t.context.document.querySelector("ul")
+		target: test.context.document.querySelector("ul")
 	})
-	t.is(t.context.document.body.innerHTML, "<ul><li>First element</li><li>Second element</li><li>Third element</li></ul>")
+	test.is(test.context.document.body.innerHTML, "<ul><li>First element</li><li>Second element</li><li>Third element</li></ul>")
 })
 
-test("bindings", (t) => {
+ava("bindings", (test) => {
 	Core.run({
 		tagName: "button"
 	}, {
-		parentNode: t.context.document.body,
+		target: test.context.document.body,
 		binding: new class extends Binding {
 			onCreated() {
 				this.root.textContent = "bound"
 			}
 		}
 	})
-	t.is(t.context.document.body.innerHTML, "<button>bound</button>")
+	test.is(test.context.document.body.innerHTML, "<button>bound</button>")
 })
 
 
-test("onRendered", (t) => {
+ava("onConnected", (test) => {
 	Core.run({
 		tagName: "button"
 	}, {
-		parentNode: t.context.document.body,
+		target: test.context.document.body,
 		binding: new class extends Binding {
-			onRendered() {
+			onConnected() {
 				this.root.textContent = "rendered"
 			}
 		}
 	})
-	t.is(t.context.document.body.innerHTML, "<button>rendered</button>")
+	test.is(test.context.document.body.innerHTML, "<button>rendered</button>")
 })
 
-test("bindingProps", (t) => {
-	return new Promise(resolve => {
-		Core.run({
-			tagName: "button"
-		}, {
-			parentNode: t.context.document.body,
-			binding: new class extends Binding {
-				onCreated() {
-					t.is(this.properties.text, "bound")
-					resolve()
-				}
-			}({ text: "bound" }),
-		})
-	})
-})
-
-test("bindingRunModel", (t) => {
+ava("bindingRunModel", (test) => {
 	Core.run({
 		tagName: "button"
 	}, {
-		parentNode: t.context.document.body,
+		target: test.context.document.body,
 		binding: new class extends Binding {
 			onCreated() {
 				Core.run({
 					tagName: "button"
 				}, {
-					parentNode: this.root,
+					target: this.root,
 					binding: new class extends Binding {
 						onCreated() {
 							this.root.textContent = "bound"
@@ -271,27 +180,27 @@ test("bindingRunModel", (t) => {
 			}
 		}
 	})
-	t.is(t.context.document.body.innerHTML, "<button><button>bound</button></button>")
+	test.is(test.context.document.body.innerHTML, "<button><button>bound</button></button>")
 })
 
-test("parentNode", (t) => {
-	t.context.document.body.innerHTML = "<div></div><div></div>"
+ava("target", (test) => {
+	test.context.document.body.innerHTML = "<div></div><div></div>"
 	Core.run({
 		tagName: "button"
 	}, {
 		binding: new Binding(),
-		parentNode: t.context.document.querySelectorAll("div")[0]
+		target: test.context.document.querySelectorAll("div")[0]
 	})
 	Core.run({
 		tagName: "button"
 	}, {
 		binding: new Binding(),
-		parentNode: t.context.document.querySelectorAll("div")[1]
+		target: test.context.document.querySelectorAll("div")[1]
 	})
-	t.is(t.context.document.body.innerHTML, "<div><button></button></div><div><button></button></div>")
+	test.is(test.context.document.body.innerHTML, "<div><button></button></div><div><button></button></div>")
 })
 
-test("identifiers", (t) => {
+ava("identifiers", (test) => {
 	return new Promise(resolve => {
 		Core.run({
 			tagName: "div",
@@ -313,14 +222,14 @@ test("identifiers", (t) => {
 				}
 			]
 		}, {
-			parentNode: t.context.document.body,
+			target: test.context.document.body,
 			binding: new class extends Binding {
 				onCreated() {
-					t.deepEqual(this.identifier.parent, this.root)
-					t.deepEqual(this.identifier.child, this.root.children[0])
-					t.deepEqual(this.identifier.child2, this.root.children[1])
-					t.deepEqual(this.identifier.child3, this.root.children[2])
-					t.deepEqual(this.identifier.childchild, this.root.children[0].children[0])
+					test.deepEqual(this.elements.parent, this.root)
+					test.deepEqual(this.elements.child, this.root.children[0])
+					test.deepEqual(this.elements.child2, this.root.children[1])
+					test.deepEqual(this.elements.child3, this.root.children[2])
+					test.deepEqual(this.elements.childchild, this.root.children[0].children[0])
 					resolve()
 				}
 			}
@@ -328,7 +237,7 @@ test("identifiers", (t) => {
 	})
 })
 
-test("modelProperty", (t) => {
+ava("modelProperty", (test) => {
 	const Model = {
 		tagName: "div"
 	}
@@ -355,38 +264,46 @@ test("modelProperty", (t) => {
 			tagName: "div",
 			children: [
 				{
-					model: Model,
-					binding: MyBinding
+					childModel: {
+						model: Model,
+						binding: MyBinding
+					}
 				},
 				{
-					identifier: "model1",
-					model: Model,
-					binding: Binding
+					childModel: {
+						identifier: "model1",
+						model: Model,
+						binding: Binding
+					}
 				},
 				{
 					tagName: "div",
 					children: [
 						{
-							identifier: "model2",
-							model: Model2,
-							binding: Binding
+							childModel: {
+								identifier: "model2",
+								model: Model2,
+								binding: Binding
+							}
 						},
 					]
 				},
 				{
-					model: Model,
-					binding: MyBinding
+					childModel: {
+						model: Model,
+						binding: MyBinding
+					}
 				}
 			]
 		}, {
-			parentNode: t.context.document.body,
+			target: test.context.document.body,
 			binding: new class extends Binding {
 				onCreated() {
-					t.deepEqual("<div>bound</div>", this.root.children[0].outerHTML)
-					t.deepEqual(this.identifier.model1.root, this.root.children[1])
-					t.deepEqual(this.identifier.model2.root, this.root.children[2].children[0])
-					t.deepEqual(this.identifier.model2.identifier.child, this.root.children[2].children[0].children[0])
-					t.deepEqual("<div>bound</div>", this.root.children[3].outerHTML)
+					test.deepEqual("<div>bound</div>", this.root.children[0].outerHTML)
+					test.deepEqual(this.elements.model1, this.root.children[1])
+					test.deepEqual(this.elements.model2, this.root.children[2].children[0])
+					test.deepEqual(this.identifier.model2.binding.elements.child, this.root.children[2].children[0].children[0])
+					test.deepEqual("<div>bound</div>", this.root.children[3].outerHTML)
 					resolve()
 				}
 			}
@@ -394,7 +311,7 @@ test("modelProperty", (t) => {
 	})
 })
 
-test("eventListener", (t) => {
+ava("eventListener", (test) => {
 
 	let _this
 	let _myEventData
@@ -403,8 +320,8 @@ test("eventListener", (t) => {
 
 	class MyBinding extends Binding {
 
-		constructor(properties) {
-			super(properties, new MyEventListener(properties.observable))
+		constructor() {
+			super(new MyEventListener(observable))
 		}
 
 	}
@@ -428,40 +345,40 @@ test("eventListener", (t) => {
 
 	const observable = new Observable()
 
-	const binding = new MyBinding({ observable })
+	const binding = new MyBinding(observable)
 
 	Core.run({
 		tagName: "div",
-	}, { parentNode: t.context.document.body, binding })
+	}, { target: test.context.document.body, binding })
 
-	t.is(observable._listeners["myEvent"].length, 1)
-	t.is(observable._listeners["myEvent"][0]._callback.prototype, binding.eventListener.myEvent.prototype)
-	t.is(observable._listeners["myEvent2"].length, 1)
-	t.is(observable._listeners["myEvent2"][0]._callback.prototype, binding.eventListener.myEvent2.prototype)
-	t.is(observable._listeners["myEvent3"].length, 1)
-	t.is(observable._listeners["myEvent3"][0]._callback.prototype, binding.eventListener.myEvent3.prototype)
-	t.is(binding._listeners.length, 3)
-	t.is(Object.keys(observable._listeners).length, 3)
+	test.is(observable._listeners["myEvent"].length, 1)
+	test.is(observable._listeners["myEvent"][0].callback.prototype, binding.eventListener.myEvent.prototype)
+	test.is(observable._listeners["myEvent2"].length, 1)
+	test.is(observable._listeners["myEvent2"][0].callback.prototype, binding.eventListener.myEvent2.prototype)
+	test.is(observable._listeners["myEvent3"].length, 1)
+	test.is(observable._listeners["myEvent3"][0].callback.prototype, binding.eventListener.myEvent3.prototype)
+	test.is(binding.listeners.length, 3)
+	test.is(Object.keys(observable._listeners).length, 3)
 	observable.emit("myEvent", { foo: "bar" })
-	t.is(_this, binding)
-	t.deepEqual(_myEventData, { foo: "bar" })
+	test.is(_this, binding)
+	test.deepEqual(_myEventData, { foo: "bar" })
 	observable.emit("myEvent2")
 	observable.emit("myEvent3")
-	t.is(myEvent2, 1)
-	t.is(myEvent3, 1)
+	test.is(myEvent2, 1)
+	test.is(myEvent3, 1)
 
 
 })
 
-test("eventListener inheritance", (t) => {
+ava("eventListener inheritance", (test) => {
 
 	let mySuperEvent = 0
 	let myEvent = 0
 
 	class MyBinding extends Binding {
 
-		constructor(properties) {
-			super(properties, new MyEventListener(properties.observable))
+		constructor(observable) {
+			super(new MyEventListener(observable))
 		}
 
 	}
@@ -490,18 +407,17 @@ test("eventListener inheritance", (t) => {
 
 	const observable = new Observable()
 
-	const binding = new MyBinding({ observable })
+	const binding = new MyBinding(observable)
 
 	Core.run({
 		tagName: "div",
-	}, { parentNode: t.context.document.body, binding })
+	}, { target: test.context.document.body, binding })
 
-	t.is(binding._listeners.length, 4)
+	test.is(binding.listeners.length, 4)
 	observable.emit("mySuperEvent")
 	observable.emit("myEvent")
-	t.is(mySuperEvent, 1)
-	t.is(myEvent, 1)
+	test.is(mySuperEvent, 1)
+	test.is(myEvent, 1)
 
 
 })
-

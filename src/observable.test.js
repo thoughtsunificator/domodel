@@ -1,12 +1,12 @@
 import { Observable } from "../index.js"
-import test from "ava"
+import ava from "ava"
 
-test("Observable instance", function(t) {
+ava("Observable instance", function(test) {
 	const observable = new Observable()
-	t.deepEqual(observable._listeners, {})
+	test.deepEqual(observable._listeners, {})
 })
 
-test("Observable emit", function(t) {
+ava("Observable emit", function(test) {
 	const path = []
 	const observable = new Observable()
 	const observable_ = new Observable()
@@ -22,22 +22,22 @@ test("Observable emit", function(t) {
 	observable.emit("test2")
 	observable.emit("test3")
 	observable_.emit("test1")
-	t.deepEqual(path, [
+	test.deepEqual(path, [
 		"zero", "first", "second", "third", "fourth"
 	])
 })
 
-test("Observable emit arguments", function(t) {
+ava("Observable emit arguments", function(test) {
 	const observable = new Observable()
 	const listenArguments = []
 	observable.listen("event", (a,b,c) => listenArguments.push(a,b,c))
 	observable.emit("event", 	"zero", "first", "second")
-	t.deepEqual(listenArguments, [
+	test.deepEqual(listenArguments, [
 		"zero", "first", "second"
 	])
 })
 
-test("Observable removeListener", function(t) {
+ava("Observable removeListener", function(test) {
 	const path = []
 	const observable = new Observable()
 	const listener = observable.listen("test", data => path.push("1_" + data))
@@ -47,12 +47,12 @@ test("Observable removeListener", function(t) {
 	observable.removeListener(listener)
 	observable.emit("test", "test3")
 	observable.emit("test", "test4")
-	t.deepEqual(path, [
+	test.deepEqual(path, [
 		"1_test1", "test1", "1_test2", "test2", "test3", "test4"
 	])
 })
 
-test("Observable listenerRemove", function(t) {
+ava("Observable listenerRemove", function(test) {
 	const path = []
 	const observable = new Observable()
 	const listener = observable.listen("test", data => path.push("1_" + data))
@@ -62,10 +62,10 @@ test("Observable listenerRemove", function(t) {
 	listener.remove()
 	observable.emit("test", "test3")
 	observable.emit("test", "test4")
-	t.throws(() => {
+	test.throws(() => {
 		observable.emit("testfoo", "test4")
 	}, { instanceOf: Error, message: "Cannot emit the event 'testfoo' as there is no listener for this event." }, "emitting to an event with no listener should throw an error")
-	t.deepEqual(path, [
+	test.deepEqual(path, [
 		"1_test1", "test1", "1_test2", "test2", "test3", "test4"
 	])
 })
