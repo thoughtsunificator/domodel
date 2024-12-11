@@ -29,7 +29,7 @@
     
     <input type="text" id="nav-search" placeholder="Search" />
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Binding.html">Binding</a><ul class='methods'><li data-type='method'><a href="Binding.html#_onRendered">_onRendered</a></li><li data-type='method'><a href="Binding.html#listen">listen</a></li><li data-type='method'><a href="Binding.html#run">run</a></li><li data-type='method'><a href="Binding.html#remove">remove</a></li><li data-type='method'><a href="Binding.html#addEventListener">addEventListener</a></li><li data-type='method'><a href="Binding.html#getIdentifier">getIdentifier</a></li><li data-type='method'><a href="Binding.html#onCreated">onCreated</a></li><li data-type='method'><a href="Binding.html#onRendered">onRendered</a></li></ul></li><li><a href="Core.html">Core</a><ul class='methods'><li data-type='method'><a href="Core.html#.run">run</a></li></ul></li><li><a href="EventListener.html">EventListener</a></li><li><a href="Listener.html">Listener</a><ul class='methods'><li data-type='method'><a href="Listener.html#remove">remove</a></li></ul></li><li><a href="ModelChain.html">ModelChain</a><ul class='methods'><li data-type='method'><a href="ModelChain.html#prepend">prepend</a></li><li data-type='method'><a href="ModelChain.html#append">append</a></li><li data-type='method'><a href="ModelChain.html#replace">replace</a></li><li data-type='method'><a href="ModelChain.html#before">before</a></li><li data-type='method'><a href="ModelChain.html#after">after</a></li></ul></li><li><a href="Model.html">Model</a></li><li><a href="Observable.html">Observable</a><ul class='methods'><li data-type='method'><a href="Observable.html#listen">listen</a></li><li data-type='method'><a href="Observable.html#removeListener">removeListener</a></li><li data-type='method'><a href="Observable.html#emit">emit</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Binding.html">Binding</a><ul class='methods'><li data-type='method'><a href="Binding.html#listen">listen</a></li><li data-type='method'><a href="Binding.html#run">run</a></li><li data-type='method'><a href="Binding.html#remove">remove</a></li><li data-type='method'><a href="Binding.html#addEventListener">addEventListener</a></li><li data-type='method'><a href="Binding.html#onCreated">onCreated</a></li><li data-type='method'><a href="Binding.html#onConnected">onConnected</a></li></ul></li><li><a href="EventListener.html">EventListener</a></li><li><a href="Listener.html">Listener</a><ul class='methods'><li data-type='method'><a href="Listener.html#remove">remove</a></li></ul></li><li><a href="ModelChain.html">ModelChain</a><ul class='methods'><li data-type='method'><a href="ModelChain.html#prepend">prepend</a></li><li data-type='method'><a href="ModelChain.html#append">append</a></li><li data-type='method'><a href="ModelChain.html#replace">replace</a></li><li data-type='method'><a href="ModelChain.html#before">before</a></li><li data-type='method'><a href="ModelChain.html#after">after</a></li></ul></li><li><a href="Observable.html">Observable</a><ul class='methods'><li data-type='method'><a href="Observable.html#listen">listen</a></li><li data-type='method'><a href="Observable.html#emit">emit</a></li><li data-type='method'><a href="Observable.html#removeListener">removeListener</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-core.html">core</a><ul class='methods'><li data-type='method'><a href="module-core.html#.run">run</a></li></ul></li></ul><h3><a href="global.html">Global</a></h3>
 </nav>
 
 <div id="main">
@@ -50,6 +50,8 @@
         Binding
         </h2>
         
+            <div class="class-description usertext"><p>While a <code>Model</code> defines the outlook of a component, a <code>Binding</code> defines its behavior.</p></div>
+        
     
 </header>
 
@@ -60,8 +62,10 @@
             
 
     
+    <h2>Constructor</h2>
+    
 
-    <h4 class="name" id="Binding"><span class="type-signature"></span>new Binding<span class="signature">(properties, eventListener<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Binding"><span class="type-signature"></span>new Binding<span class="signature">(eventListener<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
@@ -73,7 +77,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line8">line 8</a>
+        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line10">line 10</a>
     </li></ul></dd>
     
 
@@ -147,41 +151,6 @@
     </thead>
 
     <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>properties</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
     
 
         <tr>
@@ -264,7 +233,7 @@
 
         
             
-<h4 class="name" id="document"><span class="type-signature"></span>document<span class="type-signature"></span></h4>
+<h4 class="name" id="window"><span class="type-signature"></span>window<span class="type-signature"> :Window</span></h4>
 
 
 
@@ -275,7 +244,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line29">line 29</a>
+        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line172">line 172</a>
     </li></ul></dd>
     
 
@@ -316,6 +285,16 @@
 
 
 
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Window</span>
+
+
+        </li>
+    </ul>
+
 
 
 
@@ -323,7 +302,7 @@
 
         
             
-<h4 class="name" id="window"><span class="type-signature"></span>window<span class="type-signature"></span></h4>
+<h4 class="name" id="document"><span class="type-signature"></span>document<span class="type-signature"> :Document</span></h4>
 
 
 
@@ -334,7 +313,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line36">line 36</a>
+        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line177">line 177</a>
     </li></ul></dd>
     
 
@@ -375,6 +354,16 @@
 
 
 
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Document</span>
+
+
+        </li>
+    </ul>
+
 
 
 
@@ -382,7 +371,7 @@
 
         
             
-<h4 class="name" id="identifier"><span class="type-signature">(readonly) </span>identifier<span class="type-signature"> :object</span></h4>
+<h4 class="name" id="identifier"><span class="type-signature"></span>identifier<span class="type-signature"> :object</span></h4>
 
 
 
@@ -393,7 +382,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line45">line 45</a>
+        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line16">line 16</a>
     </li></ul></dd>
     
 
@@ -433,7 +422,8 @@
 
 
 <div class="description usertext">
-    <p>Access any child nodes identified with the &quot;identifier&quot; property.</p>
+    <p>Access any child Model identified with the &quot;identifier&quot; property.
+Any identifier returns a Binding instance</p>
 </div>
 
 
@@ -455,7 +445,7 @@
 
         
             
-<h4 class="name" id="properties"><span class="type-signature">(readonly) </span>properties<span class="type-signature"> :object</span></h4>
+<h4 class="name" id="elements"><span class="type-signature"></span>elements<span class="type-signature"> :object</span></h4>
 
 
 
@@ -466,78 +456,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line54">line 54</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <dt class="important tag-deprecated">Deprecated:</dt><dd><ul class="dummy"><li>Use constructor arguments instead</li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">object</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="root"><span class="type-signature">(readonly) </span>root<span class="type-signature"> :Element</span></h4>
-
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line63">line 63</a>
+        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line22">line 22</a>
     </li></ul></dd>
     
 
@@ -577,8 +496,147 @@
 
 
 <div class="description usertext">
-    <p>Root Element of this model</p>
+    <p>Access any child Model's element identified with the &quot;identifier&quot; property.
+Any identifier returns an Element</p>
 </div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="parent"><span class="type-signature"></span>parent<span class="type-signature"> :<a href="Binding.html">Binding</a></span></h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line24">line 24</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="Binding.html">Binding</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="root"><span class="type-signature"></span>root<span class="type-signature"> :Element</span></h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line26">line 26</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
 
 
 
@@ -599,7 +657,7 @@
 
         
             
-<h4 class="name" id="model"><span class="type-signature">(readonly) </span>model<span class="type-signature"> :object</span></h4>
+<h4 class="name" id="model"><span class="type-signature"></span>model<span class="type-signature"> :<a href="global.html#Model">Model</a></span></h4>
 
 
 
@@ -610,7 +668,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line71">line 71</a>
+        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line28">line 28</a>
     </li></ul></dd>
     
 
@@ -655,7 +713,7 @@
     <ul>
         <li>
             
-<span class="param-type">object</span>
+<span class="param-type"><a href="global.html#Model">Model</a></span>
 
 
         </li>
@@ -668,7 +726,7 @@
 
         
             
-<h4 class="name" id="eventListener"><span class="type-signature">(readonly) </span>eventListener<span class="type-signature"> :<a href="EventListener.html">EventListener</a></span></h4>
+<h4 class="name" id="children"><span class="type-signature"></span>children<span class="type-signature"> :Array.&lt;ChildBinding></span></h4>
 
 
 
@@ -679,7 +737,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line79">line 79</a>
+        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line30">line 30</a>
     </li></ul></dd>
     
 
@@ -724,7 +782,7 @@
     <ul>
         <li>
             
-<span class="param-type"><a href="EventListener.html">EventListener</a></span>
+<span class="param-type">Array.&lt;ChildBinding></span>
 
 
         </li>
@@ -746,7 +804,7 @@
 
     
 
-    <h4 class="name" id="_onRendered"><span class="type-signature"></span>_onRendered<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="listen"><span class="type-signature"></span>listen<span class="signature">(eventName, callback, unshift<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="Listener.html">Listener</a>}</span></h4>
 
     
 
@@ -758,7 +816,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line86">line 86</a>
+        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line61">line 61</a>
     </li></ul></dd>
     
 
@@ -798,91 +856,9 @@
 
 
 <div class="description usertext">
-    <p>Call onRendered on this Binding and all its children</p>
+    <p>Alias for <code>Observable.listen</code>, the listeners are also stored
+for later removal.</p>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="listen"><span class="type-signature"></span>listen<span class="signature">(eventName, callback, unshift<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="Listener.html">Listener</a>}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line100">line 100</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
 
 
 
@@ -1078,7 +1054,7 @@
 
     
 
-    <h4 class="name" id="run"><span class="type-signature"></span>run<span class="signature">(model, properties, identifier<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="run"><span class="type-signature"></span>run<span class="signature">(model, runParameters, identifier)</span><span class="type-signature"> &rarr; {Element}</span></h4>
 
     
 
@@ -1090,361 +1066,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line119">line 119</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
-    
-    <pre class="prettyprint"><code>binding.run(Model, { binding: new Binding() })</code></pre>
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>model</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>properties</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>parentNode</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Element</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>this.root</code>
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>binding</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Binding.html">Binding</a></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>method</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Method</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>Core.METHOD.APPEND_CHILD</code>
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>identifier</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">str</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="remove"><span class="type-signature"></span>remove<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line136">line 136</a>
+        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line81">line 81</a>
     </li></ul></dd>
     
 
@@ -1484,7 +1106,215 @@
 
 
 <div class="description usertext">
-    <p>Remove the model and all its children from the DOM and clean up any listener associated with them.</p>
+    <p>Alias for <code>Core.run</code>, except that the target is pre-configured to
+be the current <code>Binding</code>'s root <code>Element</code>. Allows identification and hierarchization
+of <code>Models</code> inside the current Binding.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>binding.run(Model, { binding: new Binding() })</code></pre>
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>model</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Model">Model</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>runParameters</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#RunParameters">RunParameters</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>identifier</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">str</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Element</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="remove"><span class="type-signature"></span>remove<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line97">line 97</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Remove the associated <code>Model</code> and all its children from the DOM
+and clean up any <code>DOM</code> <code>Event</code> or <code>Observable</code> listeners associated with them.</p>
 </div>
 
 
@@ -1531,7 +1361,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line170">line 170</a>
+        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line125">line 125</a>
     </li></ul></dd>
     
 
@@ -1571,8 +1401,8 @@
 
 
 <div class="description usertext">
-    <p>Call addEventListener on a given Element while storing the listener for later removal
-Useful when setting up event listeners on a parent Element.</p>
+    <p>Store an <code>DOM</code> event listener for later removal.</p>
+<p>It can be used to store event listeners on foreign <code>Element</code> such as <code>Window</code>.</p>
 </div>
 
 
@@ -1725,7 +1555,7 @@ Useful when setting up event listeners on a parent Element.</p>
 
     
 
-    <h4 class="name" id="getIdentifier"><span class="type-signature"></span>getIdentifier<span class="signature">(key)</span><span class="type-signature"> &rarr; {Element}</span></h4>
+    <h4 class="name" id="onCreated"><span class="type-signature">(abstract) </span>onCreated<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
@@ -1737,7 +1567,7 @@ Useful when setting up event listeners on a parent Element.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line180">line 180</a>
+        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line134">line 134</a>
     </li></ul></dd>
     
 
@@ -1777,7 +1607,7 @@ Useful when setting up event listeners on a parent Element.</p>
 
 
 <div class="description usertext">
-    <p>Access any child nodes identified with the &quot;identifier&quot; property.</p>
+    <p>This hook is called after the <code>Element</code> is created but before the Element is connected to the <code>DOM</code></p>
 </div>
 
 
@@ -1790,10 +1620,171 @@ Useful when setting up event listeners on a parent Element.</p>
 
 
 
-    <h5>Parameters:</h5>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
     
 
-<table class="params">
+    <h4 class="name" id="onConnected"><span class="type-signature">(abstract) </span>onConnected<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line140">line 140</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>This hook is called after the <code>Element</code> is created and is connected to the <code>DOM</code></p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        
+                
+<h4 class="name" id=".ChildBinding">ChildBinding</h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line164">line 164</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
     <thead>
     <tr>
         
@@ -1802,6 +1793,8 @@ Useful when setting up event listeners on a parent Element.</p>
 
         <th>Type</th>
 
+        
+        <th>Attributes</th>
         
 
         
@@ -1815,18 +1808,84 @@ Useful when setting up event listeners on a parent Element.</p>
 
         <tr>
             
-                <td class="name"><code>key</code></td>
+                <td class="name"><code>childModel.model</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">*</span>
+<span class="param-type"><a href="global.html#ElementDefinition">ElementDefinition</a></span>
 
 
             
             </td>
 
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>childModel.binding</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Binding.html">Binding</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>childModel.identifier</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">str</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
             
 
             
@@ -1845,212 +1904,22 @@ Useful when setting up event listeners on a parent Element.</p>
 
 
 
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Element</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
+    <h5>Type:</h5>
+    <ul>
+        <li>
             
-
-    
-
-    <h4 class="name" id="onCreated"><span class="type-signature">(abstract) </span>onCreated<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
+<span class="param-type">object</span>
 
 
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line188">line 188</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    <p>Called after the node is created but before the node is connected to the DOM</p>
-</div>
+        </li>
+    </ul>
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
             
-
-    
-
-    <h4 class="name" id="onRendered"><span class="type-signature">(async, abstract) </span>onRendered<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="binding.js.html">binding.js</a>, <a href="binding.js.html#line196">line 196</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    <p>Called after the node is created and is connected to the DOM</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-    
-
     
 
     
@@ -2068,7 +1937,7 @@ Useful when setting up event listeners on a parent Element.</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Wed Nov 27 2024 06:10:02 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Wed Dec 11 2024 02:48:30 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

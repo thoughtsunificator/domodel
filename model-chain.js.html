@@ -29,7 +29,7 @@
     
     <input type="text" id="nav-search" placeholder="Search" />
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Binding.html">Binding</a><ul class='methods'><li data-type='method'><a href="Binding.html#_onRendered">_onRendered</a></li><li data-type='method'><a href="Binding.html#listen">listen</a></li><li data-type='method'><a href="Binding.html#run">run</a></li><li data-type='method'><a href="Binding.html#remove">remove</a></li><li data-type='method'><a href="Binding.html#addEventListener">addEventListener</a></li><li data-type='method'><a href="Binding.html#getIdentifier">getIdentifier</a></li><li data-type='method'><a href="Binding.html#onCreated">onCreated</a></li><li data-type='method'><a href="Binding.html#onRendered">onRendered</a></li></ul></li><li><a href="Core.html">Core</a><ul class='methods'><li data-type='method'><a href="Core.html#.run">run</a></li></ul></li><li><a href="EventListener.html">EventListener</a></li><li><a href="Listener.html">Listener</a><ul class='methods'><li data-type='method'><a href="Listener.html#remove">remove</a></li></ul></li><li><a href="ModelChain.html">ModelChain</a><ul class='methods'><li data-type='method'><a href="ModelChain.html#prepend">prepend</a></li><li data-type='method'><a href="ModelChain.html#append">append</a></li><li data-type='method'><a href="ModelChain.html#replace">replace</a></li><li data-type='method'><a href="ModelChain.html#before">before</a></li><li data-type='method'><a href="ModelChain.html#after">after</a></li></ul></li><li><a href="Model.html">Model</a></li><li><a href="Observable.html">Observable</a><ul class='methods'><li data-type='method'><a href="Observable.html#listen">listen</a></li><li data-type='method'><a href="Observable.html#removeListener">removeListener</a></li><li data-type='method'><a href="Observable.html#emit">emit</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Binding.html">Binding</a><ul class='methods'><li data-type='method'><a href="Binding.html#listen">listen</a></li><li data-type='method'><a href="Binding.html#run">run</a></li><li data-type='method'><a href="Binding.html#remove">remove</a></li><li data-type='method'><a href="Binding.html#addEventListener">addEventListener</a></li><li data-type='method'><a href="Binding.html#onCreated">onCreated</a></li><li data-type='method'><a href="Binding.html#onConnected">onConnected</a></li></ul></li><li><a href="EventListener.html">EventListener</a></li><li><a href="Listener.html">Listener</a><ul class='methods'><li data-type='method'><a href="Listener.html#remove">remove</a></li></ul></li><li><a href="ModelChain.html">ModelChain</a><ul class='methods'><li data-type='method'><a href="ModelChain.html#prepend">prepend</a></li><li data-type='method'><a href="ModelChain.html#append">append</a></li><li data-type='method'><a href="ModelChain.html#replace">replace</a></li><li data-type='method'><a href="ModelChain.html#before">before</a></li><li data-type='method'><a href="ModelChain.html#after">after</a></li></ul></li><li><a href="Observable.html">Observable</a><ul class='methods'><li data-type='method'><a href="Observable.html#listen">listen</a></li><li data-type='method'><a href="Observable.html#emit">emit</a></li><li data-type='method'><a href="Observable.html#removeListener">removeListener</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-core.html">core</a><ul class='methods'><li data-type='method'><a href="module-core.html#.run">run</a></li></ul></li></ul><h3><a href="global.html">Global</a></h3>
 </nav>
 
 <div id="main">
@@ -45,12 +45,9 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
-* @global
-*
-*/
-
-/**
 * @example
+* import { ModelChain } from "domodel"
+*
 * const MyModel = {
 * 	tagName: "div",
 * 	children: [{
@@ -59,23 +56,24 @@
 * 	}]
 *}
 *
-*const MyAlternative = new ModelChain(MyModel).after("title", {
+*const MyModelChain = new ModelChain(MyModel).after("title", {
 *	tagName: "div",
 *	textContent: "A description"
 *})
+*
+*Core.run(MyModelChain.definition, { target: document.body })
 * @class
-* @name ModelChain
-* @param   {Object} definition
+* Allows updating of models
+* @param {Model} definition
 */
 function ModelChain(definition) {
+	/** @type {Model} */
 	this.definition = structuredClone(definition)
 }
 
 /**
-* @method
-* @name ModelChain#prepend
 * @param {string} [parentIdentifier]
-* @param {object} definition
+* @param {Model} definition
 * @returns {ModelChain}
 */
 ModelChain.prototype.prepend = function(parentIdentifier, definition) {
@@ -83,7 +81,6 @@ ModelChain.prototype.prepend = function(parentIdentifier, definition) {
 		this.definition.children.unshift(definition)
 	} else {
 		const { object } = getObjectByIdentifier(parentIdentifier, this.definition)
-		console.log(object, parentIdentifier)
 		if(!object.children) {
 			object.children = []
 		}
@@ -93,10 +90,8 @@ ModelChain.prototype.prepend = function(parentIdentifier, definition) {
 }
 
 /**
-* @method
-* @name ModelChain#append
 * @param {string} [parentIdentifier]
-* @param {object} definition
+* @param {Model} definition
 * @returns {ModelChain}
 */
 ModelChain.prototype.append = function(parentIdentifier, definition) {
@@ -113,10 +108,8 @@ ModelChain.prototype.append = function(parentIdentifier, definition) {
 }
 
 /**
-* @method
-* @name ModelChain#replace
 * @param {string} identifier
-* @param {object} definition
+* @param {Model} definition
 * @returns {ModelChain}
 */
 ModelChain.prototype.replace = function(identifier, definition) {
@@ -129,10 +122,8 @@ ModelChain.prototype.replace = function(identifier, definition) {
 }
 
 /**
-* @method
-* @name ModelChain#before
 * @param {string} identifier
-* @param {object} definition
+* @param {Model} definition
 * @returns {ModelChain}
 */
 ModelChain.prototype.before = function(identifier, definition) {
@@ -142,10 +133,8 @@ ModelChain.prototype.before = function(identifier, definition) {
 }
 
 /**
-* @method
-* @name ModelChain#after
 * @param {string} identifier
-* @param {object} definition
+* @param {Model} definition
 * @returns {ModelChain}
 */
 ModelChain.prototype.after = function(identifier, definition) {
@@ -157,7 +146,7 @@ ModelChain.prototype.after = function(identifier, definition) {
 /**
 * @ignore
 * @param {string} identifier
-* @param {object} definition
+* @param {Model} definition
 * @returns {{object: object, parent: object}}
 */
 export function getObjectByIdentifier(identifier, definition) {
@@ -184,6 +173,10 @@ export function getObjectByIdentifier(identifier, definition) {
 }
 
 export default ModelChain
+
+/**
+ * @typedef {import("./core.js").Model} Model
+ */
 </code></pre>
         </article>
     </section>
@@ -198,7 +191,7 @@ export default ModelChain
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Wed Nov 27 2024 06:10:02 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Wed Dec 11 2024 02:48:30 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

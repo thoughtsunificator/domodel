@@ -29,7 +29,7 @@
     
     <input type="text" id="nav-search" placeholder="Search" />
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Binding.html">Binding</a><ul class='methods'><li data-type='method'><a href="Binding.html#_onRendered">_onRendered</a></li><li data-type='method'><a href="Binding.html#listen">listen</a></li><li data-type='method'><a href="Binding.html#run">run</a></li><li data-type='method'><a href="Binding.html#remove">remove</a></li><li data-type='method'><a href="Binding.html#addEventListener">addEventListener</a></li><li data-type='method'><a href="Binding.html#getIdentifier">getIdentifier</a></li><li data-type='method'><a href="Binding.html#onCreated">onCreated</a></li><li data-type='method'><a href="Binding.html#onRendered">onRendered</a></li></ul></li><li><a href="Core.html">Core</a><ul class='methods'><li data-type='method'><a href="Core.html#.run">run</a></li></ul></li><li><a href="EventListener.html">EventListener</a></li><li><a href="Listener.html">Listener</a><ul class='methods'><li data-type='method'><a href="Listener.html#remove">remove</a></li></ul></li><li><a href="ModelChain.html">ModelChain</a><ul class='methods'><li data-type='method'><a href="ModelChain.html#prepend">prepend</a></li><li data-type='method'><a href="ModelChain.html#append">append</a></li><li data-type='method'><a href="ModelChain.html#replace">replace</a></li><li data-type='method'><a href="ModelChain.html#before">before</a></li><li data-type='method'><a href="ModelChain.html#after">after</a></li></ul></li><li><a href="Model.html">Model</a></li><li><a href="Observable.html">Observable</a><ul class='methods'><li data-type='method'><a href="Observable.html#listen">listen</a></li><li data-type='method'><a href="Observable.html#removeListener">removeListener</a></li><li data-type='method'><a href="Observable.html#emit">emit</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Binding.html">Binding</a><ul class='methods'><li data-type='method'><a href="Binding.html#listen">listen</a></li><li data-type='method'><a href="Binding.html#run">run</a></li><li data-type='method'><a href="Binding.html#remove">remove</a></li><li data-type='method'><a href="Binding.html#addEventListener">addEventListener</a></li><li data-type='method'><a href="Binding.html#onCreated">onCreated</a></li><li data-type='method'><a href="Binding.html#onConnected">onConnected</a></li></ul></li><li><a href="EventListener.html">EventListener</a></li><li><a href="Listener.html">Listener</a><ul class='methods'><li data-type='method'><a href="Listener.html#remove">remove</a></li></ul></li><li><a href="ModelChain.html">ModelChain</a><ul class='methods'><li data-type='method'><a href="ModelChain.html#prepend">prepend</a></li><li data-type='method'><a href="ModelChain.html#append">append</a></li><li data-type='method'><a href="ModelChain.html#replace">replace</a></li><li data-type='method'><a href="ModelChain.html#before">before</a></li><li data-type='method'><a href="ModelChain.html#after">after</a></li></ul></li><li><a href="Observable.html">Observable</a><ul class='methods'><li data-type='method'><a href="Observable.html#listen">listen</a></li><li data-type='method'><a href="Observable.html#emit">emit</a></li><li data-type='method'><a href="Observable.html#removeListener">removeListener</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-core.html">core</a><ul class='methods'><li data-type='method'><a href="module-core.html#.run">run</a></li></ul></li></ul><h3><a href="global.html">Global</a></h3>
 </nav>
 
 <div id="main">
@@ -44,176 +44,118 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import Binding from "./binding.js"
-// eslint-disable-next-line no-unused-vars
-import ModelChain from "./model-chain.js"
+            <pre class="prettyprint source linenums"><code>/**
+ * @module core
+ * @description
+ * Core related methods
+ *
+ * @example
+ * import { Core } from "domodel"
+ */
+import Binding from "./binding.js"
 
 /**
- * @global
+ * @type {Method}
  */
-class Core {
+export const METHOD = {
+	APPEND_CHILD: "APPEND_CHILD",
+	INSERT_BEFORE: "INSERT_BEFORE",
+	INSERT_AFTER: "INSERT_AFTER",
+	REPLACE_NODE: "REPLACE_NODE",
+	WRAP_NODE: "WRAP_NODE",
+	PREPEND: "PREPEND",
+}
 
-	/**
-	 * Reserved properties
-	 * These properties will not be processed at the DOM level
-	 * @readonly
-	 */
-	static PROPERTIES = [
-		"tagName",
-		"children",
-		"identifier",
-		"model",
-		"binding",
-		"properties"
-	]
-
-	/**
-		* @readonly
-		* @property Method {Method}
-		* @property Method.APPEND_CHILD  {string}
-		* @property Method.INSERT_BEFORE {string}
-		* @property Method.INSERT_AFTER  {string}
-		* @property Method.REPLACE_NODE  {string}
-		* @property Method.WRAP_NODE     {string}
-		* @property Method.PREPEND       {string}
-		* @example Core.Method.APPEND_CHILD
-		*/
-	static METHOD = {
-		APPEND_CHILD: "APPEND_CHILD",
-		INSERT_BEFORE: "INSERT_BEFORE",
-		INSERT_AFTER: "INSERT_AFTER",
-		REPLACE_NODE: "REPLACE_NODE",
-		WRAP_NODE: "WRAP_NODE",
-		PREPEND: "PREPEND",
+/**
+* Create and connect a `Model` to the `DOM`
+* @param {Model}                        model
+* @param {RunParameters}                runParameters
+* @returns {Element}
+* @example Core.run({ tagName: "div" }, { target: document.body })
+*/
+export function run(model, runParameters) {
+	const { target = runParameters.parentNode, binding = new Binding(), method = METHOD.APPEND_CHILD } = runParameters
+	const element = createElement(target, model, binding)
+	binding.root = element
+	binding.model = model
+	binding.onCreated()
+	for (const name of getFunctionNames(binding.eventListener)) {
+		binding.listen(binding.eventListener.observable, name, binding.eventListener[name].bind(binding), true)
 	}
+	connectElement(target, element, method, binding)
+	return element
+}
 
-	/**
-		* @param {Object|ModelChain} model
-		* @param {Object}            properties
-		* @param {Element}           properties.parentNode
-		* @param {Binding}           [properties.binding=new Binding()]
-		* @param {Method}            [properties.method=Core.METHOD.APPEND_CHILD]
-		* @returns {Element}
-		* @example Core.run(Model, { parentNode: document.body })
-		*/
-	static run(model, { parentNode, binding = new Binding(), method = Core.METHOD.APPEND_CHILD } = {}) {
-		let modelDefinition
-		if(model instanceof ModelChain) {
-			modelDefinition = model.definition
-		} else {
-			modelDefinition = model
+/**
+	* Create an `Element` from a `Model`
+	* @ignore
+	* @param   {Element} target
+	* @param   {Model}   model
+	* @param   {Binding} binding
+	* @returns {Element}
+	*/
+export function createElement(target, model, binding) {
+	const { tagName, children = [], identifier, attributes, childModel, ...elementProperties } = model
+	let element
+	if(tagName) { // ElementDefinition
+		element = target.ownerDocument.createElement(tagName)
+		for(const elementProperty in elementProperties) {
+			element[elementProperty] = model[elementProperty]
 		}
-		const node = Core.createElement(parentNode, modelDefinition, binding)
-		binding._root = node
-		binding._model = model
-		for (const name of getFunctionNames(binding.eventListener)) {
-			binding.listen(binding.eventListener.observable, name, binding.eventListener[name].bind(binding), true)
+		for(const attribute in attributes) {
+			element.setAttribute(attribute, attributes[attribute])
 		}
-		if(node instanceof node.ownerDocument.defaultView.DocumentFragment) {
-			/**
-			 * When binding root's element is a DocumentFragment its children need to be referenced
-			 * so that they are removed when Binding.remove is called.
-			*/
-			node.domodel.fragmentChildren = [...node.children]
+		if(identifier) {
+			binding.identifier[identifier] = { element, model, binding }
+			binding.elements[identifier] = element
 		}
-		if(node instanceof node.ownerDocument.defaultView.DocumentFragment &amp;&amp; node.domodel.identifier) {
-			binding.identifier[node.domodel.identifier] = parentNode
-		}
-		binding.onCreated()
-		/**
-		 * Temporary comment node that acts as an insertion point
-		 * for any future child nodes. It is used for cases where
-		 * a DocumentFragment will not work as there are no children
-		 * defined at the time the node is created.
-		 */
-		const isPlaceholderDocumentFragment = parentNode.nodeType === node.ownerDocument.defaultView.Node.COMMENT_NODE
-		if(isPlaceholderDocumentFragment) {
-			if(parentNode.domodel?.placeholderNode) {
-				parentNode.domodel.placeholderNode.after(node)
-			} else if(parentNode.isConnected) {
-				parentNode.replaceWith(node) // Won't work if there parentNode has not been added to the DOM
-			} else {
-				delete parentNode.domodel.placeholderNode
-				if(!parentNode.domodel.fragment) {
-					parentNode.domodel.fragment = parentNode.ownerDocument.createDocumentFragment()
-				}
-				parentNode.domodel.fragment.append(node)
-			}
-			parentNode.domodel.placeholderNode = node
-		} else if (method === Core.METHOD.APPEND_CHILD) {
-			parentNode.appendChild(node)
-		} else if (method === Core.METHOD.INSERT_BEFORE) {
-			parentNode.before(node)
-		} else if (method === Core.METHOD.INSERT_AFTER) {
-			parentNode.after(node)
-		} else if(method === Core.METHOD.REPLACE_NODE) {
-			parentNode.replaceWith(node)
-		} else if (method === Core.METHOD.WRAP_NODE) {
-			node.appendChild(parentNode.cloneNode(true))
-			parentNode.replaceWith(node)
-		} else if (method === Core.METHOD.PREPEND) {
-			parentNode.prepend(node)
-		}
-		if(node.domodel?.fragment) {
-			node.replaceWith(...node.domodel.fragment.children)
-			delete node.domodel.fragment
-		}
-		if(!isPlaceholderDocumentFragment &amp;&amp; node.isConnected) {
-			binding._onRendered()
-		}
-		return node
-	}
-
-	/**
-	  * Create an element from a model definition
-		* @ignore
-		* @param   {Object} Node
-		* @param   {Object} modelDefinition
-		* @param   {Object} Binding
-		* @returns {Element}
-		*/
-	static createElement(parentNode, modelDefinition, binding) {
-		const { tagName, children = [] } = modelDefinition
-		let node
-		if(tagName) {
-			node = parentNode.ownerDocument.createElement(tagName)
-		} else {
-			if(children.length >= 1) {
-				node = parentNode.ownerDocument.createDocumentFragment()
-			} else {
-				node = parentNode.ownerDocument.createComment("")
-			}
-		}
-		node.domodel = {}
-		Object.keys(modelDefinition).filter(property => Core.PROPERTIES.includes(property) === false).forEach(function(property) {
-			if(typeof node[property] !== "undefined") {
-				node[property] = modelDefinition[property]
-			} else {
-				node.setAttribute(property, modelDefinition[property])
-			}
-		})
 		for(const child of children) {
-			if(Object.prototype.hasOwnProperty.call(child, "model") === true) {
-				let childBinding
-				if(Object.prototype.hasOwnProperty.call(child, "binding") === true) {
-					childBinding = new child.binding({ ...binding.properties, ...child.properties })
-					if(Object.prototype.hasOwnProperty.call(child, "identifier") === true) {
-						binding.identifier[child.identifier] = childBinding
-					}
-				}
-				binding.run(child.model, { parentNode: node, binding: childBinding })
-			} else {
-				const childNode = Core.createElement(parentNode, child, binding)
-				node.appendChild(childNode)
+			const childElement = createElement(element, child, binding)
+			element.appendChild(childElement)
+		}
+	} else if(childModel) { // ChildModelDefinition
+		let childBinding
+		if(childModel.binding) {
+			childBinding = new childModel.binding(...(childModel.arguments || []))
+		}
+		element = binding.run(childModel.model, { target, binding: childBinding }, childBinding.identifier)
+		if(childModel.identifier) {
+			binding.identifier[childModel.identifier] = {
+				element,
+				model: childModel.model,
+				binding: childBinding
 			}
+			binding.elements[childModel.identifier] = element
 		}
-		if(Object.prototype.hasOwnProperty.call(modelDefinition, "identifier") === true) {
-			binding.identifier[modelDefinition.identifier] = node
-			node.domodel.identifier = modelDefinition.identifier
-		}
-		return node
 	}
+	return element
+}
 
+/**
+	* @ignore
+	* @param   {Element} target
+	* @param   {Element} element
+	* @param   {Method}  method
+	* @param   {Binding} binding
+	*/
+function connectElement(target, element, method, binding) {
+	if (method === METHOD.APPEND_CHILD) {
+		target.appendChild(element)
+	} else if (method === METHOD.INSERT_BEFORE) {
+		target.before(element)
+	} else if (method === METHOD.INSERT_AFTER) {
+		target.after(element)
+	} else if(method === METHOD.REPLACE_NODE) {
+		target.replaceWith(element)
+	} else if (method === METHOD.WRAP_NODE) {
+		element.appendChild(target.cloneNode(true))
+		target.replaceWith(element)
+	} else if (method === METHOD.PREPEND) {
+		target.prepend(element)
+	}
+	if(element.isConnected) {
+		binding._onConnected()
+	}
 }
 
 /**
@@ -248,7 +190,55 @@ function getPrototypeFunctionNames(prototype) {
 	return functionNames
 }
 
-export default Core
+export default {
+	run,
+	METHOD
+}
+
+/**
+ * @typedef  {(ElementDefinition|ChildModelDefinition)} Model - While a `Binding` defines the behavior of a component, a `Model` defines its look.
+*/
+
+/**
+ * @typedef  {object}                                ElementDefinition                 - Create an Element
+ * @property {tagName}                               tagName
+ * @property {object}                                [attributes]                      - These will be set using setAttribute
+ * @property {str}                                   [identifier]                      - Creates an identifier for this Element
+ * @property {Array&lt;Model>}                          [children]
+*/
+
+/**
+ * @typedef  {object}                                ChildModelDefinition
+ * @property {ChildModel}                            childModel
+ */
+
+/**
+ * @typedef  {object}                                ChildModel                        - Full-featured nesting of model
+ * @property {ElementDefinition}                     childModel.model
+ * @property {Binding}                               childModel.binding                - Binding class
+ * @property {array}                                 [childModel.arguments]            - These properties will be passed to the binding
+ * @property {str}                                   [childModel.identifier]           - Creates an identifier for this ChildModel
+ */
+
+/**
+ * @typedef  {object}                                RunParameters                     - Allow some degree of parameterization when running a Model
+ * @property {Element}                               target
+ * @property {Binding}                               [binding=new Binding()]
+ * @property {Method}                                [method=METHOD.APPEND_CHILD]
+ * @property {str}                                   [identifier]                      - Creates an identifier for this Model
+ */
+
+
+
+/**
+	* @typedef {object} Method - Change how a model is connected to the DOM
+	* @property APPEND_CHILD  {string}
+	* @property INSERT_BEFORE {string}
+	* @property INSERT_AFTER  {string}
+	* @property REPLACE_NODE  {string}
+	* @property WRAP_NODE     {string}
+	* @property PREPEND       {string}
+	*/
 </code></pre>
         </article>
     </section>
@@ -263,7 +253,7 @@ export default Core
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Wed Nov 27 2024 06:10:02 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Wed Dec 11 2024 02:48:30 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
