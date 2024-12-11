@@ -337,7 +337,7 @@ class extends Binding {
 export default class 
 ```
 
-##### Method 3 - "model" property
+##### Method 3 - "childModel" property
 
 ``src/model/application.js``
 ```javascript
@@ -348,11 +348,13 @@ export default {
   tagName: "div",
   children: [
     {
-      model: Model,
-      binding: ModelBinding // optionnal
-      arguments: [] // optionnal
-      identifier: "model" // optionnal
-      // Any other property is not handled.
+      childModel: {
+        model: Model,
+        binding: ModelBinding // optionnal
+        arguments: [] // optionnal
+        identifier: "model" // optionnal
+        // Any other property is ignored.
+      }
     }
   ]
 }
