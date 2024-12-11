@@ -16,7 +16,7 @@ domodel is front-end library that organizes the user interface into models (look
 
 ### Model
 
-A model is a JSON representation of a DOM [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element).
+A model is a JSON representation of a DOM [Element](https://html.spec.whatwg.org/multipage/dom.html#htmlelement).
 
 A model can also be used to refer to both the [Model](https://domodel.unificator.me/global.html#Model) and its [Binding](https://domodel.unificator.me/domodel/Binding.html) as a whole, that is a component (a search bar model for example). 
 
@@ -49,7 +49,7 @@ export default {
 }
 ```
 
-Notice the ``textContent`` property. You can set any [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) properties in this fashion. 
+Notice the ``textContent`` property. You can set any [Element](https://html.spec.whatwg.org/multipage/dom.html#htmlelement) properties in this fashion. 
 
 > If you want to set an ``attribute`` use the attributes object property.
 
@@ -58,7 +58,7 @@ The ``identifier`` allows your binding to track a model and manipulate it in wit
 #### Properties
 <a href="#model-properties"></a>
 
-Most properties listed in your model comes from the [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) class.
+Most properties listed in your model comes from the [Element](https://html.spec.whatwg.org/multipage/dom.html#htmlelement) class.
 
 It also includes:
 
@@ -155,8 +155,8 @@ This method will be called immediately after your model is added to the DOM.
 
 The following properties are made available from within the the instance of a [Binding](http://domodel.unificator.me/Binding.html):
 
-- ``root`` Root [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) of your model.
-- ``identifier`` Hosts individual [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) previously tagged in the definition of the model (see [Model properties](#model-properties)).
+- ``root`` Root [Element](https://html.spec.whatwg.org/multipage/dom.html#htmlelement) of your model.
+- ``identifier`` Hosts individual [Element](https://html.spec.whatwg.org/multipage/dom.html#htmlelement) previously tagged in the definition of the model (see [Model properties](#model-properties)).
 
 ### Methods
 
