@@ -18,9 +18,9 @@ domodel is front-end library that organizes the user interface into models (look
 
 A model is a JSON representation of a DOM [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element).
 
-A model can also be used to refer to both the [Model](https://domodel.unificator.me/module-core.html#~Model) and its [Binding](https://domodel.unificator.me/domodel/Binding.html) as a whole, that is a component (a search bar model for example). 
+A model can also be used to refer to both the [Model](https://domodel.unificator.me/global.html#Model) and its [Binding](https://domodel.unificator.me/domodel/Binding.html) as a whole, that is a component (a search bar model for example). 
 
-Let's take this [Model](https://domodel.unificator.me/module-core.html#~Model) for example:
+Let's take this [Model](https://domodel.unificator.me/global.html#Model) for example:
 
 ```javascript
 export default {
@@ -34,7 +34,7 @@ That would the equivalent of:
 const button = document.createElement("button")
 ```
 
-Next, a [Model](https://domodel.unificator.me/module-core.html#~Model) with children:
+Next, a [Model](https://domodel.unificator.me/global.html#Model) with children:
 
 ```javascript
 export default {
@@ -65,14 +65,14 @@ It also includes:
 - ``tagName`` - ``string`` - Which is passed to ``createElement``
 - ``children`` - ``Array`` - To add children to an Element
 - ``identifier`` - ``string`` - To save and retrieve a Node
-- ``childModel`` - [ChildModel](https://domodel.unificator.me/module-core.html#~ChildModel) - [For model nesting](#nesting-models)
+- ``childModel`` - [ChildModel](https://domodel.unificator.me/global.html#ChildModel) - [For model nesting](#nesting-models)
 
 
 ### Core
 
 #### Adding models to the DOM and managing them
 
-To add a [Model](https://domodel.unificator.me/module-core.html#~Model) to the DOM we use the [Core.run](http://domodel.unificator.me/Core.html#.run) method provided by the [Core module](http://domodel.unificator.me/Core.html).
+To add a [Model](https://domodel.unificator.me/global.html#Model) to the DOM we use the [Core.run](http://domodel.unificator.me/Core.html#.run) method provided by the [Core module](http://domodel.unificator.me/Core.html).
 
 Create a ``main.js`` in ``src/``, it is the entry point module that is defined in your ``index.html`` :
 
@@ -132,11 +132,11 @@ export default ModelBinding
 
 - ``PREPEND`` Insert your model before the first child of ``target``
 
-These are available through [Core.METHOD](https://domodel.unificator.me/module-core.html#~Method).
+These are available through [Core.METHOD](https://domodel.unificator.me/global.html#Method).
 
 ### Binding
 
-While a [Model](https://domodel.unificator.me/module-core.html#~Model) defines the look of a component, a [Binding](http://domodel.unificator.me/Binding.html) defines its behavior.
+While a [Model](https://domodel.unificator.me/global.html#Model) defines the look of a component, a [Binding](http://domodel.unificator.me/Binding.html) defines its behavior.
 
 #### Hooks
 
