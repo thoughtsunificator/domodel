@@ -1,43 +1,20 @@
 /**
- * @global
+ * @class
+ * @param {Observable}   observable
+ * @param {string}       eventName
+ * @param {Function}     callback
  */
-class Listener {
+function Listener(observable, eventName, callback) {
+	this.observable = observable
+	this.eventName = eventName
+	this.callback = callback
+}
 
-	/**
-	 * @param {Observable}   observable
-	 * @param {string}       eventName
-	 * @param {Function}     callback
-	 */
-	constructor(observable, eventName, callback) {
-		this._observable = observable
-		this._eventName = eventName
-		this._callback = callback
-	}
-
-	/**
-	 * Remove a listener
-	 */
-	remove() {
-		this._observable.removeListener(this)
-	}
-
-	/**
-	 * @readonly
-	 * @type {string}
-	 */
-	get eventName() {
-		return this._eventName
-	}
-
-	/**
-	 * @readonly
-	 * @type {Function}
-	 */
-	get callback() {
-		return this._callback
-	}
-
-
+/**
+ * Remove a listener
+ */
+Listener.prototype.remove = function() {
+	this.observable.removeListener(this)
 }
 
 export default Listener

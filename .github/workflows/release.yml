@@ -30,7 +30,7 @@ jobs:
           prerelease: false
 
       - name: Generate documentation
-        run: npm run generate-docs
+        run: npm run generate-docs || true
 
       - name: nojekyll
         run: touch docs/.nojekyll

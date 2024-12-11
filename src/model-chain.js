@@ -1,10 +1,7 @@
 /**
-* @global
-*
-*/
-
-/**
 * @example
+* import { ModelChain } from "domodel"
+*
 * const MyModel = {
 * 	tagName: "div",
 * 	children: [{
@@ -13,23 +10,24 @@
 * 	}]
 *}
 *
-*const MyAlternative = new ModelChain(MyModel).after("title", {
+*const MyModelChain = new ModelChain(MyModel).after("title", {
 *	tagName: "div",
 *	textContent: "A description"
 *})
+*
+*Core.run(MyModelChain.definition, { target: document.body })
 * @class
-* @name ModelChain
-* @param   {Object} definition
+* Allows updating of models
+* @param {Model} definition
 */
 function ModelChain(definition) {
+	/** @type {Model} */
 	this.definition = structuredClone(definition)
 }
 
 /**
-* @method
-* @name ModelChain#prepend
 * @param {string} [parentIdentifier]
-* @param {object} definition
+* @param {Model} definition
 * @returns {ModelChain}
 */
 ModelChain.prototype.prepend = function(parentIdentifier, definition) {
@@ -37,7 +35,6 @@ ModelChain.prototype.prepend = function(parentIdentifier, definition) {
 		this.definition.children.unshift(definition)
 	} else {
 		const { object } = getObjectByIdentifier(parentIdentifier, this.definition)
-		console.log(object, parentIdentifier)
 		if(!object.children) {
 			object.children = []
 		}
@@ -47,10 +44,8 @@ ModelChain.prototype.prepend = function(parentIdentifier, definition) {
 }
 
 /**
-* @method
-* @name ModelChain#append
 * @param {string} [parentIdentifier]
-* @param {object} definition
+* @param {Model} definition
 * @returns {ModelChain}
 */
 ModelChain.prototype.append = function(parentIdentifier, definition) {
@@ -67,10 +62,8 @@ ModelChain.prototype.append = function(parentIdentifier, definition) {
 }
 
 /**
-* @method
-* @name ModelChain#replace
 * @param {string} identifier
-* @param {object} definition
+* @param {Model} definition
 * @returns {ModelChain}
 */
 ModelChain.prototype.replace = function(identifier, definition) {
@@ -83,10 +76,8 @@ ModelChain.prototype.replace = function(identifier, definition) {
 }
 
 /**
-* @method
-* @name ModelChain#before
 * @param {string} identifier
-* @param {object} definition
+* @param {Model} definition
 * @returns {ModelChain}
 */
 ModelChain.prototype.before = function(identifier, definition) {
@@ -96,10 +87,8 @@ ModelChain.prototype.before = function(identifier, definition) {
 }
 
 /**
-* @method
-* @name ModelChain#after
 * @param {string} identifier
-* @param {object} definition
+* @param {Model} definition
 * @returns {ModelChain}
 */
 ModelChain.prototype.after = function(identifier, definition) {
@@ -111,7 +100,7 @@ ModelChain.prototype.after = function(identifier, definition) {
 /**
 * @ignore
 * @param {string} identifier
-* @param {object} definition
+* @param {Model} definition
 * @returns {{object: object, parent: object}}
 */
 export function getObjectByIdentifier(identifier, definition) {
@@ -138,3 +127,7 @@ export function getObjectByIdentifier(identifier, definition) {
 }
 
 export default ModelChain
+
+/**
+ * @typedef {import("./core.js").Model} Model
+ */
