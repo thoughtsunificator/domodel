@@ -15,25 +15,40 @@ function Binding(eventListener = new EventListener(new Observable())) {
 	 */
 	this.identifier = {}
 	/**
+	 * This is a shortcut to this.identifier["foo"].element
 	 * Access any child Model's element identified with the "identifier" property.
 	 * Any identifier returns an Element
 	 * @type {object}
 	 */
 	this.elements = {}
-	/** @type {Binding} */
+	/**
+	 * Parent Binding
+	 * @type {Binding}
+	 */
 	this.parent = null
 	/** @type {Element} */
 	this.root = null
 	/** @type {Model} */
 	this.model = null
-	/** @type {Array<ChildBinding>} */
+	/**
+	 * List of child Binding
+	 * @type {Array<ChildBinding>}
+	 */
 	this.children = []
-	/** @ignore @type {Listener} */
+	/**
+	 * Listener register
+	 * @ignore @type {Listener}
+	 */
 	this.listeners = []
 	/** @ignore @type {EventListener} */
 	this.eventListener = eventListener
 	/** @ignore Used to track listeners on remote foreign Element */
 	this.remoteEventListeners = []
+	/**
+	 * Observable register
+	 * @type {Map}
+	 */
+	this._observables = new Map()
 }
 
 
@@ -52,20 +67,42 @@ Binding.prototype._onConnected = function() {
 /**
  * Alias for `Observable.listen`, the listeners are also stored
  * for later removal.
- * @param {string}   eventName
- * @param {Function} callback
- * @param {boolean}  [unshift=false]
+ * @param {*}          target
+ * @param {string}     eventName
+ * @param {Function}   callback
+ * @param {boolean}    [unshift=false]
  * @returns {Listener}
  * @example binding.listen(observable, "myEvent", message => console.log(message))
  */
-Binding.prototype.listen = function(observable, eventName, callback, unshift = false) {
-	const listener = observable.listen(eventName, callback, unshift)
+Binding.prototype.listen = function(target, eventName, callback, unshift = false) {
+	let listener
+	if(target instanceof Observable) {
+		listener = target.listen(eventName, callback, unshift)
+	} else {
+		/**
+		 * New feature
+		 * This allows to listen to any object not just an Observable
+		 */
+		if(!this.observables.has(target)) {
+			this.observables.set(target, new Observable())
+		}
+		listener = this.observables.get(target).listen(eventName, callback, unshift)
+	}
 	if(unshift) {
 		this.listeners.unshift(listener)
 	} else {
 		this.listeners.push(listener)
 	}
 	return listener
+}
+
+/**
+ *
+ * @param {*} target
+ */
+Binding.prototype.emit = function(target, ...emitArgument) {
+	const observable = this.observables.get(target)
+	observable.emit(...emitArgument)
 }
 
 /**
@@ -150,6 +187,17 @@ Object.defineProperty(Binding.prototype, "document", {
 Object.defineProperty(Binding.prototype, "window", {
 	get: function() {
 		return this.document.defaultView
+	}
+})
+
+/** Binding.observables */
+Object.defineProperty(Binding.prototype, "observables", {
+	get: function() {
+		if(this.parent) {
+			return this.parent.observables
+		} else {
+			return this._observables
+		}
 	}
 })
 
