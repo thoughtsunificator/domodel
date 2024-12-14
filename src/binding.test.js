@@ -222,3 +222,25 @@ ava("onConnected multiples", (test) => {
 	Core.run(MyModel, { binding, target: test.context.document.body })
 	test.is(test.context.document.body.innerHTML, "<div id=\"test\"><button>connected</button><button>connected</button></div>")
 })
+
+ava("listen object", (test) => {
+	const target = {}
+	const target2 = {}
+	const TestBinding = class extends Binding {
+		onCreated() {
+			const targetData = []
+			const target2Data = []
+			this.listen(target, "test", (eventData) => {
+				targetData.push(eventData)
+			})
+			this.listen(target2, "test", (eventData) => {
+				target2Data.push(eventData)
+			})
+			this.emit(target, "test", "foo")
+			this.emit(target2, "test", "bar")
+			test.deepEqual(targetData, ["foo"])
+			test.deepEqual(target2Data, ["bar"])
+		}
+	}
+	Core.run({ tagName: "button" }, { binding: new TestBinding(), target: test.context.document.body })
+})
