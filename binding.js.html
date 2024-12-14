@@ -29,7 +29,7 @@
     
     <input type="text" id="nav-search" placeholder="Search" />
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Binding.html">Binding</a><ul class='methods'><li data-type='method'><a href="Binding.html#listen">listen</a></li><li data-type='method'><a href="Binding.html#run">run</a></li><li data-type='method'><a href="Binding.html#remove">remove</a></li><li data-type='method'><a href="Binding.html#addEventListener">addEventListener</a></li><li data-type='method'><a href="Binding.html#onCreated">onCreated</a></li><li data-type='method'><a href="Binding.html#onConnected">onConnected</a></li></ul></li><li><a href="EventListener.html">EventListener</a></li><li><a href="Listener.html">Listener</a><ul class='methods'><li data-type='method'><a href="Listener.html#remove">remove</a></li></ul></li><li><a href="ModelChain.html">ModelChain</a><ul class='methods'><li data-type='method'><a href="ModelChain.html#prepend">prepend</a></li><li data-type='method'><a href="ModelChain.html#append">append</a></li><li data-type='method'><a href="ModelChain.html#replace">replace</a></li><li data-type='method'><a href="ModelChain.html#before">before</a></li><li data-type='method'><a href="ModelChain.html#after">after</a></li></ul></li><li><a href="Observable.html">Observable</a><ul class='methods'><li data-type='method'><a href="Observable.html#listen">listen</a></li><li data-type='method'><a href="Observable.html#emit">emit</a></li><li data-type='method'><a href="Observable.html#removeListener">removeListener</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-core.html">core</a><ul class='methods'><li data-type='method'><a href="module-core.html#.run">run</a></li></ul></li></ul><h3><a href="global.html">Global</a></h3>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Binding.html">Binding</a><ul class='methods'><li data-type='method'><a href="Binding.html#listen">listen</a></li><li data-type='method'><a href="Binding.html#emit">emit</a></li><li data-type='method'><a href="Binding.html#run">run</a></li><li data-type='method'><a href="Binding.html#remove">remove</a></li><li data-type='method'><a href="Binding.html#addEventListener">addEventListener</a></li><li data-type='method'><a href="Binding.html#onCreated">onCreated</a></li><li data-type='method'><a href="Binding.html#onConnected">onConnected</a></li></ul></li><li><a href="EventListener.html">EventListener</a></li><li><a href="Listener.html">Listener</a><ul class='methods'><li data-type='method'><a href="Listener.html#remove">remove</a></li></ul></li><li><a href="ModelChain.html">ModelChain</a><ul class='methods'><li data-type='method'><a href="ModelChain.html#prepend">prepend</a></li><li data-type='method'><a href="ModelChain.html#append">append</a></li><li data-type='method'><a href="ModelChain.html#replace">replace</a></li><li data-type='method'><a href="ModelChain.html#before">before</a></li><li data-type='method'><a href="ModelChain.html#after">after</a></li></ul></li><li><a href="Observable.html">Observable</a><ul class='methods'><li data-type='method'><a href="Observable.html#listen">listen</a></li><li data-type='method'><a href="Observable.html#emit">emit</a></li><li data-type='method'><a href="Observable.html#removeListener">removeListener</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-core.html">core</a><ul class='methods'><li data-type='method'><a href="module-core.html#.run">run</a></li></ul></li></ul><h3><a href="global.html">Global</a></h3>
 </nav>
 
 <div id="main">
@@ -61,25 +61,40 @@ function Binding(eventListener = new EventListener(new Observable())) {
 	 */
 	this.identifier = {}
 	/**
+	 * This is a shortcut to this.identifier["foo"].element
 	 * Access any child Model's element identified with the "identifier" property.
 	 * Any identifier returns an Element
 	 * @type {object}
 	 */
 	this.elements = {}
-	/** @type {Binding} */
+	/**
+	 * Parent Binding
+	 * @type {Binding}
+	 */
 	this.parent = null
 	/** @type {Element} */
 	this.root = null
 	/** @type {Model} */
 	this.model = null
-	/** @type {Array&lt;ChildBinding>} */
+	/**
+	 * List of child Binding
+	 * @type {Array&lt;ChildBinding>}
+	 */
 	this.children = []
-	/** @ignore @type {Listener} */
+	/**
+	 * Listener register
+	 * @ignore @type {Listener}
+	 */
 	this.listeners = []
 	/** @ignore @type {EventListener} */
 	this.eventListener = eventListener
 	/** @ignore Used to track listeners on remote foreign Element */
 	this.remoteEventListeners = []
+	/**
+	 * Observable register
+	 * @type {Map}
+	 */
+	this._observables = new Map()
 }
 
 
@@ -98,20 +113,42 @@ Binding.prototype._onConnected = function() {
 /**
  * Alias for `Observable.listen`, the listeners are also stored
  * for later removal.
- * @param {string}   eventName
- * @param {Function} callback
- * @param {boolean}  [unshift=false]
+ * @param {*}          target
+ * @param {string}     eventName
+ * @param {Function}   callback
+ * @param {boolean}    [unshift=false]
  * @returns {Listener}
  * @example binding.listen(observable, "myEvent", message => console.log(message))
  */
-Binding.prototype.listen = function(observable, eventName, callback, unshift = false) {
-	const listener = observable.listen(eventName, callback, unshift)
+Binding.prototype.listen = function(target, eventName, callback, unshift = false) {
+	let listener
+	if(target instanceof Observable) {
+		listener = target.listen(eventName, callback, unshift)
+	} else {
+		/**
+		 * New feature
+		 * This allows to listen to any object not just an Observable
+		 */
+		if(!this.observables.has(target)) {
+			this.observables.set(target, new Observable())
+		}
+		listener = this.observables.get(target).listen(eventName, callback, unshift)
+	}
 	if(unshift) {
 		this.listeners.unshift(listener)
 	} else {
 		this.listeners.push(listener)
 	}
 	return listener
+}
+
+/**
+ *
+ * @param {*} target
+ */
+Binding.prototype.emit = function(target, ...emitArgument) {
+	const observable = this.observables.get(target)
+	observable.emit(...emitArgument)
 }
 
 /**
@@ -199,6 +236,17 @@ Object.defineProperty(Binding.prototype, "window", {
 	}
 })
 
+/** Binding.observables */
+Object.defineProperty(Binding.prototype, "observables", {
+	get: function() {
+		if(this.parent) {
+			return this.parent.observables
+		} else {
+			return this._observables
+		}
+	}
+})
+
 export default Binding
 
 /**
@@ -238,7 +286,7 @@ export default Binding
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Wed Dec 11 2024 02:57:44 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sat Dec 14 2024 05:39:30 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
