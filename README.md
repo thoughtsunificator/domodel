@@ -263,6 +263,8 @@ class ModelBinding extends Binding {
 export default ModelBinding 
 ```
 
+> [Binding.listen](https://domodel.unificator.me/Binding.html#listen) also works on non-Observable targets.
+
 #### Emitting events
 
 ``src/model/model.binding.js``
@@ -284,6 +286,8 @@ class ModelBinding extends Binding {
 export default ModelBinding 
 ```
 
+> You can also emit to a non-Observable target using [Binding.emit](https://domodel.unificator.me/Binding.html#emit).
+
 Running your model:
 
 ```javascript
@@ -295,7 +299,6 @@ import ModelBinding from "/model/model.binding.js"
 const observable = new Observable()
 
 Core.run(Model, { target: document.body, binding: new ModelBinding({ observable }) })
-
 
 ```
 
