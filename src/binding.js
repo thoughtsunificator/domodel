@@ -37,7 +37,7 @@ function Binding(eventListener = new EventListener(new Observable())) {
 	this.children = []
 	/**
 	 * Listener register
-	 * @ignore @type {Listener}
+	 * @ignore @type {Array<Listener>}
 	 */
 	this.listeners = []
 	/** @ignore @type {EventListener} */
