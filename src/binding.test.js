@@ -267,21 +267,47 @@ ava("onConnected multiples", (test) => {
 ava("listen object", (test) => {
 	const target = {}
 	const target2 = {}
+	const targetData = []
+	const target2Data = []
 	const TestBinding = class extends Binding {
 		onCreated() {
-			const targetData = []
-			const target2Data = []
 			this.listen(target, "test", (eventData) => {
 				targetData.push(eventData)
 			})
 			this.listen(target2, "test", (eventData) => {
 				target2Data.push(eventData)
 			})
+			Core.run({ tagName: "button" }, { binding: new ChildBinding(), target: test.context.document.body })
 			this.emit(target, "test", "foo")
 			this.emit(target2, "test", "bar")
-			test.deepEqual(targetData, ["foo"])
-			test.deepEqual(target2Data, ["bar"])
+		}
+	}
+	const ChildBinding = class extends Binding {
+		onCreated() {
+			this.listen(target, "test", (eventData) => {
+				targetData.push(eventData)
+			})
+			this.listen(target2, "test", (eventData) => {
+				target2Data.push(eventData)
+			})
+			this.emit(target, "test", "childFoo")
+			this.emit(target2, "test", "childBar")
+		}
+	}
+	const TestBinding2 = class extends Binding {
+		onCreated() {
+			this.listen(target, "test", (eventData) => {
+				targetData.push(eventData)
+			})
+			this.listen(target2, "test", (eventData) => {
+				target2Data.push(eventData)
+			})
+			this.emit(target, "test", "foo2")
+			this.emit(target2, "test", "bar2")
 		}
 	}
 	Core.run({ tagName: "button" }, { binding: new TestBinding(), target: test.context.document.body })
+	Core.run({ tagName: "button" }, { binding: new TestBinding2(), target: test.context.document.body })
+	test.deepEqual(targetData, ["childFoo", "foo", "foo2"])
+	test.deepEqual(target2Data, ["childBar", "bar", "bar2"])
 })
