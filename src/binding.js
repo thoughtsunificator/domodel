@@ -145,7 +145,7 @@ Binding.prototype.remove = function() {
 		binding.remove()
 	}
 	if(this.parent !== null) {
-		this.parent.children = this.parent.children.filter(child => child !== this)
+		this.parent.children.splice(this.parent.children.indexOf(this), 1)
 	}
 	this.root.remove()
 }

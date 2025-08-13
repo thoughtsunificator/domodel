@@ -153,6 +153,47 @@ ava("remove", (test) => {
 	test.is(test.context.observable._listeners["test2"].length, 0)
 })
 
+ava("remove children nested", (test) => {
+	const binding2 = new class extends Binding {
+
+		onCreated() {
+			this.run(MyModel, { binding: new Binding() })
+		}
+
+	}
+	const binding = new class extends Binding {
+
+		onCreated() {
+			this.run(MyModel, { binding: binding2 })
+		}
+
+	}
+	Core.run(MyModel, { binding, target: test.context.document.body })
+	test.is(test.context.document.body.innerHTML, '<div id="test"><div id="test"><div id="test"></div></div></div>')
+	test.is(binding.children.length, 1)
+	test.is(binding2.children.length, 1)
+	binding.remove()
+	test.is(test.context.document.body.innerHTML, "")
+	test.is(binding.children.length, 0)
+	test.is(binding2.children.length, 0)
+})
+
+ava("remove children", (test) => {
+	const binding = new class extends Binding {
+
+		onCreated() {
+			this.run(MyModel, { binding: new Binding() })
+		}
+
+	}
+	Core.run(MyModel, { binding, target: test.context.document.body })
+	test.is(test.context.document.body.innerHTML, '<div id="test"><div id="test"></div></div>')
+	test.is(binding.children.length, 1)
+	binding.remove()
+	test.is(test.context.document.body.innerHTML, "")
+	test.is(binding.children.length, 0)
+})
+
 ava("remove eventListeners", (test) => {
 	const binding = new MyBinding4(test.context.observable)
 	Core.run(MyModel, { binding, target: test.context.document.body })
