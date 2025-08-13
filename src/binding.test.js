@@ -153,6 +153,47 @@ ava("remove", (test) => {
 	test.is(test.context.observable._listeners["test2"].length, 0)
 })
 
+ava("remove children nested", (test) => {
+	const binding2 = new class extends Binding {
+
+		onCreated() {
+			this.run(MyModel, { binding: new Binding() })
+		}
+
+	}
+	const binding = new class extends Binding {
+
+		onCreated() {
+			this.run(MyModel, { binding: binding2 })
+		}
+
+	}
+	Core.run(MyModel, { binding, target: test.context.document.body })
+	test.is(test.context.document.body.innerHTML, '<div id="test"><div id="test"><div id="test"></div></div></div>')
+	test.is(binding.children.length, 1)
+	test.is(binding2.children.length, 1)
+	binding.remove()
+	test.is(test.context.document.body.innerHTML, "")
+	test.is(binding.children.length, 0)
+	test.is(binding2.children.length, 0)
+})
+
+ava("remove children", (test) => {
+	const binding = new class extends Binding {
+
+		onCreated() {
+			this.run(MyModel, { binding: new Binding() })
+		}
+
+	}
+	Core.run(MyModel, { binding, target: test.context.document.body })
+	test.is(test.context.document.body.innerHTML, '<div id="test"><div id="test"></div></div>')
+	test.is(binding.children.length, 1)
+	binding.remove()
+	test.is(test.context.document.body.innerHTML, "")
+	test.is(binding.children.length, 0)
+})
+
 ava("remove eventListeners", (test) => {
 	const binding = new MyBinding4(test.context.observable)
 	Core.run(MyModel, { binding, target: test.context.document.body })
@@ -226,21 +267,47 @@ ava("onConnected multiples", (test) => {
 ava("listen object", (test) => {
 	const target = {}
 	const target2 = {}
+	const targetData = []
+	const target2Data = []
 	const TestBinding = class extends Binding {
 		onCreated() {
-			const targetData = []
-			const target2Data = []
 			this.listen(target, "test", (eventData) => {
 				targetData.push(eventData)
 			})
 			this.listen(target2, "test", (eventData) => {
 				target2Data.push(eventData)
 			})
+			Core.run({ tagName: "button" }, { binding: new ChildBinding(), target: test.context.document.body })
 			this.emit(target, "test", "foo")
 			this.emit(target2, "test", "bar")
-			test.deepEqual(targetData, ["foo"])
-			test.deepEqual(target2Data, ["bar"])
+		}
+	}
+	const ChildBinding = class extends Binding {
+		onCreated() {
+			this.listen(target, "test", (eventData) => {
+				targetData.push(eventData)
+			})
+			this.listen(target2, "test", (eventData) => {
+				target2Data.push(eventData)
+			})
+			this.emit(target, "test", "childFoo")
+			this.emit(target2, "test", "childBar")
+		}
+	}
+	const TestBinding2 = class extends Binding {
+		onCreated() {
+			this.listen(target, "test", (eventData) => {
+				targetData.push(eventData)
+			})
+			this.listen(target2, "test", (eventData) => {
+				target2Data.push(eventData)
+			})
+			this.emit(target, "test", "foo2")
+			this.emit(target2, "test", "bar2")
 		}
 	}
 	Core.run({ tagName: "button" }, { binding: new TestBinding(), target: test.context.document.body })
+	Core.run({ tagName: "button" }, { binding: new TestBinding2(), target: test.context.document.body })
+	test.deepEqual(targetData, ["childFoo", "foo", "foo2"])
+	test.deepEqual(target2Data, ["childBar", "bar", "bar2"])
 })
