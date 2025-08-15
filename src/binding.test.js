@@ -311,3 +311,15 @@ ava("listen object", (test) => {
 	test.deepEqual(targetData, ["childFoo", "foo", "foo2"])
 	test.deepEqual(target2Data, ["childBar", "bar", "bar2"])
 })
+
+ava("emit fail", (test) => {
+	const target = {}
+	const TestBinding = class extends Binding {
+		onCreated() {
+			this.emit(target, "test", "foo")
+		}
+	}
+	test.throws(() => {
+		Core.run({ tagName: "button" }, { binding: new TestBinding(), target: test.context.document.body })
+	}, { message: "No listener were found on this Binding for this Observable" })
+})

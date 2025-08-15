@@ -73,6 +73,7 @@ Binding.prototype._onConnected = function() {
  * @param {boolean}    [unshift=false]
  * @returns {Listener}
  * @example binding.listen(observable, "myEvent", message => console.log(message))
+ * Note: When listening on a non-Observable target, the Binding take care of mapping the listener to a given target. This mapping is inherited by all children which means that children are able to emit to any non-Observable target Listener of any parent.
  */
 Binding.prototype.listen = function(target, eventName, callback, unshift = false) {
 	let listener
@@ -102,7 +103,11 @@ Binding.prototype.listen = function(target, eventName, callback, unshift = false
  */
 Binding.prototype.emit = function(target, ...emitArgument) {
 	const observable = this.observables.get(target)
-	observable.emit(...emitArgument)
+	if(observable) {
+		observable.emit(...emitArgument)
+	} else {
+		throw new Error("No listener were found on this Binding for this Observable")
+	}
 }
 
 /**
