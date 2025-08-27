@@ -32,10 +32,11 @@ export function run(model, runParameters) {
 	const element = createElement(target, model, binding)
 	binding.root = element
 	binding.model = model
-	binding.onCreated()
+	/** Event listeners should be registered prior to calling onCreated as they might be emitted from within onCreated */
 	for (const name of getFunctionNames(binding.eventListener)) {
 		binding.listen(binding.eventListener.observable, name, binding.eventListener[name].bind(binding), true)
 	}
+	binding.onCreated()
 	connectElement(target, element, method, binding)
 	return element
 }
