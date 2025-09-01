@@ -28,6 +28,7 @@ export const METHOD = {
 * @example Core.run({ tagName: "div" }, { target: document.body })
 */
 export function run(model, runParameters) {
+	// 'target' was renamed to 'parentNode' which is why 'target' is set to 'parentNode' by default; for compatibility reasons
 	const { target = runParameters.parentNode, binding = new Binding(), method = METHOD.APPEND_CHILD } = runParameters
 	const element = createElement(target, model, binding)
 	binding.root = element
@@ -178,6 +179,14 @@ export default {
 /**
  * @typedef  {object}                                RunParameters                     - Allow some degree of parameterization when running a Model
  * @property {Element}                               target
+ * @property {Binding}                               [binding=new Binding()]
+ * @property {Method}                                [method=METHOD.APPEND_CHILD]
+ * @property {str}                                   [identifier]                      - Creates an identifier for this Model
+ */
+
+/**
+ * @typedef  {object}                                InsertParameters
+ * @property {Observable}                            target
  * @property {Binding}                               [binding=new Binding()]
  * @property {Method}                                [method=METHOD.APPEND_CHILD]
  * @property {str}                                   [identifier]                      - Creates an identifier for this Model

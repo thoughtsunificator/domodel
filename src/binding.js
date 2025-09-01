@@ -46,7 +46,7 @@ function Binding(eventListener = new EventListener(new Observable())) {
 	this.remoteEventListeners = []
 	/**
 	 * Observable register
-	 * @type {Map}
+	 * @type {Map<Observable>}
 	 */
 	this._observables = new Map()
 }
@@ -130,13 +130,22 @@ Binding.prototype.emit = function(target, ...emitArgument) {
 Binding.prototype.run = function(model, runParameters) {
 	const { identifier, binding = new Binding() } = runParameters
 	binding.parent = this
-	this.children.push({ model, binding: binding, identifier })
+	const child = { model, binding: binding, identifier }
+	this.children.push(child)
 	const element = Core.run(model, { target: runParameters.target || this.root, ...runParameters })
 	if(identifier) {
 		this.identifier[identifier] = { element, model: runParameters.model, binding: binding }
 		this.elements[identifier] = element
 	}
 	return element
+}
+
+Binding.prototype.getChildByObservable = function(observable) {
+	const child = this.children.find(child => child.binding.eventListener.observable === observable)
+	if(!child) {
+		throw new Error("Unable to find any child matching the given Observable.")
+	}
+	return child
 }
 
 /**

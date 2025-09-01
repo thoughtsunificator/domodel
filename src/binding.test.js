@@ -349,3 +349,41 @@ ava("emit fail", (test) => {
 		Core.run({ tagName: "button" }, { binding: new TestBinding(), target: test.context.document.body })
 	}, { message: "No listener were found on this Binding for this Observable" })
 })
+
+ava("target is an Observable", test => {
+	const observable4 = new Observable()
+	const binding = class extends Binding {
+		constructor(observable) {
+			super(new EventListener(observable))
+		}
+	}
+	const aBinding = new binding(observable4)
+	const binding2 = class extends binding {
+		onCreated() {
+			this.run({ tagName: "a" }, { binding: aBinding } )
+			test.is(this.getChildByObservable(observable4).binding, aBinding)
+		}
+	}
+	const rootBinding = new class extends Binding {
+		onCreated() {
+			const observable = new Observable()
+			const observable2 = new Observable()
+			const observable3 = new Observable()
+			this.run({ tagName: "p" }, { binding: new binding(observable) } )
+			const { binding: pBinding } = this.getChildByObservable(observable)
+			this.run({ tagName: "button" }, { binding: new binding2(observable2), target: pBinding.root, method: Core.METHOD.INSERT_BEFORE } )
+			const { binding: buttonBinding } = this.getChildByObservable(observable2)
+			this.run({ tagName: "form" }, { target: buttonBinding.root, method: Core.METHOD.WRAP_NODE } )
+			test.throws(() => {
+				this.getChildByObservable(observable4).binding
+			}, { message: "Unable to find any child matching the given Observable." })
+			test.throws(() => {
+				this.getChildByObservable(observable3)
+			}, { message: "Unable to find any child matching the given Observable." })
+		}
+	}
+	Core.run({
+		tagName: "div",
+	}, { target: test.context.document.body, binding: rootBinding })
+	test.is(test.context.document.body.innerHTML, "<div><form><button><a></a></button></form><p></p></div>")
+})
