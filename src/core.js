@@ -37,23 +37,53 @@ export function run(model, runParameters) {
 		binding.listen(binding.eventListener.observable, name, binding.eventListener[name].bind(binding), true)
 	}
 	binding.onCreated()
+	if(element instanceof element.ownerDocument.defaultView.DocumentFragment) {
+		/**
+		 * When binding root's element is a DocumentFragment its children need to be referenced
+		 * so that they are removed when Binding.remove is called.
+		 */
+		element.domodel.fragmentChildren = [...element.children]
+	}
 	connectElement(target, element, method, binding)
 	return element
 }
 
 /**
-	* Create an `Element` from a `Model`
-	* @ignore
-	* @param   {Element} target
-	* @param   {Model}   model
-	* @param   {Binding} binding
-	* @returns {Element}
-	*/
+ * Create an `Element` from a `Model`
+ * @ignore
+ * @param   {Element} target
+ * @param   {Model}   model
+ * @param   {Binding} binding
+ * @returns {Element}
+ */
 export function createElement(target, model, binding) {
 	const { tagName, children = [], identifier, attributes, childModel, ...elementProperties } = model
 	let element
-	if(tagName) { // ElementDefinition
-		element = target.ownerDocument.createElement(tagName)
+	if(childModel) { // ChildModelDefinition
+		let childBinding
+		if(childModel.binding) {
+			childBinding = new childModel.binding(...(childModel.arguments || []))
+		}
+		element = binding.run(childModel.model, { target, binding: childBinding }, childBinding.identifier)
+		if(childModel.identifier) {
+			binding.identifier[childModel.identifier] = {
+				element,
+				model: childModel.model,
+				binding: childBinding
+			}
+			binding.elements[childModel.identifier] = element
+		}
+	} else { // ElementDefinition
+		if(tagName) {
+			element = target.ownerDocument.createElement(tagName)
+		} else {
+			if(children.length >= 1) {
+				element = target.ownerDocument.createDocumentFragment()
+			} else {
+				element = target.ownerDocument.createComment("")
+			}
+		}
+		element.domodel = {}
 		for(const elementProperty in elementProperties) {
 			element[elementProperty] = model[elementProperty]
 		}
@@ -68,47 +98,51 @@ export function createElement(target, model, binding) {
 			const childElement = createElement(element, child, binding)
 			element.appendChild(childElement)
 		}
-	} else if(childModel) { // ChildModelDefinition
-		let childBinding
-		if(childModel.binding) {
-			childBinding = new childModel.binding(...(childModel.arguments || []))
-		}
-		element = binding.run(childModel.model, { target, binding: childBinding }, childBinding.identifier)
-		if(childModel.identifier) {
-			binding.identifier[childModel.identifier] = {
-				element,
-				model: childModel.model,
-				binding: childBinding
-			}
-			binding.elements[childModel.identifier] = element
-		}
 	}
 	return element
 }
 
 /**
-	* @ignore
-	* @param   {Element} target
-	* @param   {Element} element
-	* @param   {Method}  method
-	* @param   {Binding} binding
-	*/
+ * @ignore
+ * @param   {Element} target
+ * @param   {Element} element
+ * @param   {Method}  method
+ * @param   {Binding} binding
+ */
 function connectElement(target, element, method, binding) {
-	if (method === METHOD.APPEND_CHILD) {
+	const isPlaceholderDocumentFragment = target.nodeType === element.ownerDocument.defaultView.Node.COMMENT_NODE
+	if(isPlaceholderDocumentFragment) {
+		if(target.domodel?.placeholderNode) {
+			target.domodel.placeholderNode.after(element)
+		} else if(target.isConnected) {
+			target.replaceWith(element) // Won't work if there par entNode has not been added to the DOM
+		} else {
+			delete target.domodel.placeholderNode
+			if(!target.domodel.fragment) {
+				target.domodel.fragment = target.ownerDocument.createDocumentFragment()
+			}
+			target.domodel.fragment.append(element)
+		}
+		target.domodel.placeholderNode = element
+	} else if (method === METHOD.APPEND_CHILD) {
 		target.appendChild(element)
 	} else if (method === METHOD.INSERT_BEFORE) {
 		target.before(element)
-	} else if (method === METHOD.INSERT_AFTER) {
-		target.after(element)
 	} else if(method === METHOD.REPLACE_NODE) {
 		target.replaceWith(element)
+	} else if (method === METHOD.INSERT_AFTER) {
+		target.after(element)
 	} else if (method === METHOD.WRAP_NODE) {
 		element.appendChild(target.cloneNode(true))
 		target.replaceWith(element)
 	} else if (method === METHOD.PREPEND) {
 		target.prepend(element)
 	}
-	if(element.isConnected) {
+	if(element.domodel?.fragment) {
+		element.replaceWith(...element.domodel.fragment.children)
+		delete element.domodel.fragment
+	}
+	if(!isPlaceholderDocumentFragment && element.isConnected) {
 		binding._onConnected()
 	}
 }

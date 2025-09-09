@@ -49,6 +49,22 @@ export default {
 }
 ```
 
+You can ommit the ``tagName`` and you will get a fragment document model:
+
+
+```javascript
+// Only the 'children' property is allowed when working with a DocumentFragment.
+export default {
+  children: [
+    {
+      tagName: "h2",
+      identifier: "headline",
+      textContent: "Unveil a new world"
+    }
+  ]
+}
+```
+
 Notice the ``textContent`` property. You can set any [Element](https://html.spec.whatwg.org/multipage/dom.html#htmlelement) properties in this fashion. 
 
 > If you want to set an ``attribute`` use the attributes object property.

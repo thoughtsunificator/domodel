@@ -323,3 +323,41 @@ ava("emit fail", (test) => {
 		Core.run({ tagName: "button" }, { binding: new TestBinding(), target: test.context.document.body })
 	}, { message: "No listener were found on this Binding for this Observable" })
 })
+
+ava("Binding remove documentFragment", (test) => {
+	const MyModel5 = {
+		children: [
+			{
+				tagName: "div",
+				id: "test"
+			}
+		]
+	}
+	const binding = new MyBinding3({ observable: test.context.observable })
+	Core.run(MyModel5, { binding, target: test.context.document.body })
+	test.is(test.context.document.body.innerHTML, '<div id="test"></div>')
+	binding.remove()
+	test.is(test.context.document.body.innerHTML, "")
+})
+
+ava("Binding remove placeholder documentFragment", (test) => {
+	const MyModel5 = {
+		tagName: "div",
+		id: "test",
+		children: [
+			{
+				identifier: "test"
+			}
+		]
+	}
+	const binding = new MyBinding3({ observable: test.context.observable })
+	Core.run(MyModel5, { binding, parentNode: test.context.document.body })
+	binding.run({ tagName: "button" }, { binding: new MyBinding3({ observable: test.context.observable }), parentNode: binding.identifier.test })
+	test.is(test.context.document.body.innerHTML, '<div id="test"><button></button></div>')
+	const b2 = new MyBinding3({ observable: test.context.observable })
+	binding.run({ tagName: "button" }, { identifier: "test3", binding: b2, parentNode: binding.identifier.test })
+	test.is(test.context.document.body.innerHTML, '<div id="test"><button></button><button></button></div>')
+	test.is(binding.identifier.test3.tagName, "BUTTON")
+	binding.remove()
+	test.is(test.context.document.body.innerHTML, "")
+})

@@ -58,6 +58,80 @@ ava("childNodes", (test) => {
 	test.is(test.context.document.body.innerHTML, '<div class="simplemodel">My first element<div class="child">My first child<div class="child">My first child child</div></div></div>')
 })
 
+ava("model fragment", (test) => {
+	Core.run({
+		children: [{
+			tagName: "div",
+			className: "test1",
+			textContent: "TestText1"
+		},{
+			tagName: "div",
+			className: "test2",
+			textContent: "TestText2"
+		}]
+	}, { binding: new Binding(), parentNode: test.context.document.body })
+	test.is(test.context.document.body.innerHTML, '<div class="test1">TestText1</div><div class="test2">TestText2</div>')
+})
+
+ava("model fragment placeholder", (test) => {
+	const binding = new Binding()
+	Core.run({
+		identifier: "test"
+	}, { binding, parentNode: test.context.document.body })
+	binding.run({
+		tagName: "button"
+	}, { binding, parentNode: binding.identifier.test })
+	test.is(test.context.document.body.innerHTML, "<button></button>")
+})
+
+ava("model fragment placeholder case 2", (test) => {
+	const binding2 = new Binding()
+	Core.run({
+		tagName: "div",
+		children: [
+			{
+				tagName: "span",
+			},
+			{
+				identifier: "test2", // DocumentFragment here is a placeholder and should not be added
+			},
+			{
+				tagName: "small"
+			}
+		]
+	}, { binding: binding2, parentNode: test.context.document.body })
+	binding2.run({
+		tagName: "button"
+	}, { binding: new Binding(), parentNode: binding2.identifier.test2 })
+	test.is(test.context.document.body.innerHTML, "<div><span></span><button></button><small></small></div>")
+	// test.is(binding2.identifier.test2.tagName, "BUTTON")
+})
+
+// ava("model fragment placeholder case 3", (t) => {
+//         const binding2 = new Binding()
+//         Core.run({
+//                 tagName: "div",
+//                 children: [
+//                         {
+//                                 tagName: "span",
+//                         },
+//                         {
+//                                 identifier: "test2", // DocumentFragment here is a placeholder and should not be added
+//                         },
+//                         {
+//                                 identifier: "test3", // DocumentFragment here is a placeholder and should not be added
+//                         },
+//                         {
+//                                 tagName: "small"
+//                         }
+//                 ]
+//         }, { binding: binding2, parentNode: test.context.document.body })
+//         binding2.run({
+//                 tagName: "button"
+//         }, { binding: binding2, parentNode: binding2.identifier.test2 })
+//         test.is(test.context.document.body.innerHTML, "<div><span></span><button></button><small></small></div>")
+// })
+
 ava("insertBefore", (test) => {
 	test.context.document.body.innerHTML = "<ul><li>First element</li><li>Third element</li></ul>"
 	Core.run({
