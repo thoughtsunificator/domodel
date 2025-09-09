@@ -15,6 +15,8 @@
 	"license": "MIT",
 	"scripts": {
 		"test": "ava",
+		"test:debug": "concurrently --kill-others --passthrough-arguments --raw 'ava debug --config .ava.js {@}' 'node inspect 127.0.0.1:9229' --",
+		"test:watch": "ava --config .ava.js --watch",
 		"eslint": "eslint src/**",
 		"test-coverage": "c8 ava",
 		"prepare": "husky install",
@@ -23,6 +25,7 @@
 	"devDependencies": {
 		"ava": "^5.3.1",
 		"c8": "^8.0.1",
+		"concurrently": "9.2.1",
 		"docdash": "^1.2.0",
 		"eslint": "^8.47.0",
 		"husky": "^8.0.3",
