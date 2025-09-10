@@ -5,7 +5,7 @@ import Listener from "./listener.js"
 * `Observables` allow `Models` to communicate with each other and store their states.
 */
 function Observable() {
-	this._listeners = {}
+	this._listeners = new Map()
 }
 
 /**
@@ -19,14 +19,14 @@ function Observable() {
  * @example observable.listen("myEvent", message => { console.log(message) })
  */
 Observable.prototype.listen = function(eventName, callback, unshift = false) {
-	if(!Array.isArray(this._listeners[eventName])) {
-		this._listeners[eventName] = []
+	if(!this._listeners.has(eventName)) {
+		this._listeners.set(eventName, [])
 	}
 	const listener = new Listener(this, eventName, callback)
 	if(unshift) {
-		this._listeners[eventName].unshift(listener)
+		this._listeners.get(eventName).unshift(listener)
 	} else {
-		this._listeners[eventName].push(listener)
+		this._listeners.get(eventName).push(listener)
 	}
 	return listener
 }
@@ -37,10 +37,10 @@ Observable.prototype.listen = function(eventName, callback, unshift = false) {
  * @param  {*} 			args
  * @example observable.emit("myEvent", "Hello World")
  */
-Observable.prototype.emit = function(eventName) {
-	if(Array.isArray(this._listeners[eventName])) {
-		for (const listener of this._listeners[eventName].slice()) {
-			listener.callback(...Array.from(arguments).slice(1))
+Observable.prototype.emit = function(eventName, ...eventArgs) {
+	if(this._listeners.has(eventName)) {
+		for (const listener of this._listeners.get(eventName).slice()) {
+			listener.callback(...eventArgs)
 		}
 	} else {
 		throw new Error(`Cannot emit the event '${eventName}' as there is no listener for this event.`)
@@ -51,7 +51,11 @@ Observable.prototype.emit = function(eventName) {
  * @param  {Listener} listener
  */
 Observable.prototype.removeListener = function(listener) {
-	this._listeners[listener.eventName] = this._listeners[listener.eventName].filter(listener_ => listener_ !== listener)
+	const listeners = this._listeners.get(listener.eventName)
+	listeners.splice(listeners.indexOf(listener), 1)
+	if(listeners.length === 0) {
+		this._listeners.delete(listener.eventName)
+	}
 }
 
 export default Observable
