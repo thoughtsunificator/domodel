@@ -88,6 +88,13 @@ Binding.prototype.listen = function(target, eventName, callback, unshift = false
 			this.observables.set(target, new Observable())
 		}
 		listener = this.observables.get(target).listen(eventName, callback, unshift)
+		const listenerRemove = listener.remove
+		listener.remove = () => {
+			listenerRemove.call(listener)
+			if(this.observables.get(target)._listeners.size === 0) {
+				this.observables.delete(target)
+			}
+		}
 	}
 	if(unshift) {
 		this.listeners.unshift(listener)

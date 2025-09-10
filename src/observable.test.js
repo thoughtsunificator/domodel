@@ -3,7 +3,7 @@ import ava from "ava"
 
 ava("Observable instance", function(test) {
 	const observable = new Observable()
-	test.deepEqual(observable._listeners, {})
+	test.deepEqual(observable._listeners, new Map())
 })
 
 ava("Observable emit", function(test) {
@@ -41,15 +41,12 @@ ava("Observable removeListener", function(test) {
 	const path = []
 	const observable = new Observable()
 	const listener = observable.listen("test", data => path.push("1_" + data))
-	observable.listen("test", data => path.push(data))
-	observable.emit("test", "test1")
-	observable.emit("test", "test2")
+	const listener2 = observable.listen("test", data => path.push(data))
+	test.deepEqual(observable._listeners.get("test"), [listener, listener2])
 	observable.removeListener(listener)
-	observable.emit("test", "test3")
-	observable.emit("test", "test4")
-	test.deepEqual(path, [
-		"1_test1", "test1", "1_test2", "test2", "test3", "test4"
-	])
+	test.deepEqual(observable._listeners.get("test"), [listener2])
+	observable.removeListener(listener2)
+	test.is(observable._listeners.get("test"), undefined)
 })
 
 ava("Observable listenerRemove", function(test) {

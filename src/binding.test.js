@@ -134,13 +134,13 @@ ava("listen", (test) => {
 	const binding = new MyBinding3(test.context.observable)
 	Core.run(MyModel, { binding, target: test.context.document.body })
 	function myCallback() {}
-	test.is(test.context.observable._listeners["test"].length, 1)
+	test.is(test.context.observable._listeners.get("test").length, 1)
 	binding.listen(test.context.observable, "test", myCallback, true)
-	test.is(test.context.observable._listeners["test"].length, 2)
-	test.is(test.context.observable._listeners["test2"].length, 1)
-	test.is(test.context.observable._listeners["test"][0].callback, myCallback)
+	test.is(test.context.observable._listeners.get("test").length, 2)
+	test.is(test.context.observable._listeners.get("test2").length, 1)
+	test.is(test.context.observable._listeners.get("test")[0].callback, myCallback)
 	test.is(binding.listeners.length, 3)
-	test.is(Object.keys(test.context.observable._listeners).length, 2)
+	test.is(test.context.observable._listeners.size, 2)
 })
 
 ava("remove", (test) => {
@@ -149,8 +149,8 @@ ava("remove", (test) => {
 	test.is(test.context.document.body.innerHTML, '<div id="test"></div>')
 	binding.remove()
 	test.is(test.context.document.body.innerHTML, "")
-	test.is(test.context.observable._listeners["test"].length, 0)
-	test.is(test.context.observable._listeners["test2"].length, 0)
+	test.is(test.context.observable._listeners["test"], undefined)
+	test.is(test.context.observable._listeners["test2"], undefined)
 })
 
 ava("remove children nested", (test) => {
@@ -212,8 +212,8 @@ ava("remove eventListeners", (test) => {
 	test.is(binding.clickA, 1)
 	test.is(binding.clickB, 1)
 	test.is(test.context.document.body.innerHTML, "")
-	test.is(test.context.observable._listeners["test"].length, 0)
-	test.is(test.context.observable._listeners["test2"].length, 0)
+	test.is(test.context.observable._listeners["test"], undefined)
+	test.is(test.context.observable._listeners["test2"], undefined)
 })
 
 ava("onConnected", (test) => {
@@ -264,7 +264,7 @@ ava("onConnected multiples", (test) => {
 	test.is(test.context.document.body.innerHTML, "<div id=\"test\"><button>connected</button><button>connected</button></div>")
 })
 
-ava("listen object", (test) => {
+ava("listen to a non-observable target", (test) => {
 	const target = {}
 	const target2 = {}
 	const targetData = []
@@ -302,6 +302,7 @@ ava("listen object", (test) => {
 			this.listen(target2, "test", (eventData) => {
 				target2Data.push(eventData)
 			})
+			test.is(this.observables.size, 2)
 			this.emit(target, "test", "foo2")
 			this.emit(target2, "test", "bar2")
 		}
@@ -310,6 +311,31 @@ ava("listen object", (test) => {
 	Core.run({ tagName: "button" }, { binding: new TestBinding2(), target: test.context.document.body })
 	test.deepEqual(targetData, ["childFoo", "foo", "foo2"])
 	test.deepEqual(target2Data, ["childBar", "bar", "bar2"])
+})
+
+ava("non-observable listeners should be removed along with their binding", test => {
+	const target = {}
+	const target2 = {}
+	let fooListener
+	const ParentBinding = class extends Binding {
+		onCreated() {
+			fooListener = this.listen(target, "foo", () => {})
+			this.run({ tagName: "button" }, { binding: new ChildBinding() })
+		}
+	}
+	const ChildBinding = class extends Binding {
+		onCreated() {
+			this.listen(target, "bar", () => {})
+			this.listen(target2, "baz", () => {})
+			this.remove()
+		}
+	}
+	const parentBinding = new ParentBinding()
+	Core.run({ tagName: "button" }, { binding: parentBinding, target: test.context.document.body })
+	test.deepEqual(parentBinding.observables.get(target)._listeners.size, 1)
+	test.is(parentBinding.observables.get(target2), undefined)
+	test.deepEqual(parentBinding.observables.get(target)._listeners.get("foo"), [fooListener])
+	test.is(parentBinding.observables.get(target2), undefined)
 })
 
 ava("emit fail", (test) => {
