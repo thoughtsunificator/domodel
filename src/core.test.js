@@ -35,6 +35,57 @@ ava("multiple targets", (test) => {
 	test.is(test.context.document.body.innerHTML, '<div class="content0"><div class="simplemodel" property="1">My first simple model</div></div><div class="content1"><div class="simplemodel" property="1">My first simple model</div></div><div class="content2"><div class="simplemodel" property="1">My first simple model</div></div>')
 })
 
+ava("test cache", (test) => {
+	for(let i =0; i < 2;i++) {
+		const binding = new Binding()
+		Core.run({
+			tagName: "div",
+			className: "simplemodel",
+			textContent: "My first element",
+			identifier: "test",
+			attributes: { "data-foo": "bar" },
+			children: [
+				{
+					tagName: "button",
+					children: [
+						{
+							tagName: "div"
+						},
+						{
+							tagName: "div",
+							className: "second"
+						}
+					]
+				},
+				{
+					tagName: "div",
+					className: "child",
+					identifier: "c1",
+					textContent: "My first child",
+					children: [
+						{
+							tagName: "div",
+							className: "child",
+							identifier: "c2",
+							textContent: "My first child child"
+						}
+					]
+				},
+				{
+					tagName: "p"
+				}
+			]
+		}, { binding, target: test.context.document.body, enableCache: true })
+		test.not(binding.elements.test, undefined)
+		test.is(binding.elements.test, test.context.document.querySelectorAll(".simplemodel")[i])
+		test.not(binding.elements.c1, undefined)
+		test.is(binding.elements.c1, test.context.document.querySelectorAll(".simplemodel")[i].querySelector(".child"))
+		test.not(binding.elements.c2, undefined)
+		test.is(binding.elements.c2, test.context.document.querySelectorAll(".simplemodel")[i].querySelector(".child .child"))
+	}
+		test.is(test.context.document.body.innerHTML, '<div class="simplemodel" data-foo="bar">My first element<button><div></div><div class="second"></div></button><div class="child">My first child<div class="child">My first child child</div></div><p></p></div><div class="simplemodel" data-foo="bar">My first element<button><div></div><div class="second"></div></button><div class="child">My first child<div class="child">My first child child</div></div><p></p></div>')
+})
+
 ava("childNodes", (test) => {
 	Core.run({
 		tagName: "div",

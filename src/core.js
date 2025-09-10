@@ -29,7 +29,16 @@ export const METHOD = {
 */
 export function run(model, runParameters) {
 	const { target = runParameters.parentNode, binding = new Binding(), method = METHOD.APPEND_CHILD } = runParameters
-	const element = createElement(target, model, binding)
+	const cache = []
+	let element
+	//runParameters.enableCache = false
+	if(runParameters.enableCache && binding.cache) {
+		//console.debug("Using cache")
+		element = createElementFromCache(target, model, binding)
+	} else {
+		element = createElement(target, model, binding, cache)
+		Object.getPrototypeOf(binding).cache = cache
+	}
 	binding.root = element
 	binding.model = model
 	/** Event listeners should be registered prior to calling onCreated as they might be emitted from within onCreated */
@@ -49,24 +58,36 @@ export function run(model, runParameters) {
 	* @param   {Binding} binding
 	* @returns {Element}
 	*/
-export function createElement(target, model, binding) {
+export function createElement(target, model, binding, cache) {
 	const { tagName, children = [], identifier, attributes, childModel, ...elementProperties } = model
 	let element
 	if(tagName) { // ElementDefinition
 		element = target.ownerDocument.createElement(tagName)
+		cache.push({type: "createElement", tagName})
 		for(const elementProperty in elementProperties) {
 			element[elementProperty] = model[elementProperty]
+			cache.push({type: "assignment", key: elementProperty})
 		}
 		for(const attribute in attributes) {
 			element.setAttribute(attribute, attributes[attribute])
+			cache.push({type: "setAttribute", attribute })
 		}
 		if(identifier) {
 			binding.identifier[identifier] = { element, model, binding }
 			binding.elements[identifier] = element
+			cache.push({type: "setIdentifier", identifier})
 		}
-		for(const child of children) {
-			const childElement = createElement(element, child, binding)
+		if(children.length >= 1) {
+			cache.push({type: "beginLoopChildren"})
+		}
+		for(let i =0; i < children.length; i++) {
+			const child = children[i]
+			cache.push({type: "createChild"})
+			const childElement = createElement(element, child, binding, cache)
 			element.appendChild(childElement)
+		}
+		if(children.length >= 1) {
+			cache.push({type: "endLoopChildren"})
 		}
 	} else if(childModel) { // ChildModelDefinition
 		let childBinding
@@ -84,6 +105,48 @@ export function createElement(target, model, binding) {
 		}
 	}
 	return element
+}
+
+function createElementFromCache(target, model, binding) {
+	const { cache } = binding
+	let element = null
+	let depth = 0
+	let modelTarget = model
+	const childIndexMap = new Map()
+	const depthMap = {}
+	for(const cacheEntry of cache) {
+		if(cacheEntry.type === "createElement") {
+			element = target.ownerDocument.createElement(cacheEntry.tagName)
+			depthMap[depth] = { element, modelTarget }
+			if(depthMap[depth - 1]) {
+				depthMap[depth - 1].element.appendChild(element)
+			}
+		}
+		if(cacheEntry.type === "beginLoopChildren") {
+			depth++
+			childIndexMap.set(depth, 0)
+		}
+		if(cacheEntry.type === "endLoopChildren") {
+			depth--
+		}
+		if(cacheEntry.type === "createChild") {
+			const childIndex = childIndexMap.get(depth)
+			modelTarget = depthMap[depth - 1].modelTarget.children[childIndex]
+			childIndexMap.set(depth, childIndex + 1)
+		}
+		if(cacheEntry.type === "setAttribute") {
+			element.setAttribute(cacheEntry.attribute, modelTarget.attributes[cacheEntry.attribute])
+		}
+		if(cacheEntry.type === "setIdentifier") {
+			const identifier = cacheEntry.identifier
+			binding.identifier[identifier] = { element, model, binding }
+			binding.elements[identifier] = element
+		}
+		if(cacheEntry.type === "assignment") {
+			element[cacheEntry.key] = modelTarget[cacheEntry.key]
+		}
+	}
+	return depthMap[0].element
 }
 
 /**
