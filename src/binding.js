@@ -14,6 +14,7 @@ function Binding(eventListener = new EventListener(new Observable())) {
 	 * @type {object}
 	 */
 	this.identifier = {}
+	this.identifiedAs = null
 	/**
 	 * This is a shortcut to this.identifier["foo"].element
 	 * Access any child Model's element identified with the "identifier" property.
@@ -49,6 +50,7 @@ function Binding(eventListener = new EventListener(new Observable())) {
 	 * @type {Map}
 	 */
 	this._observables = new Map()
+	this.connected = false
 }
 
 
@@ -58,6 +60,7 @@ function Binding(eventListener = new EventListener(new Observable())) {
  * Call `onConnected` on this Binding and all its children
  */
 Binding.prototype._onConnected = function() {
+	this.connected = true
 	this.onConnected()
 	for(const { binding } of this.children) {
 		binding._onConnected()
@@ -81,20 +84,13 @@ Binding.prototype.listen = function(target, eventName, callback, unshift = false
 		listener = target.listen(eventName, callback, unshift)
 	} else {
 		/**
-		 * New feature
-		 * This allows to listen to any object not just an Observable
+		 * This enables listening of non-Observable targets
 		 */
 		if(!this.observables.has(target)) {
 			this.observables.set(target, new Observable())
 		}
 		listener = this.observables.get(target).listen(eventName, callback, unshift)
-		const listenerRemove = listener.remove
-		listener.remove = () => {
-			listenerRemove.call(listener)
-			if(this.observables.get(target)._listeners.size === 0) {
-				this.observables.delete(target)
-			}
-		}
+		listener.secondaryTarget = target
 	}
 	if(unshift) {
 		this.listeners.unshift(listener)
@@ -135,6 +131,7 @@ Binding.prototype.run = function(model, runParameters) {
 	if(identifier) {
 		this.identifier[identifier] = { element, model: runParameters.model, binding: binding }
 		this.elements[identifier] = element
+		binding.identifiedAs = identifier
 	}
 	return element
 }
@@ -151,15 +148,37 @@ Binding.prototype.remove = function() {
 	const listeners = this.listeners.slice()
 	for(const listener of listeners) {
 		listener.remove()
+		if(listener.secondaryTarget) {
+			if(this.observables.get(listener.secondaryTarget)._listeners.size === 0) {
+				this.observables.delete(listener.secondaryTarget)
+			}
+		}
 	}
 	const children = this.children.slice()
 	for(const { binding } of children) {
 		binding.remove()
 	}
 	if(this.parent !== null) {
-		this.parent.children.splice(this.parent.children.indexOf(this), 1)
+		this.parent.children = this.parent.children.filter(child => child.binding !== this)
+		if(this.identifiedAs) {
+			delete this.parent.elements[this.identifiedAs]
+			delete this.parent.identifier[this.identifiedAs]
+		}
 	}
+	/**
+	 * The following are cleared even though the Binding will probably be GC
+	 * That's because someone the life cycle of a Binding is not necessarily
+	 * tighly coupled with its root element, Binding.remove might get called multiple
+	 * times if a Binding is poorly setup, this will cause an error which will make
+	 * things more obvious than silently failing. This can also happen when a Binding
+	 * is removed as part of a chain of events that causes remove to be call twice for example.
+	 */
+	this.listeners = []
+	this.elements = {}
+	this.identifier = {}
 	this.root.remove()
+	this.connected = false
+	this.root = null
 }
 
 /**

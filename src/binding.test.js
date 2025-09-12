@@ -148,6 +148,7 @@ ava("remove", (test) => {
 	Core.run(MyModel, { binding, target: test.context.document.body })
 	test.is(test.context.document.body.innerHTML, '<div id="test"></div>')
 	binding.remove()
+	test.false(binding.connected)
 	test.is(test.context.document.body.innerHTML, "")
 	test.is(test.context.observable._listeners["test"], undefined)
 	test.is(test.context.observable._listeners["test2"], undefined)
@@ -182,16 +183,22 @@ ava("remove children", (test) => {
 	const binding = new class extends Binding {
 
 		onCreated() {
+			const b = new Binding()
+			this.run(MyModel, { binding: b, identifier: "test" })
 			this.run(MyModel, { binding: new Binding() })
+			const child = this.children[1]
+			test.is(this.children.length, 2)
+			b.remove()
+			test.deepEqual(this.elements, {})
+			test.deepEqual(this.identifier, {})
+			test.is(this.children.length, 1)
+			test.deepEqual(this.children, [child])
 		}
 
 	}
 	Core.run(MyModel, { binding, target: test.context.document.body })
 	test.is(test.context.document.body.innerHTML, '<div id="test"><div id="test"></div></div>')
 	test.is(binding.children.length, 1)
-	binding.remove()
-	test.is(test.context.document.body.innerHTML, "")
-	test.is(binding.children.length, 0)
 })
 
 ava("remove eventListeners", (test) => {
@@ -206,9 +213,10 @@ ava("remove eventListeners", (test) => {
 	binding.root.ownerDocument.defaultView.dispatchEvent(new binding.root.ownerDocument.defaultView.Event("click"))
 	test.is(binding.clickA, 1)
 	test.is(binding.clickB, 1)
+	const root = binding.root
 	binding.remove()
-	binding.root.ownerDocument.defaultView.dispatchEvent(new binding.root.ownerDocument.defaultView.Event("click"))
-	binding.root.ownerDocument.defaultView.dispatchEvent(new binding.root.ownerDocument.defaultView.Event("click"))
+	root.ownerDocument.defaultView.dispatchEvent(new root.ownerDocument.defaultView.Event("click"))
+	root.ownerDocument.defaultView.dispatchEvent(new root.ownerDocument.defaultView.Event("click"))
 	test.is(binding.clickA, 1)
 	test.is(binding.clickB, 1)
 	test.is(test.context.document.body.innerHTML, "")

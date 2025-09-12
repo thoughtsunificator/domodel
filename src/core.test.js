@@ -154,6 +154,7 @@ ava("onConnected", (test) => {
 		binding: new class extends Binding {
 			onConnected() {
 				this.root.textContent = "rendered"
+				test.true(this.connected)
 			}
 		}
 	})
