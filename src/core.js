@@ -29,6 +29,9 @@ export const METHOD = {
 */
 export function run(model, runParameters) {
 	const { target = runParameters.parentNode, binding = new Binding(), method = METHOD.APPEND_CHILD } = runParameters
+	if(typeof model === "function") {
+		model = model.apply(binding, runParameters.modelArguments)
+	}
 	const element = createElement(target, model, binding)
 	binding.root = element
 	binding.model = model

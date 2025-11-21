@@ -422,3 +422,19 @@ ava("eventListener inheritance", (test) => {
 
 
 })
+
+ava("Bind Binding instance to model function", test => {
+	test.plan(2)
+	const binding = new Binding()
+	function myModel() {
+		test.is(this, binding)
+		test.deepEqual(arguments, ["foo", "bar"])
+		return {
+			tagName: "div",
+			className: "simplemodel",
+			id: "simplemodel",
+			textContent: "My first simple model"
+		}
+	}
+	Core.run(myModel, { binding, target: test.context.document.body, modelArguments: ["foo", "bar"] })
+})
